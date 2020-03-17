@@ -92,6 +92,18 @@ func localeFromTestData(fileName string) (*Locale, error) {
 	return &locale, nil
 }
 
+func environmentFromTestData(fileName string) (*Environment, error) {
+	content := readTestData(fileName)
+
+	var environment Environment
+	err := json.NewDecoder(strings.NewReader(content)).Decode(&environment)
+	if err != nil {
+		return nil, err
+	}
+
+	return &environment, nil
+}
+
 func setup() {
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		fixture := strings.Replace(r.URL.Path, "/", "-", -1)

@@ -1,6 +1,11 @@
 package contentful
 
-import "fmt"
+import (
+	"bytes"
+	"encoding/json"
+	"fmt"
+	"strconv"
+)
 
 // EnvironmentsService service
 type EnvironmentsService service
@@ -54,4 +59,32 @@ func (service *EnvironmentsService) Get(spaceID, environmentID string) (*Environ
 	}
 
 	return &environment, nil
+}
+
+// Upsert updates or creates a new environment
+func (service *EnvironmentsService) Upsert(spaceID string, e *Environment) error {
+	bytesArray, err := json.Marshal(e)
+	if err != nil {
+		return err
+	}
+
+	var path string
+	var method string
+
+	if e.Sys != nil && e.Sys.ID != "" {
+		path = fmt.Sprintf("/spaces/%s/environments/%s", spaceID, e.Sys.ID)
+		method = "PUT"
+	} else {
+		path = fmt.Sprintf("/spaces/%s/environments", spaceID)
+		method = "POST"
+	}
+
+	req, err := service.c.newRequest(method, path, nil, bytes.NewReader(bytesArray))
+	if err != nil {
+		return err
+	}
+
+	req.Header.Set("X-Contentful-Version", strconv.Itoa(e.GetVersion()))
+
+	return service.c.do(req, e)
 }

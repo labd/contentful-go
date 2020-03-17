@@ -1,6 +1,7 @@
 package contentful
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"net/http/httptest"
@@ -59,5 +60,76 @@ func TestEnvironmentsServiceGet(t *testing.T) {
 	cma.BaseURL = server.URL
 
 	_, err = cma.Environments.Get(spaceID, "master")
+	assert.Nil(err)
+}
+
+func TestEnvironmentsServiceUpsertCreate(t *testing.T) {
+	var err error
+	assert := assert.New(t)
+
+	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		assert.Equal(r.Method, "POST")
+		assert.Equal(r.RequestURI, "/spaces/"+spaceID+"/environments")
+
+		checkHeaders(r, assert)
+
+		var payload map[string]interface{}
+		err := json.NewDecoder(r.Body).Decode(&payload)
+		assert.Nil(err)
+		assert.Equal("staging", payload["name"])
+
+		w.WriteHeader(200)
+		fmt.Fprintln(w, readTestData("environment_1.json"))
+	})
+
+	// test server
+	server := httptest.NewServer(handler)
+	defer server.Close()
+
+	// cma client
+	cma = NewCMA(CMAToken)
+	cma.BaseURL = server.URL
+
+	environment := &Environment{
+		Name: "staging",
+	}
+
+	err = cma.Environments.Upsert(spaceID, environment)
+	assert.Nil(err)
+}
+
+func TestEnvironmentsServiceUpsertUpdate(t *testing.T) {
+	var err error
+	assert := assert.New(t)
+
+	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		assert.Equal(r.Method, "PUT")
+		assert.Equal(r.RequestURI, "/spaces/"+spaceID+"/environments/staging")
+
+		checkHeaders(r, assert)
+
+		var payload map[string]interface{}
+		err := json.NewDecoder(r.Body).Decode(&payload)
+		assert.Nil(err)
+		assert.Equal("modified-name", payload["name"])
+
+		w.WriteHeader(200)
+		fmt.Fprintln(w, string(readTestData("environment_1.json")))
+	})
+
+	// test server
+	server := httptest.NewServer(handler)
+	defer server.Close()
+
+	// cma client
+	cma = NewCMA(CMAToken)
+	cma.BaseURL = server.URL
+
+	environment, err := environmentFromTestData("environment_1.json")
+	assert.Nil(err)
+
+	environment.Name = "modified-name"
+
+	err = cma.Environments.Upsert(spaceID, environment)
 	assert.Nil(err)
 }
