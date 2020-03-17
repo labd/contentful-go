@@ -37,3 +37,21 @@ func (service *EnvironmentsService) List(spaceID string) *Collection {
 
 	return col
 }
+
+// Get returns a single environment entity
+func (service *EnvironmentsService) Get(spaceID, environmentID string) (*Environment, error) {
+	path := fmt.Sprintf("/spaces/%s/environments/%s", spaceID, environmentID)
+	method := "GET"
+
+	req, err := service.c.newRequest(method, path, nil, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	var environment Environment
+	if err := service.c.do(req, &environment); err != nil {
+		return nil, err
+	}
+
+	return &environment, nil
+}
