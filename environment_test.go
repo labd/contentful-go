@@ -133,3 +133,32 @@ func TestEnvironmentsServiceUpsertUpdate(t *testing.T) {
 	err = cma.Environments.Upsert(spaceID, environment)
 	assert.Nil(err)
 }
+
+func TestEnvironmentsServiceDelete(t *testing.T) {
+	var err error
+	assert := assert.New(t)
+
+	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		assert.Equal(r.Method, "DELETE")
+		assert.Equal(r.RequestURI, "/spaces/"+spaceID+"/environments/staging")
+		checkHeaders(r, assert)
+
+		w.WriteHeader(200)
+	})
+
+	// test server
+	server := httptest.NewServer(handler)
+	defer server.Close()
+
+	// cma client
+	cma = NewCMA(CMAToken)
+	cma.BaseURL = server.URL
+
+	// test environment
+	environment, err := environmentFromTestData("environment_1.json")
+	assert.Nil(err)
+
+	// delete environment
+	err = cma.Environments.Delete(spaceID, environment)
+	assert.Nil(err)
+}
