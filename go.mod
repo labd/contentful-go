@@ -7,6 +7,6 @@ require (
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/stretchr/testify v1.1.4
 	golang.org/x/lint v0.0.0-20200302205851-738671d3881b // indirect
-	golang.org/x/tools v0.0.0-20200318054722-11a475a590ac // indirect
+	golang.org/x/tools v0.0.0-20200318132249-04208b9e8ab7 // indirect
 	moul.io/http2curl v1.0.0
 )
