@@ -12,7 +12,7 @@ type User struct {
 	Sys                            *Sys   `json:"sys,omitempty"`
 	FirstName                      string `json:"firstName"`
 	LastName                       string `json:"lastName"`
-	AvatarUrl                      string `json:"avatarUrl"`
+	AvatarURL                      string `json:"avatarUrl"`
 	Email                          string `json:"email"`
 	Activated                      bool   `json:"activated"`
 	SignInCount                    int    `json:"signInCount"`
@@ -30,7 +30,7 @@ func (user *User) GetVersion() int {
 	return version
 }
 
-// Get returns current authenticated user
+// Me returns current authenticated user
 func (service *UsersService) Me() (*User, error) {
 	path := fmt.Sprintf("/users/me")
 	method := "GET"
