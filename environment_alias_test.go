@@ -1,6 +1,7 @@
 package contentful
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"net/http/httptest"
@@ -59,5 +60,41 @@ func TestEnvironmentAliasesServicesGet(t *testing.T) {
 	cma.BaseURL = server.URL
 
 	_, err = cma.EnvironmentAliases.Get(spaceID, "master")
+	assert.Nil(err)
+}
+
+func TestEnvironmentAliasesServiceUpdate(t *testing.T) {
+	var err error
+	assert := assert.New(t)
+
+	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		assert.Equal(r.Method, "PUT")
+		assert.Equal(r.RequestURI, "/spaces/"+spaceID+"/environment_aliases/master")
+
+		checkHeaders(r, assert)
+
+		var payload EnvironmentAlias
+		err := json.NewDecoder(r.Body).Decode(&payload)
+		assert.Nil(err)
+		assert.Equal("staging", payload.Alias.Sys.ID)
+
+		w.WriteHeader(200)
+		fmt.Fprintln(w, string(readTestData("environment-alias_1.json")))
+	})
+
+	// test server
+	server := httptest.NewServer(handler)
+	defer server.Close()
+
+	// cma client
+	cma = NewCMA(CMAToken)
+	cma.BaseURL = server.URL
+
+	environmentAlias, err := environmentAliasFromTestData("environment-alias_1.json")
+	assert.Nil(err)
+
+	environmentAlias.Alias.Sys.ID = "staging"
+
+	err = cma.EnvironmentAliases.Update(spaceID, environmentAlias)
 	assert.Nil(err)
 }

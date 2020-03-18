@@ -1,14 +1,19 @@
 package contentful
 
-import "fmt"
+import (
+	"bytes"
+	"encoding/json"
+	"fmt"
+	"strconv"
+)
 
 // EnvironmentAliasesService service
 type EnvironmentAliasesService service
 
 // EnvironmentAlias model
 type EnvironmentAlias struct {
-	Sys              *Sys         `json:"sys"`
-	EnvironmentAlias *AliasDetail `json:"environment"`
+	Sys   *Sys         `json:"sys"`
+	Alias *AliasDetail `json:"environment"`
 }
 
 // AliasDetail model
@@ -59,4 +64,29 @@ func (service *EnvironmentAliasesService) Get(spaceID, environmentAliasID string
 	}
 
 	return &environmentAlias, nil
+}
+
+// Update updates an environment alias
+func (service *EnvironmentAliasesService) Update(spaceID string, ea *EnvironmentAlias) error {
+	bytesArray, err := json.Marshal(ea)
+	if err != nil {
+		return err
+	}
+
+	var path string
+	var method string
+
+	if ea.Sys != nil && ea.Sys.ID != "" {
+		path = fmt.Sprintf("/spaces/%s/environment_aliases/%s", spaceID, ea.Sys.ID)
+		method = "PUT"
+	}
+
+	req, err := service.c.newRequest(method, path, nil, bytes.NewReader(bytesArray))
+	if err != nil {
+		return err
+	}
+
+	req.Header.Set("X-Contentful-Version", strconv.Itoa(ea.GetVersion()))
+
+	return service.c.do(req, ea)
 }
