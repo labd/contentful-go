@@ -150,12 +150,22 @@ func (col *Collection) ToWebhook() []*Webhook {
 	return webhooks
 }
 
-// toUser cast Items to User model
-func (col *Collection) toUser() []*User {
+// ToUser cast Items to User model
+func (col *Collection) ToUser() []*User {
 	var user []*User
 
 	byteArray, _ := json.Marshal(col.Items)
 	json.NewDecoder(bytes.NewReader(byteArray)).Decode(&user)
 
 	return user
+}
+
+// ToOrganization cast Items to Organization model
+func (col *Collection) ToOrganization() []*Organization {
+	var organization []*Organization
+
+	byteArray, _ := json.Marshal(col.Items)
+	json.NewDecoder(bytes.NewReader(byteArray)).Decode(&organization)
+
+	return organization
 }
