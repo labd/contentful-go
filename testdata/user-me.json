@@ -1,0 +1,17 @@
+{
+  "firstName": "John",
+  "lastName": "Doe",
+  "avatarUrl": "https://www.gravatar.com/avatar/428ed77655840b44a709b5175f5da37d?s=50&d=https%3A%2F%2Favatars.contentful.com%2Finitials%2Fv1%2FAA%2F50",
+  "email": "j.doe@labdigital.nl",
+  "activated": true,
+  "signInCount": 23,
+  "confirmed": true,
+  "2faEnabled": false,
+  "sys": {
+    "type": "User",
+    "id": "4hRixSwbw45w5qbVPio",
+    "version": 5,
+    "createdAt": "2020-03-10T13:04:07Z",
+    "updatedAt": "2020-03-17T11:05:51Z"
+  }
+}

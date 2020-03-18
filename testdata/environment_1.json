@@ -1,0 +1,38 @@
+{
+  "name": "staging",
+  "sys": {
+    "type": "Environment",
+    "id": "staging",
+    "version": 1,
+    "space": {
+      "sys": {
+        "type": "Link",
+        "linkType": "Space",
+        "id": "id1"
+      }
+    },
+    "status": {
+      "sys": {
+        "type": "Link",
+        "linkType": "Status",
+        "id": "ready"
+      }
+    },
+    "createdBy": {
+      "sys": {
+        "type": "Link",
+        "linkType": "User",
+        "id": "7980yiuHN8r97jyyB90y8hn"
+      }
+    },
+    "createdAt": "2020-03-10T13:03:40Z",
+    "updatedBy": {
+      "sys": {
+        "type": "Link",
+        "linkType": "User",
+        "id": "7980yiuHN8r97jyyB90y8hn"
+      }
+    },
+    "updatedAt": "2020-03-10T13:03:40Z"
+  }
+}
