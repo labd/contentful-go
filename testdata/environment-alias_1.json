@@ -1,0 +1,37 @@
+{
+  "sys": {
+    "type": "EnvironmentAlias",
+    "id": "master",
+    "version": 1,
+    "space": {
+      "sys": {
+        "type": "Link",
+        "linkType": "Space",
+        "id": "79fdgN98erg88"
+      }
+    },
+    "createdBy": {
+      "sys": {
+        "type": "Link",
+        "linkType": "User",
+        "id": "4hx098OIUnhiVPio"
+      }
+    },
+    "createdAt": "2020-03-18T09:04:39Z",
+    "updatedBy": {
+      "sys": {
+        "type": "Link",
+        "linkType": "User",
+        "id": "4hx098OIUnhiVPio"
+      }
+    },
+    "updatedAt": "2020-03-18T09:04:39Z"
+  },
+  "environment": {
+    "sys": {
+      "type": "Link",
+      "linkType": "Environment",
+      "id": "master-18-3-2020"
+    }
+  }
+}

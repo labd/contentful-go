@@ -70,6 +70,26 @@ func (col *Collection) ToContentType() []*ContentType {
 	return contentTypes
 }
 
+// ToEnvironment cast Items to Environment model
+func (col *Collection) ToEnvironment() []*Environment {
+	var environments []*Environment
+
+	byteArray, _ := json.Marshal(col.Items)
+	json.NewDecoder(bytes.NewReader(byteArray)).Decode(&environments)
+
+	return environments
+}
+
+// ToEnvironmentAlias cast Items to EnvironmentAlias model
+func (col *Collection) ToEnvironmentAlias() []*EnvironmentAlias {
+	var environmentAlias []*EnvironmentAlias
+
+	byteArray, _ := json.Marshal(col.Items)
+	json.NewDecoder(bytes.NewReader(byteArray)).Decode(&environmentAlias)
+
+	return environmentAlias
+}
+
 // ToSpace cast Items to Space model
 func (col *Collection) ToSpace() []*Space {
 	var spaces []*Space
@@ -128,4 +148,24 @@ func (col *Collection) ToWebhook() []*Webhook {
 	json.NewDecoder(bytes.NewReader(byteArray)).Decode(&webhooks)
 
 	return webhooks
+}
+
+// ToUser cast Items to User model
+func (col *Collection) ToUser() []*User {
+	var user []*User
+
+	byteArray, _ := json.Marshal(col.Items)
+	json.NewDecoder(bytes.NewReader(byteArray)).Decode(&user)
+
+	return user
+}
+
+// ToOrganization cast Items to Organization model
+func (col *Collection) ToOrganization() []*Organization {
+	var organization []*Organization
+
+	byteArray, _ := json.Marshal(col.Items)
+	json.NewDecoder(bytes.NewReader(byteArray)).Decode(&organization)
+
+	return organization
 }
