@@ -164,3 +164,35 @@ func (service *EntriesService) Upsert(spaceID string, e *Entry) error {
 
 	return service.c.do(req, e)
 }
+
+// Archive the entry
+func (service *EntriesService) Archive(spaceID string, entry *Entry) error {
+	path := fmt.Sprintf("/spaces/%s/entries/%s/archived", spaceID, entry.Sys.ID)
+	method := "PUT"
+
+	req, err := service.c.newRequest(method, path, nil, nil)
+	if err != nil {
+		return err
+	}
+
+	version := strconv.Itoa(entry.Sys.Version)
+	req.Header.Set("X-Contentful-Version", version)
+
+	return service.c.do(req, nil)
+}
+
+// Unarchive the entry
+func (service *EntriesService) Unarchive(spaceID string, entry *Entry) error {
+	path := fmt.Sprintf("/spaces/%s/entries/%s/archived", spaceID, entry.Sys.ID)
+	method := "DELETE"
+
+	req, err := service.c.newRequest(method, path, nil, nil)
+	if err != nil {
+		return err
+	}
+
+	version := strconv.Itoa(entry.Sys.Version)
+	req.Header.Set("X-Contentful-Version", version)
+
+	return service.c.do(req, nil)
+}

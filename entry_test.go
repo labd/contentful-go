@@ -181,3 +181,123 @@ func TestEntriessServiceUpsertUpdate(t *testing.T) {
 	err = cma.Entries.Upsert(spaceID, entry)
 	assert.Nil(err)
 }
+
+func TestEntriesServicePublish(t *testing.T) {
+	var err error
+	assert := assert.New(t)
+
+	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		assert.Equal(r.Method, "PUT")
+		assert.Equal(r.URL.Path, "/spaces/"+spaceID+"/entries/5KsDBWseXY6QegucYAoacS/published")
+
+		checkHeaders(r, assert)
+
+		w.WriteHeader(200)
+		fmt.Fprintln(w, readTestData("entry_1.json"))
+	})
+
+	// test server
+	server := httptest.NewServer(handler)
+	defer server.Close()
+
+	// cma client
+	cma = NewCMA(CMAToken)
+	cma.BaseURL = server.URL
+
+	// test content type
+	e, err := entryFromTestData("entry_1.json")
+	assert.Nil(err)
+
+	err = cma.Entries.Publish(spaceID, e)
+	assert.Nil(err)
+}
+
+func TestEntriesServiceUnpublish(t *testing.T) {
+	var err error
+	assert := assert.New(t)
+
+	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		assert.Equal(r.Method, "DELETE")
+		assert.Equal(r.URL.Path, "/spaces/"+spaceID+"/entries/5KsDBWseXY6QegucYAoacS/published")
+
+		checkHeaders(r, assert)
+
+		w.WriteHeader(200)
+		fmt.Fprintln(w, readTestData("entry_1.json"))
+	})
+
+	// test server
+	server := httptest.NewServer(handler)
+	defer server.Close()
+
+	// cma client
+	cma = NewCMA(CMAToken)
+	cma.BaseURL = server.URL
+
+	// test content type
+	e, err := entryFromTestData("entry_1.json")
+	assert.Nil(err)
+
+	err = cma.Entries.Unpublish(spaceID, e)
+	assert.Nil(err)
+}
+
+func TestEntriesServiceArchive(t *testing.T) {
+	var err error
+	assert := assert.New(t)
+
+	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		assert.Equal(r.Method, "PUT")
+		assert.Equal(r.URL.Path, "/spaces/"+spaceID+"/entries/5KsDBWseXY6QegucYAoacS/archived")
+
+		checkHeaders(r, assert)
+
+		w.WriteHeader(200)
+		fmt.Fprintln(w, readTestData("entry_1.json"))
+	})
+
+	// test server
+	server := httptest.NewServer(handler)
+	defer server.Close()
+
+	// cma client
+	cma = NewCMA(CMAToken)
+	cma.BaseURL = server.URL
+
+	// test content type
+	e, err := entryFromTestData("entry_1.json")
+	assert.Nil(err)
+
+	err = cma.Entries.Archive(spaceID, e)
+	assert.Nil(err)
+}
+
+func TestEntriesServiceUnarchive(t *testing.T) {
+	var err error
+	assert := assert.New(t)
+
+	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		assert.Equal(r.Method, "DELETE")
+		assert.Equal(r.URL.Path, "/spaces/"+spaceID+"/entries/5KsDBWseXY6QegucYAoacS/archived")
+
+		checkHeaders(r, assert)
+
+		w.WriteHeader(200)
+		fmt.Fprintln(w, readTestData("entry_1.json"))
+	})
+
+	// test server
+	server := httptest.NewServer(handler)
+	defer server.Close()
+
+	// cma client
+	cma = NewCMA(CMAToken)
+	cma.BaseURL = server.URL
+
+	// test content type
+	e, err := entryFromTestData("entry_1.json")
+	assert.Nil(err)
+
+	err = cma.Entries.Unarchive(spaceID, e)
+	assert.Nil(err)
+}
