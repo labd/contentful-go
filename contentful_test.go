@@ -116,6 +116,18 @@ func environmentAliasFromTestData(fileName string) (*EnvironmentAlias, error) {
 	return &environmentAlias, nil
 }
 
+func entryFromTestData(fileName string) (*Entry, error) {
+	content := readTestData(fileName)
+
+	var entry Entry
+	err := json.NewDecoder(strings.NewReader(content)).Decode(&entry)
+	if err != nil {
+		return nil, err
+	}
+
+	return &entry, nil
+}
+
 func setup() {
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		fixture := strings.Replace(r.URL.Path, "/", "-", -1)
