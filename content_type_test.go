@@ -172,6 +172,32 @@ func TestContentTypesServiceList(t *testing.T) {
 	assert.Nil(err)
 }
 
+func TestContentTypesServiceListActivated(t *testing.T) {
+	var err error
+	assert := assert.New(t)
+
+	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		assert.Equal(r.Method, "GET")
+		assert.Equal(r.URL.Path, "/spaces/"+spaceID+"/public/content_types")
+
+		checkHeaders(r, assert)
+
+		w.WriteHeader(200)
+		fmt.Fprintln(w, readTestData("content_types.json"))
+	})
+
+	// test server
+	server := httptest.NewServer(handler)
+	defer server.Close()
+
+	// cma client
+	cma = NewCMA(CMAToken)
+	cma.BaseURL = server.URL
+
+	_, err = cma.ContentTypes.ListActivated(spaceID).Next()
+	assert.Nil(err)
+}
+
 func TestContentTypesServiceActivate(t *testing.T) {
 	var err error
 	assert := assert.New(t)

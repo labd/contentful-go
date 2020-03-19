@@ -305,6 +305,23 @@ func (service *ContentTypesService) List(spaceID string) *Collection {
 	return col
 }
 
+// ListActivated return a content type collection, with only activated content types
+func (service *ContentTypesService) ListActivated(spaceID string) *Collection {
+	path := fmt.Sprintf("/spaces/%s/public/content_types", spaceID)
+	method := "GET"
+
+	req, err := service.c.newRequest(method, path, nil, nil)
+	if err != nil {
+		return nil
+	}
+
+	col := NewCollection(&CollectionOptions{})
+	col.c = service.c
+	col.req = req
+
+	return col
+}
+
 // Get fetched a content type specified by `contentTypeID`
 func (service *ContentTypesService) Get(spaceID, contentTypeID string) (*ContentType, error) {
 	path := fmt.Sprintf("/spaces/%s/content_types/%s", spaceID, contentTypeID)
