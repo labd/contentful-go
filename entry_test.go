@@ -40,7 +40,6 @@ func TestEntriesServiceGet(t *testing.T) {
 	var err error
 	assert := assert.New(t)
 
-	// Only tests master environment, as this is the only environment that always exists.
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		assert.Equal(r.Method, "GET")
 		assert.Equal(r.URL.Path, "/spaces/"+spaceID+"/entries/5KsDBWseXY6QegucYAoacS")

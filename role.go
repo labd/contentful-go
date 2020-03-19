@@ -2,6 +2,7 @@ package contentful
 
 import (
 	"fmt"
+	"net/url"
 )
 
 // RolesService service
@@ -55,4 +56,23 @@ func (service *RolesService) List(spaceID string) *Collection {
 	col.req = req
 
 	return col
+}
+
+// Get returns a single role
+func (service *RolesService) Get(spaceID, roleID string) (*Role, error) {
+	path := fmt.Sprintf("/spaces/%s/roles/%s", spaceID, roleID)
+	query := url.Values{}
+	method := "GET"
+
+	req, err := service.c.newRequest(method, path, query, nil)
+	if err != nil {
+		return &Role{}, err
+	}
+
+	var role Role
+	if ok := service.c.do(req, &role); ok != nil {
+		return nil, err
+	}
+
+	return &role, err
 }
