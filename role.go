@@ -20,12 +20,14 @@ type Role struct {
 	Permissions Permissions `json:"permissions"`
 }
 
+// Policies model
 type Policies struct {
 	Effect     string     `json:"effect"`
 	Actions    []string   `json:"actions"`
 	Constraint Constraint `json:"constraint"`
 }
 
+// Permissions model
 type Permissions struct {
 	ContentModel       []string `json:"ContentModel"`
 	Settings           string   `json:"Settings"`
@@ -34,14 +36,17 @@ type Permissions struct {
 	EnvironmentAliases string   `json:"EnvironmentAliases"`
 }
 
+// Constraint model
 type Constraint struct {
 	And []ConstraintDetail `json:"and"`
 }
 
+// ConstraintDetail model
 type ConstraintDetail struct {
 	Equals DetailItem `json:"equals"`
 }
 
+// DetailItem model
 type DetailItem struct {
 	Doc      map[string]interface{}
 	ItemType string
@@ -96,7 +101,6 @@ func (service *RolesService) Get(spaceID, roleID string) (*Role, error) {
 // Upsert updates or creates a new role
 func (service *RolesService) Upsert(spaceID string, r *Role) error {
 	bytesArray, err := json.Marshal(r)
-	fmt.Println(r)
 	if err != nil {
 		return err
 	}

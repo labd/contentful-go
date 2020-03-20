@@ -130,3 +130,41 @@ func TestRolesServiceUpsertCreate(t *testing.T) {
 	err = cma.Roles.Upsert(spaceID, role)
 	assert.Nil(err)
 }
+
+func TestRolesServiceUpsertUpdate(t *testing.T) {
+	var err error
+	assert := assert.New(t)
+
+	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		assert.Equal(r.Method, "PUT")
+		assert.Equal(r.RequestURI, "/spaces/"+spaceID+"/roles/0xvkNW6WdQ8JkWlWZ8BC4x")
+
+		checkHeaders(r, assert)
+
+		var payload map[string]interface{}
+		err := json.NewDecoder(r.Body).Decode(&payload)
+		assert.Nil(err)
+
+		description := payload["description"]
+		assert.Equal("Edited text", description)
+
+		w.WriteHeader(200)
+		fmt.Fprintln(w, readTestData("role_1.json"))
+	})
+
+	// test server
+	server := httptest.NewServer(handler)
+	defer server.Close()
+
+	// cma client
+	cma = NewCMA(CMAToken)
+	cma.BaseURL = server.URL
+
+	role, err := roleFromTestData("role_1.json")
+	assert.Nil(err)
+
+	role.Description = "Edited text"
+
+	err = cma.Roles.Upsert(spaceID, role)
+	assert.Nil(err)
+}
