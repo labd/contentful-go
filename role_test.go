@@ -168,3 +168,32 @@ func TestRolesServiceUpsertUpdate(t *testing.T) {
 	err = cma.Roles.Upsert(spaceID, role)
 	assert.Nil(err)
 }
+
+func TestRolesServiceDelete(t *testing.T) {
+	var err error
+	assert := assert.New(t)
+
+	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		assert.Equal(r.Method, "DELETE")
+		assert.Equal(r.RequestURI, "/spaces/"+spaceID+"/roles/0xvkNW6WdQ8JkWlWZ8BC4x")
+		checkHeaders(r, assert)
+
+		w.WriteHeader(200)
+	})
+
+	// test server
+	server := httptest.NewServer(handler)
+	defer server.Close()
+
+	// cma client
+	cma = NewCMA(CMAToken)
+	cma.BaseURL = server.URL
+
+	// test role
+	role, err := roleFromTestData("role_1.json")
+	assert.Nil(err)
+
+	// delete role
+	err = cma.Roles.Delete(spaceID, role.Sys.ID)
+	assert.Nil(err)
+}

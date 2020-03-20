@@ -125,3 +125,16 @@ func (service *RolesService) Upsert(spaceID string, r *Role) error {
 
 	return service.c.do(req, r)
 }
+
+// Delete the role
+func (service *RolesService) Delete(spaceID string, roleID string) error {
+	path := fmt.Sprintf("/spaces/%s/roles/%s", spaceID, roleID)
+	method := "DELETE"
+
+	req, err := service.c.newRequest(method, path, nil, nil)
+	if err != nil {
+		return err
+	}
+
+	return service.c.do(req, nil)
+}
