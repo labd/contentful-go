@@ -128,6 +128,18 @@ func entryFromTestData(fileName string) (*Entry, error) {
 	return &entry, nil
 }
 
+func roleFromTestData(fileName string) (*Role, error) {
+	content := readTestData(fileName)
+
+	var role Role
+	err := json.NewDecoder(strings.NewReader(content)).Decode(&role)
+	if err != nil {
+		return nil, err
+	}
+
+	return &role, nil
+}
+
 func setup() {
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		fixture := strings.Replace(r.URL.Path, "/", "-", -1)
