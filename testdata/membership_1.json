@@ -1,0 +1,40 @@
+{
+  "sys": {
+    "type": "SpaceMembership",
+    "id": "0xWanD4AZI2AR35wW9q51n",
+    "version": 0,
+    "createdAt": "2015-05-18T11:29:46.809Z",
+    "createdBy": {
+      "sys": {
+        "type": "Link",
+        "linkType": "User",
+        "id": "7BslKh9TdKGOK41VmLDjFZ"
+      }
+    },
+    "updatedAt": "2015-05-18T11:29:46.809Z",
+    "updatedBy": {
+      "sys": {
+        "type": "Link",
+        "linkType": "User",
+        "id": "4FLrUHftHW3v2BLi9fzfjU"
+      }
+    }
+  },
+  "admin": false,
+  "roles": [
+    {
+      "sys": {
+        "type": "Link",
+        "linkType": "Role",
+        "id": "1ElgCn1mi1UHSBLTP2v4TD"
+      }
+    }
+  ],
+  "user": {
+    "sys": {
+      "type": "Link",
+      "linkType": "User",
+      "id": "7BslKh9TdKGOK41VmLDjFZ"
+    }
+  }
+}

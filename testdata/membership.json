@@ -1,0 +1,88 @@
+{
+  "total": 2,
+  "limit": 25,
+  "skip": 0,
+  "sys": {
+    "type": "Array"
+  },
+  "items": [
+    {
+      "admin": true,
+      "sys": {
+        "type": "SpaceMembership",
+        "id": "8960YTIOjg6jknUYIjhg",
+        "version": 0,
+        "space": {
+          "sys": {
+            "type": "Link",
+            "linkType": "Space",
+            "id": "uhwvl4veejyj"
+          }
+        },
+        "createdBy": {
+          "sys": {
+            "type": "Link",
+            "linkType": "User",
+            "id": "8790UHtytgfyjgluyjkJG687"
+          }
+        },
+        "createdAt": "2020-03-10T13:03:40Z",
+        "updatedBy": {
+          "sys": {
+            "type": "Link",
+            "linkType": "User",
+            "id": "8790UHtytgfyjgluyjkJG687"
+          }
+        },
+        "updatedAt": "2020-03-10T13:03:40Z"
+      },
+      "user": {
+        "sys": {
+          "type": "Link",
+          "linkType": "User",
+          "id": "8790UHtytgfyjgluyjkJG687"
+        }
+      },
+      "roles": []
+    },
+    {
+      "admin": true,
+      "sys": {
+        "type": "SpaceMembership",
+        "id": "97KJHnkjb86uyigYTHFG75",
+        "version": 0,
+        "space": {
+          "sys": {
+            "type": "Link",
+            "linkType": "Space",
+            "id": "uhwvl4veejyj"
+          }
+        },
+        "createdBy": {
+          "sys": {
+            "type": "Link",
+            "linkType": "User",
+            "id": "8790UHtytgfyjgluyjkJG687"
+          }
+        },
+        "createdAt": "2020-03-11T14:17:55Z",
+        "updatedBy": {
+          "sys": {
+            "type": "Link",
+            "linkType": "User",
+            "id": "8790UHtytgfyjgluyjkJG687"
+          }
+        },
+        "updatedAt": "2020-03-11T14:17:55Z"
+      },
+      "user": {
+        "sys": {
+          "type": "Link",
+          "linkType": "User",
+          "id": "8790UHtytgfyjgluyjkJG687"
+        }
+      },
+      "roles": []
+    }
+  ]
+}
