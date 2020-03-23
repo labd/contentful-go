@@ -1,9 +1,12 @@
 package contentful
 
 import (
+	"bytes"
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"net/url"
+	"strconv"
 )
 
 // EntriesService service
@@ -11,9 +14,19 @@ type MembershipsService service
 
 //Entry model
 type Membership struct {
-	locale string
-	Sys    *Sys `json:"sys"`
-	Fields map[string]interface{}
+	Sys   *Sys    `json:"sys"`
+	Admin bool    `json:"admin"`
+	Roles []Roles `json:"roles"`
+	User  Member  `json:"user, omitempty"`
+	Email string  `json:"email, omitempty"`
+}
+
+type Roles struct {
+	Sys *Sys `json:"sys"`
+}
+
+type Member struct {
+	Sys *Sys `json:"sys"`
 }
 
 // GetVersion returns entity version
@@ -59,4 +72,32 @@ func (service *MembershipsService) Get(spaceID, membershipID string) (*Membershi
 	}
 
 	return &membership, err
+}
+
+// Upsert updates or creates a new membership
+func (service *MembershipsService) Upsert(spaceID string, m *Membership) error {
+	bytesArray, err := json.Marshal(m)
+	if err != nil {
+		return err
+	}
+
+	var path string
+	var method string
+
+	if m.Sys != nil && m.Sys.ID != "" {
+		path = fmt.Sprintf("/spaces/%s/space_memberships/%s", spaceID, m.Sys.ID)
+		method = "PUT"
+	} else {
+		path = fmt.Sprintf("/spaces/%s/space_memberships", spaceID)
+		method = "POST"
+	}
+
+	req, err := service.c.newRequest(method, path, nil, bytes.NewReader(bytesArray))
+	if err != nil {
+		return err
+	}
+
+	req.Header.Set("X-Contentful-Version", strconv.Itoa(m.GetVersion()))
+
+	return service.c.do(req, m)
 }

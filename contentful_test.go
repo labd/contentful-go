@@ -140,6 +140,18 @@ func roleFromTestData(fileName string) (*Role, error) {
 	return &role, nil
 }
 
+func membershipFromTestData(fileName string) (*Membership, error) {
+	content := readTestData(fileName)
+
+	var membership Membership
+	err := json.NewDecoder(strings.NewReader(content)).Decode(&membership)
+	if err != nil {
+		return nil, err
+	}
+
+	return &membership, nil
+}
+
 func setup() {
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		fixture := strings.Replace(r.URL.Path, "/", "-", -1)
