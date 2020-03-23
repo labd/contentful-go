@@ -3,6 +3,7 @@ package contentful
 import (
 	"fmt"
 	"net/http"
+	"net/url"
 )
 
 // EntriesService service
@@ -27,7 +28,7 @@ func (membership *Membership) GetVersion() int {
 
 // List returns membership collection
 func (service *MembershipsService) List(spaceID string) *Collection {
-	path := fmt.Sprintf("/spaces/%s/memberships", spaceID)
+	path := fmt.Sprintf("/spaces/%s/space_memberships", spaceID)
 
 	req, err := service.c.newRequest(http.MethodGet, path, nil, nil)
 	if err != nil {
@@ -39,4 +40,23 @@ func (service *MembershipsService) List(spaceID string) *Collection {
 	col.req = req
 
 	return col
+}
+
+// Get returns a single membership
+func (service *MembershipsService) Get(spaceID, membershipID string) (*Membership, error) {
+	path := fmt.Sprintf("/spaces/%s/space_memberships/%s", spaceID, membershipID)
+	query := url.Values{}
+	method := "GET"
+
+	req, err := service.c.newRequest(method, path, query, nil)
+	if err != nil {
+		return &Membership{}, err
+	}
+
+	var membership Membership
+	if ok := service.c.do(req, &membership); ok != nil {
+		return nil, err
+	}
+
+	return &membership, err
 }
