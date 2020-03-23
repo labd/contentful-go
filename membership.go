@@ -9,10 +9,10 @@ import (
 	"strconv"
 )
 
-// EntriesService service
+// MembershipsService service
 type MembershipsService service
 
-//Entry model
+// Membership model
 type Membership struct {
 	Sys   *Sys    `json:"sys"`
 	Admin bool    `json:"admin"`
@@ -21,10 +21,12 @@ type Membership struct {
 	Email string  `json:"email, omitempty"`
 }
 
+// Roles model
 type Roles struct {
 	Sys *Sys `json:"sys"`
 }
 
+// Member model
 type Member struct {
 	Sys *Sys `json:"sys"`
 }
@@ -100,4 +102,17 @@ func (service *MembershipsService) Upsert(spaceID string, m *Membership) error {
 	req.Header.Set("X-Contentful-Version", strconv.Itoa(m.GetVersion()))
 
 	return service.c.do(req, m)
+}
+
+// Delete the role
+func (service *MembershipsService) Delete(spaceID string, membershipID string) error {
+	path := fmt.Sprintf("/spaces/%s/space_memberships/%s", spaceID, membershipID)
+	method := "DELETE"
+
+	req, err := service.c.newRequest(method, path, nil, nil)
+	if err != nil {
+		return err
+	}
+
+	return service.c.do(req, nil)
 }

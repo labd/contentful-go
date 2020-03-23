@@ -148,3 +148,32 @@ func TestMembershipsServiceUpsertUpdate(t *testing.T) {
 	err = cma.Memberships.Upsert(spaceID, membership)
 	assert.Nil(err)
 }
+
+func TestMembershipsServiceDelete(t *testing.T) {
+	var err error
+	assert := assert.New(t)
+
+	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		assert.Equal(r.Method, "DELETE")
+		assert.Equal(r.RequestURI, "/spaces/"+spaceID+"/space_memberships/0xWanD4AZI2AR35wW9q51n")
+		checkHeaders(r, assert)
+
+		w.WriteHeader(200)
+	})
+
+	// test server
+	server := httptest.NewServer(handler)
+	defer server.Close()
+
+	// cma client
+	cma = NewCMA(CMAToken)
+	cma.BaseURL = server.URL
+
+	// test role
+	membership, err := membershipFromTestData("membership_1.json")
+	assert.Nil(err)
+
+	// delete role
+	err = cma.Memberships.Delete(spaceID, membership.Sys.ID)
+	assert.Nil(err)
+}
