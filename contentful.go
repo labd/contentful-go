@@ -32,6 +32,7 @@ type Client struct {
 	EnvironmentAliases *EnvironmentAliasesService
 	Organizations      *OrganizationsService
 	Roles              *RolesService
+	Memberships        *MembershipsService
 	APIKeys            *APIKeyService
 	Assets             *AssetsService
 	ContentTypes       *ContentTypesService
@@ -67,6 +68,7 @@ func NewCMA(token string) *Client {
 	c.EnvironmentAliases = (*EnvironmentAliasesService)(&c.commonService)
 	c.Organizations = (*OrganizationsService)(&c.commonService)
 	c.Roles = (*RolesService)(&c.commonService)
+	c.Memberships = (*MembershipsService)(&c.commonService)
 	c.APIKeys = (*APIKeyService)(&c.commonService)
 	c.Assets = (*AssetsService)(&c.commonService)
 	c.ContentTypes = (*ContentTypesService)(&c.commonService)
