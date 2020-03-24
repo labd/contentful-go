@@ -152,6 +152,18 @@ func membershipFromTestData(fileName string) (*Membership, error) {
 	return &membership, nil
 }
 
+func assetFromTestData(fileName string) (*Asset, error) {
+	content := readTestData(fileName)
+
+	var asset Asset
+	err := json.NewDecoder(strings.NewReader(content)).Decode(&asset)
+	if err != nil {
+		return nil, err
+	}
+
+	return &asset, nil
+}
+
 func setup() {
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		fixture := strings.Replace(r.URL.Path, "/", "-", -1)

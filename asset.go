@@ -153,6 +153,23 @@ func (service *AssetsService) List(spaceID string) *Collection {
 	return col
 }
 
+// ListPublished return a content type collection, with only activated content types
+func (service *AssetsService) ListPublished(spaceID string) *Collection {
+	path := fmt.Sprintf("/spaces/%s/public/assets", spaceID)
+	method := "GET"
+
+	req, err := service.c.newRequest(method, path, nil, nil)
+	if err != nil {
+		return nil
+	}
+
+	col := NewCollection(&CollectionOptions{})
+	col.c = service.c
+	col.req = req
+
+	return col
+}
+
 // Get returns a single asset entity
 func (service *AssetsService) Get(spaceID, assetID string) (*Asset, error) {
 	path := fmt.Sprintf("/spaces/%s/assets/%s", spaceID, assetID)
@@ -235,6 +252,54 @@ func (service *AssetsService) Process(spaceID string, asset *Asset) error {
 func (service *AssetsService) Publish(spaceID string, asset *Asset) error {
 	path := fmt.Sprintf("/spaces/%s/assets/%s/published", spaceID, asset.Sys.ID)
 	method := "PUT"
+
+	req, err := service.c.newRequest(method, path, nil, nil)
+	if err != nil {
+		return err
+	}
+
+	version := strconv.Itoa(asset.Sys.Version)
+	req.Header.Set("X-Contentful-Version", version)
+
+	return service.c.do(req, asset)
+}
+
+// Unpublish the asset
+func (service *AssetsService) Unpublish(spaceID string, asset *Asset) error {
+	path := fmt.Sprintf("/spaces/%s/assets/%s/published", spaceID, asset.Sys.ID)
+	method := "DELETE"
+
+	req, err := service.c.newRequest(method, path, nil, nil)
+	if err != nil {
+		return err
+	}
+
+	version := strconv.Itoa(asset.Sys.Version)
+	req.Header.Set("X-Contentful-Version", version)
+
+	return service.c.do(req, asset)
+}
+
+// Archive archives the asset
+func (service *AssetsService) Archive(spaceID string, asset *Asset) error {
+	path := fmt.Sprintf("/spaces/%s/assets/%s/archived", spaceID, asset.Sys.ID)
+	method := "PUT"
+
+	req, err := service.c.newRequest(method, path, nil, nil)
+	if err != nil {
+		return err
+	}
+
+	version := strconv.Itoa(asset.Sys.Version)
+	req.Header.Set("X-Contentful-Version", version)
+
+	return service.c.do(req, asset)
+}
+
+// Unarchive unarchives the asset
+func (service *AssetsService) Unarchive(spaceID string, asset *Asset) error {
+	path := fmt.Sprintf("/spaces/%s/assets/%s/archived", spaceID, asset.Sys.ID)
+	method := "DELETE"
 
 	req, err := service.c.newRequest(method, path, nil, nil)
 	if err != nil {
