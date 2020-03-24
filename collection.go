@@ -169,3 +169,23 @@ func (col *Collection) ToOrganization() []*Organization {
 
 	return organization
 }
+
+// ToEntrySnapshot cast Items to Snapshot model for entries
+func (col *Collection) ToEntrySnapshot() []*EntrySnapshot {
+	var snapshot []*EntrySnapshot
+
+	byteArray, _ := json.Marshal(col.Items)
+	json.NewDecoder(bytes.NewReader(byteArray)).Decode(&snapshot)
+
+	return snapshot
+}
+
+// ToContentTypeSnapshot cast Items to Snapshot model for content types
+func (col *Collection) ToContentTypeSnapshot() []*ContentTypeSnapshot {
+	var snapshot []*ContentTypeSnapshot
+
+	byteArray, _ := json.Marshal(col.Items)
+	json.NewDecoder(bytes.NewReader(byteArray)).Decode(&snapshot)
+
+	return snapshot
+}
