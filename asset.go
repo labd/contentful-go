@@ -279,3 +279,35 @@ func (service *AssetsService) Unpublish(spaceID string, asset *Asset) error {
 
 	return service.c.do(req, asset)
 }
+
+// Archive archives the asset
+func (service *AssetsService) Archive(spaceID string, asset *Asset) error {
+	path := fmt.Sprintf("/spaces/%s/assets/%s/archived", spaceID, asset.Sys.ID)
+	method := "PUT"
+
+	req, err := service.c.newRequest(method, path, nil, nil)
+	if err != nil {
+		return err
+	}
+
+	version := strconv.Itoa(asset.Sys.Version)
+	req.Header.Set("X-Contentful-Version", version)
+
+	return service.c.do(req, asset)
+}
+
+// Unarchive unarchives the asset
+func (service *AssetsService) Unarchive(spaceID string, asset *Asset) error {
+	path := fmt.Sprintf("/spaces/%s/assets/%s/archived", spaceID, asset.Sys.ID)
+	method := "DELETE"
+
+	req, err := service.c.newRequest(method, path, nil, nil)
+	if err != nil {
+		return err
+	}
+
+	version := strconv.Itoa(asset.Sys.Version)
+	req.Header.Set("X-Contentful-Version", version)
+
+	return service.c.do(req, asset)
+}

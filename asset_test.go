@@ -205,3 +205,63 @@ func TestContentTypesServiceUnpublish(t *testing.T) {
 	err = cma.Assets.Unpublish(spaceID, asset)
 	assert.Nil(err)
 }
+
+func TestAssetsServiceArchive(t *testing.T) {
+	var err error
+	assert := assert.New(t)
+
+	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		assert.Equal(r.Method, "PUT")
+		assert.Equal(r.URL.Path, "/spaces/"+spaceID+"/assets/1x0xpXu4pSGS4OukSyWGUK/archived")
+
+		checkHeaders(r, assert)
+
+		w.WriteHeader(200)
+		fmt.Fprintln(w, readTestData("spaces-id1-assets-1x0xpXu4pSGS4OukSyWGUK.json"))
+	})
+
+	// test server
+	server := httptest.NewServer(handler)
+	defer server.Close()
+
+	// cma client
+	cma = NewCMA(CMAToken)
+	cma.BaseURL = server.URL
+
+	// test content type
+	asset, err := assetFromTestData("spaces-id1-assets-1x0xpXu4pSGS4OukSyWGUK.json")
+	assert.Nil(err)
+
+	err = cma.Assets.Archive(spaceID, asset)
+	assert.Nil(err)
+}
+
+func TestContentTypesServiceUnarchive(t *testing.T) {
+	var err error
+	assert := assert.New(t)
+
+	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		assert.Equal(r.Method, "DELETE")
+		assert.Equal(r.URL.Path, "/spaces/"+spaceID+"/assets/1x0xpXu4pSGS4OukSyWGUK/archived")
+
+		checkHeaders(r, assert)
+
+		w.WriteHeader(200)
+		fmt.Fprintln(w, readTestData("spaces-id1-assets-1x0xpXu4pSGS4OukSyWGUK.json"))
+	})
+
+	// test server
+	server := httptest.NewServer(handler)
+	defer server.Close()
+
+	// cma client
+	cma = NewCMA(CMAToken)
+	cma.BaseURL = server.URL
+
+	// test content type
+	asset, err := assetFromTestData("spaces-id1-assets-1x0xpXu4pSGS4OukSyWGUK.json")
+	assert.Nil(err)
+
+	err = cma.Assets.Unarchive(spaceID, asset)
+	assert.Nil(err)
+}
