@@ -164,6 +164,18 @@ func assetFromTestData(fileName string) (*Asset, error) {
 	return &asset, nil
 }
 
+func apiKeyFromTestData(fileName string) (*APIKey, error) {
+	content := readTestData(fileName)
+
+	var apiKey APIKey
+	err := json.NewDecoder(strings.NewReader(content)).Decode(&apiKey)
+	if err != nil {
+		return nil, err
+	}
+
+	return &apiKey, nil
+}
+
 func setup() {
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		fixture := strings.Replace(r.URL.Path, "/", "-", -1)
