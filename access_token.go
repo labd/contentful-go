@@ -64,3 +64,23 @@ func (service *AccessTokensService) Get(accessTokenID string) (*AccessToken, err
 
 	return &accessToken, err
 }
+
+// Create creates a new entry
+func (service *AccessTokensService) Create(accessToken *AccessToken) error {
+	bytesArray, err := json.Marshal(accessToken)
+
+	if err != nil {
+		return err
+	}
+
+	path := fmt.Sprint("/users/me/access_tokens")
+	method := "POST"
+	req, err := service.c.newRequest(method, path, nil, bytes.NewReader(bytesArray))
+
+	if err != nil {
+		return err
+	}
+
+	req.Header.Set("X-Contentful-Version", strconv.Itoa(accessToken.GetVersion()))
+	return service.c.do(req, accessToken)
+}
