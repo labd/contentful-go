@@ -189,3 +189,13 @@ func (col *Collection) ToContentTypeSnapshot() []*ContentTypeSnapshot {
 
 	return snapshot
 }
+
+// ToContentTypeSnapshot cast Items to Snapshot model for content types
+func (col *Collection) ToAccessToken() []*AccessToken {
+	var accessTokens []*AccessToken
+
+	byteArray, _ := json.Marshal(col.Items)
+	json.NewDecoder(bytes.NewReader(byteArray)).Decode(&accessTokens)
+
+	return accessTokens
+}

@@ -1,0 +1,36 @@
+{
+  "total": 2,
+  "limit": 25,
+  "skip": 0,
+  "sys": {
+    "type": "Array"
+  },
+  "items": [
+    {
+      "name": "Example Access Token",
+      "revokedAt": null,
+      "sys": {
+        "type": "PersonalAccessToken",
+        "id": "hioj6879UYGIfyt654tyfFHG",
+        "createdAt": "2020-03-11T14:43:32Z",
+        "updatedAt": "2020-03-11T14:43:32Z"
+      },
+      "scopes": [
+        "content_management_manage"
+      ]
+    },
+    {
+      "name": "Example Access Token Nr 2",
+      "revokedAt": null,
+      "sys": {
+        "type": "PersonalAccessToken",
+        "id": "890UYIyuio567YTUtuy5678",
+        "createdAt": "2020-03-13T12:54:57Z",
+        "updatedAt": "2020-03-13T12:54:57Z"
+      },
+      "scopes": [
+        "content_management_manage"
+      ]
+    }
+  ]
+}
