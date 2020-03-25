@@ -60,7 +60,7 @@ func (service *SnapshotsService) ListEntrySnapshots(spaceID, entryID string) *Co
 }
 
 // GetEntrySnapshot returns a single snapshot of an entry
-func (service *EntriesService) GetEntrySnapshot(spaceID, entryID, snapshotID string) (*EntrySnapshot, error) {
+func (service *SnapshotsService) GetEntrySnapshot(spaceID, entryID, snapshotID string) (*EntrySnapshot, error) {
 	path := fmt.Sprintf("/spaces/%s/environments/%s/entries/%s/snapshots/%s", spaceID, service.c.Environment, entryID, snapshotID)
 	query := url.Values{}
 	method := "GET"
@@ -95,7 +95,7 @@ func (service *SnapshotsService) ListContentTypeSnapshots(spaceID, contentTypeID
 }
 
 // GetContentTypeSnapshots returns a single snapshot of an entry
-func (service *EntriesService) GetContentTypeSnapshots(spaceID, contentTypeID, snapshotID string) (*ContentTypeSnapshot, error) {
+func (service *SnapshotsService) GetContentTypeSnapshots(spaceID, contentTypeID, snapshotID string) (*ContentTypeSnapshot, error) {
 	path := fmt.Sprintf("/spaces/%s/environments/%s/content_types/%s/snapshots/%s", spaceID, service.c.Environment, contentTypeID, snapshotID)
 	query := url.Values{}
 	method := "GET"
