@@ -1,0 +1,55 @@
+{
+  "snapshot": {
+    "name": "Blog Post",
+    "fields": [
+      {
+        "id": "title",
+        "name": "Title",
+        "required": true,
+        "localized": true,
+        "type": "Text"
+      },
+      {
+        "id": "body",
+        "name": "Body",
+        "required": true,
+        "localized": true,
+        "type": "Text"
+      }
+    ],
+    "sys": {
+      "firstPublishedAt": "2015-05-15T13:38:11.311Z",
+      "publishedCounter": 2,
+      "publishedAt": "2015-05-15T13:38:11.311Z",
+      "publishedBy": {
+        "sys": {
+          "type": "Link",
+          "linkType": "User",
+          "id": "4FLrUHftHW3v2BLi9fzfjU"
+        }
+      },
+      "publishedVersion": 9
+    }
+  },
+  "sys": {
+    "space": {
+      "sys": {
+        "type": "Link",
+        "linkType": "Space",
+        "id": "yadj1kx9rmg0"
+      }
+    },
+    "type": "Snapshot",
+    "id": "cat",
+    "createdBy": {
+      "sys": {
+        "type": "Link",
+        "linkType": "User",
+        "id": "4FLrUHftHW3v2BLi9fzfjU"
+      }
+    },
+    "createdAt": "2015-05-18T11:29:46.809Z",
+    "snapshotType": "publish",
+    "snapshotEntityType": "ContentType"
+  }
+}
