@@ -176,6 +176,18 @@ func apiKeyFromTestData(fileName string) (*APIKey, error) {
 	return &apiKey, nil
 }
 
+func accessTokenFromTestFile(fileName string) (*AccessToken, error) {
+	content := readTestData(fileName)
+
+	var accessToken AccessToken
+	err := json.NewDecoder(strings.NewReader(content)).Decode(&accessToken)
+	if err != nil {
+		return nil, err
+	}
+
+	return &accessToken, nil
+}
+
 func setup() {
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		fixture := strings.Replace(r.URL.Path, "/", "-", -1)
