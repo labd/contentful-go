@@ -200,6 +200,18 @@ func entryTaskFromTestFile(fileName string) (*EntryTask, error) {
 	return &entryTask, nil
 }
 
+func scheduledActionFromTestFile(fileName string) (*ScheduledAction, error) {
+	content := readTestData(fileName)
+
+	var scheduledAction ScheduledAction
+	err := json.NewDecoder(strings.NewReader(content)).Decode(&scheduledAction)
+	if err != nil {
+		return nil, err
+	}
+
+	return &scheduledAction, nil
+}
+
 func setup() {
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		fixture := strings.Replace(r.URL.Path, "/", "-", -1)

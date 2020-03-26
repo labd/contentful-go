@@ -13,7 +13,7 @@ type EnvironmentsService service
 // Environment model
 type Environment struct {
 	Sys  *Sys   `json:"sys"`
-	Name string `json:"name, omitempty"`
+	Name string `json:"name"`
 }
 
 // GetVersion returns entity version
