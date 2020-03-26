@@ -108,21 +108,21 @@ func TestEntriesServiceCreate(t *testing.T) {
 
 func TestAccessTokensService_Revoke(t *testing.T) {
 	var err error
-	assert := assert.New(t)
+	assertions := assert.New(t)
 
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		assert.Equal(r.Method, "PUT")
-		assert.Equal(r.RequestURI, "/users/me/access_tokens/hioj6879UYGIfyt654tyfFHG/revoked")
+		assertions.Equal(r.Method, "PUT")
+		assertions.Equal(r.RequestURI, "/users/me/access_tokens/hioj6879UYGIfyt654tyfFHG/revoked")
 
-		checkHeaders(r, assert)
+		checkHeaders(r, assertions)
 
 		var payload map[string]interface{}
 		err := json.NewDecoder(r.Body).Decode(&payload)
-		assert.Nil(err)
-		assert.Equal("2020-03-25T14:40:24Z", payload["revokedAt"])
+		assertions.Nil(err)
+		assertions.Equal("2020-03-25T14:40:24Z", payload["revokedAt"])
 
 		w.WriteHeader(200)
-		fmt.Fprintln(w, string(readTestData("access_token_updated.json")))
+		_, _ = fmt.Fprintln(w, string(readTestData("access_token_updated.json")))
 	})
 
 	// test server
@@ -134,10 +134,10 @@ func TestAccessTokensService_Revoke(t *testing.T) {
 	cma.BaseURL = server.URL
 
 	accessToken, err := accessTokenFromTestFile("access_token_updated.json")
-	assert.Nil(err)
+	assertions.Nil(err)
 
 	accessToken.RevokedAt = "2020-03-25T14:40:24Z"
 
 	err = cma.AccessTokens.Revoke(accessToken)
-	assert.Nil(err)
+	assertions.Nil(err)
 }

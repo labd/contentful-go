@@ -11,33 +11,33 @@ import (
 
 func TestFieldValidationLink(t *testing.T) {
 	var err error
-	assert := assert.New(t)
+	assertions := assert.New(t)
 
 	validation := &FieldValidationLink{
 		LinkContentType: []string{"test", "test2"},
 	}
 
 	data, err := json.Marshal(validation)
-	assert.Nil(err)
-	assert.Equal("{\"linkContentType\":[\"test\",\"test2\"]}", string(data))
+	assertions.Nil(err)
+	assertions.Equal("{\"linkContentType\":[\"test\",\"test2\"]}", string(data))
 }
 
 func TestFieldValidationUnique(t *testing.T) {
 	var err error
-	assert := assert.New(t)
+	assertions := assert.New(t)
 
 	validation := &FieldValidationUnique{
 		Unique: false,
 	}
 
 	data, err := json.Marshal(validation)
-	assert.Nil(err)
-	assert.Equal("{\"unique\":false}", string(data))
+	assertions.Nil(err)
+	assertions.Equal("{\"unique\":false}", string(data))
 }
 
 func TestFieldValidationPredefinedValues(t *testing.T) {
 	var err error
-	assert := assert.New(t)
+	assertions := assert.New(t)
 
 	validation := &FieldValidationPredefinedValues{
 		In:           []interface{}{5, 10, "string", 6.4},
@@ -45,13 +45,13 @@ func TestFieldValidationPredefinedValues(t *testing.T) {
 	}
 
 	data, err := json.Marshal(validation)
-	assert.Nil(err)
-	assert.Equal("{\"in\":[5,10,\"string\",6.4],\"message\":\"error message\"}", string(data))
+	assertions.Nil(err)
+	assertions.Equal("{\"in\":[5,10,\"string\",6.4],\"message\":\"error message\"}", string(data))
 }
 
 func TestFieldValidationRange(t *testing.T) {
 	var err error
-	assert := assert.New(t)
+	assertions := assert.New(t)
 
 	// between
 	validation := &FieldValidationRange{
@@ -62,15 +62,15 @@ func TestFieldValidationRange(t *testing.T) {
 		ErrorMessage: "error message",
 	}
 	data, err := json.Marshal(validation)
-	assert.Nil(err)
-	assert.Equal("{\"range\":{\"min\":60,\"max\":100},\"message\":\"error message\"}", string(data))
+	assertions.Nil(err)
+	assertions.Equal("{\"range\":{\"min\":60,\"max\":100},\"message\":\"error message\"}", string(data))
 
 	var validationCheck FieldValidationRange
 	err = json.NewDecoder(bytes.NewReader(data)).Decode(&validationCheck)
-	assert.Nil(err)
-	assert.Equal(float64(60), validationCheck.Range.Min)
-	assert.Equal(float64(100), validationCheck.Range.Max)
-	assert.Equal("error message", validationCheck.ErrorMessage)
+	assertions.Nil(err)
+	assertions.Equal(float64(60), validationCheck.Range.Min)
+	assertions.Equal(float64(100), validationCheck.Range.Max)
+	assertions.Equal("error message", validationCheck.ErrorMessage)
 
 	// greater than equal to
 	validation = &FieldValidationRange{
@@ -80,14 +80,14 @@ func TestFieldValidationRange(t *testing.T) {
 		ErrorMessage: "error message",
 	}
 	data, err = json.Marshal(validation)
-	assert.Nil(err)
-	assert.Equal("{\"range\":{\"min\":10},\"message\":\"error message\"}", string(data))
+	assertions.Nil(err)
+	assertions.Equal("{\"range\":{\"min\":10},\"message\":\"error message\"}", string(data))
 	validationCheck = FieldValidationRange{}
 	err = json.NewDecoder(bytes.NewReader(data)).Decode(&validationCheck)
-	assert.Nil(err)
-	assert.Equal(float64(10), validationCheck.Range.Min)
-	assert.Equal(float64(0), validationCheck.Range.Max)
-	assert.Equal("error message", validationCheck.ErrorMessage)
+	assertions.Nil(err)
+	assertions.Equal(float64(10), validationCheck.Range.Min)
+	assertions.Equal(float64(0), validationCheck.Range.Max)
+	assertions.Equal("error message", validationCheck.ErrorMessage)
 
 	// less than equal to
 	validation = &FieldValidationRange{
@@ -97,19 +97,19 @@ func TestFieldValidationRange(t *testing.T) {
 		ErrorMessage: "error message",
 	}
 	data, err = json.Marshal(validation)
-	assert.Nil(err)
-	assert.Equal("{\"range\":{\"max\":90},\"message\":\"error message\"}", string(data))
+	assertions.Nil(err)
+	assertions.Equal("{\"range\":{\"max\":90},\"message\":\"error message\"}", string(data))
 	validationCheck = FieldValidationRange{}
 	err = json.NewDecoder(bytes.NewReader(data)).Decode(&validationCheck)
-	assert.Nil(err)
-	assert.Equal(float64(90), validationCheck.Range.Max)
-	assert.Equal(float64(0), validationCheck.Range.Min)
-	assert.Equal("error message", validationCheck.ErrorMessage)
+	assertions.Nil(err)
+	assertions.Equal(float64(90), validationCheck.Range.Max)
+	assertions.Equal(float64(0), validationCheck.Range.Min)
+	assertions.Equal("error message", validationCheck.ErrorMessage)
 }
 
 func TestFieldValidationSize(t *testing.T) {
 	var err error
-	assert := assert.New(t)
+	assertions := assert.New(t)
 
 	// between
 	validation := &FieldValidationSize{
@@ -120,20 +120,20 @@ func TestFieldValidationSize(t *testing.T) {
 		ErrorMessage: "error message",
 	}
 	data, err := json.Marshal(validation)
-	assert.Nil(err)
-	assert.Equal("{\"size\":{\"min\":4,\"max\":6},\"message\":\"error message\"}", string(data))
+	assertions.Nil(err)
+	assertions.Equal("{\"size\":{\"min\":4,\"max\":6},\"message\":\"error message\"}", string(data))
 
 	var validationCheck FieldValidationSize
 	err = json.NewDecoder(bytes.NewReader(data)).Decode(&validationCheck)
-	assert.Nil(err)
-	assert.Equal(float64(4), validationCheck.Size.Min)
-	assert.Equal(float64(6), validationCheck.Size.Max)
-	assert.Equal("error message", validationCheck.ErrorMessage)
+	assertions.Nil(err)
+	assertions.Equal(float64(4), validationCheck.Size.Min)
+	assertions.Equal(float64(6), validationCheck.Size.Max)
+	assertions.Equal("error message", validationCheck.ErrorMessage)
 }
 
 func TestFieldValidationDate(t *testing.T) {
 	var err error
-	assert := assert.New(t)
+	assertions := assert.New(t)
 
 	layout := "2006-01-02T03:04:05"
 	min := time.Now()
@@ -150,13 +150,13 @@ func TestFieldValidationDate(t *testing.T) {
 		ErrorMessage: "error message",
 	}
 	data, err := json.Marshal(validation)
-	assert.Nil(err)
-	assert.Equal("{\"dateRange\":{\"min\":\""+minStr+"\",\"max\":\""+maxStr+"\"},\"message\":\"error message\"}", string(data))
+	assertions.Nil(err)
+	assertions.Equal("{\"dateRange\":{\"min\":\""+minStr+"\",\"max\":\""+maxStr+"\"},\"message\":\"error message\"}", string(data))
 
 	var validationCheck FieldValidationDate
 	err = json.NewDecoder(bytes.NewReader(data)).Decode(&validationCheck)
-	assert.Nil(err)
-	assert.Equal(minStr, validationCheck.Range.Min.Format(layout))
-	assert.Equal(maxStr, validationCheck.Range.Max.Format(layout))
-	assert.Equal("error message", validationCheck.ErrorMessage)
+	assertions.Nil(err)
+	assertions.Equal(minStr, validationCheck.Range.Min.Format(layout))
+	assertions.Equal(maxStr, validationCheck.Range.Max.Format(layout))
+	assertions.Equal("error message", validationCheck.ErrorMessage)
 }

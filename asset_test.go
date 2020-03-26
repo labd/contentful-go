@@ -11,16 +11,16 @@ import (
 
 func TestAssetsServiceList(t *testing.T) {
 	var err error
-	assert := assert.New(t)
+	assertions := assert.New(t)
 
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		assert.Equal(r.Method, "GET")
-		assert.Equal(r.URL.Path, "/spaces/"+spaceID+"/assets")
+		assertions.Equal(r.Method, "GET")
+		assertions.Equal(r.URL.Path, "/spaces/"+spaceID+"/assets")
 
-		checkHeaders(r, assert)
+		checkHeaders(r, assertions)
 
 		w.WriteHeader(200)
-		fmt.Fprintln(w, readTestData("spaces-id1-assets.json"))
+		_, _ = fmt.Fprintln(w, readTestData("spaces-id1-assets.json"))
 	})
 
 	// test server
@@ -32,21 +32,21 @@ func TestAssetsServiceList(t *testing.T) {
 	cma.BaseURL = server.URL
 
 	_, err = cma.Assets.List(spaceID).Next()
-	assert.Nil(err)
+	assertions.Nil(err)
 }
 
 func TestAssetsServiceListPublished(t *testing.T) {
 	var err error
-	assert := assert.New(t)
+	assertions := assert.New(t)
 
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		assert.Equal(r.Method, "GET")
-		assert.Equal(r.URL.Path, "/spaces/"+spaceID+"/public/assets")
+		assertions.Equal(r.Method, "GET")
+		assertions.Equal(r.URL.Path, "/spaces/"+spaceID+"/public/assets")
 
-		checkHeaders(r, assert)
+		checkHeaders(r, assertions)
 
 		w.WriteHeader(200)
-		fmt.Fprintln(w, readTestData("spaces-id1-assets.json"))
+		_, _ = fmt.Fprintln(w, readTestData("spaces-id1-assets.json"))
 	})
 
 	// test server
@@ -58,21 +58,21 @@ func TestAssetsServiceListPublished(t *testing.T) {
 	cma.BaseURL = server.URL
 
 	_, err = cma.Assets.ListPublished(spaceID).Next()
-	assert.Nil(err)
+	assertions.Nil(err)
 }
 
 func TestAssetsServiceGet(t *testing.T) {
 	var err error
-	assert := assert.New(t)
+	assertions := assert.New(t)
 
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		assert.Equal(r.Method, "GET")
-		assert.Equal(r.URL.Path, "/spaces/"+spaceID+"/assets/1x0xpXu4pSGS4OukSyWGUK")
+		assertions.Equal(r.Method, "GET")
+		assertions.Equal(r.URL.Path, "/spaces/"+spaceID+"/assets/1x0xpXu4pSGS4OukSyWGUK")
 
-		checkHeaders(r, assert)
+		checkHeaders(r, assertions)
 
 		w.WriteHeader(200)
-		fmt.Fprintln(w, readTestData("spaces-id1-assets-1x0xpXu4pSGS4OukSyWGUK.json"))
+		_, _ = fmt.Fprintln(w, readTestData("spaces-id1-assets-1x0xpXu4pSGS4OukSyWGUK.json"))
 	})
 
 	// test server
@@ -84,17 +84,17 @@ func TestAssetsServiceGet(t *testing.T) {
 	cma.BaseURL = server.URL
 
 	_, err = cma.Assets.Get(spaceID, "1x0xpXu4pSGS4OukSyWGUK")
-	assert.Nil(err)
+	assertions.Nil(err)
 }
 
 func TestAssetsServiceDelete(t *testing.T) {
 	var err error
-	assert := assert.New(t)
+	assertions := assert.New(t)
 
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		assert.Equal(r.Method, "DELETE")
-		assert.Equal(r.RequestURI, "/spaces/"+spaceID+"/assets/1x0xpXu4pSGS4OukSyWGUK")
-		checkHeaders(r, assert)
+		assertions.Equal(r.Method, "DELETE")
+		assertions.Equal(r.RequestURI, "/spaces/"+spaceID+"/assets/1x0xpXu4pSGS4OukSyWGUK")
+		checkHeaders(r, assertions)
 
 		w.WriteHeader(200)
 	})
@@ -109,25 +109,25 @@ func TestAssetsServiceDelete(t *testing.T) {
 
 	// test locale
 	asset, err := assetFromTestData("spaces-id1-assets-1x0xpXu4pSGS4OukSyWGUK.json")
-	assert.Nil(err)
+	assertions.Nil(err)
 
 	// delete locale
 	err = cma.Assets.Delete(spaceID, asset)
-	assert.Nil(err)
+	assertions.Nil(err)
 }
 
 func TestAssetsServiceProcess(t *testing.T) {
 	var err error
-	assert := assert.New(t)
+	assertions := assert.New(t)
 
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		assert.Equal(r.Method, "PUT")
-		assert.Equal(r.URL.Path, "/spaces/"+spaceID+"/assets/1x0xpXu4pSGS4OukSyWGUK/files//process")
+		assertions.Equal(r.Method, "PUT")
+		assertions.Equal(r.URL.Path, "/spaces/"+spaceID+"/assets/1x0xpXu4pSGS4OukSyWGUK/files//process")
 
-		checkHeaders(r, assert)
+		checkHeaders(r, assertions)
 
 		w.WriteHeader(200)
-		fmt.Fprintln(w, readTestData("spaces-id1-assets-1x0xpXu4pSGS4OukSyWGUK.json"))
+		_, _ = fmt.Fprintln(w, readTestData("spaces-id1-assets-1x0xpXu4pSGS4OukSyWGUK.json"))
 	})
 
 	// test server
@@ -140,24 +140,24 @@ func TestAssetsServiceProcess(t *testing.T) {
 
 	// test content type
 	asset, err := assetFromTestData("spaces-id1-assets-1x0xpXu4pSGS4OukSyWGUK.json")
-	assert.Nil(err)
+	assertions.Nil(err)
 
 	err = cma.Assets.Process(spaceID, asset)
-	assert.Nil(err)
+	assertions.Nil(err)
 }
 
 func TestAssetsServicePublish(t *testing.T) {
 	var err error
-	assert := assert.New(t)
+	assertions := assert.New(t)
 
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		assert.Equal(r.Method, "PUT")
-		assert.Equal(r.URL.Path, "/spaces/"+spaceID+"/assets/1x0xpXu4pSGS4OukSyWGUK/published")
+		assertions.Equal(r.Method, "PUT")
+		assertions.Equal(r.URL.Path, "/spaces/"+spaceID+"/assets/1x0xpXu4pSGS4OukSyWGUK/published")
 
-		checkHeaders(r, assert)
+		checkHeaders(r, assertions)
 
 		w.WriteHeader(200)
-		fmt.Fprintln(w, readTestData("spaces-id1-assets-1x0xpXu4pSGS4OukSyWGUK.json"))
+		_, _ = fmt.Fprintln(w, readTestData("spaces-id1-assets-1x0xpXu4pSGS4OukSyWGUK.json"))
 	})
 
 	// test server
@@ -170,24 +170,24 @@ func TestAssetsServicePublish(t *testing.T) {
 
 	// test content type
 	asset, err := assetFromTestData("spaces-id1-assets-1x0xpXu4pSGS4OukSyWGUK.json")
-	assert.Nil(err)
+	assertions.Nil(err)
 
 	err = cma.Assets.Publish(spaceID, asset)
-	assert.Nil(err)
+	assertions.Nil(err)
 }
 
 func TestContentTypesServiceUnpublish(t *testing.T) {
 	var err error
-	assert := assert.New(t)
+	assertions := assert.New(t)
 
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		assert.Equal(r.Method, "DELETE")
-		assert.Equal(r.URL.Path, "/spaces/"+spaceID+"/assets/1x0xpXu4pSGS4OukSyWGUK/published")
+		assertions.Equal(r.Method, "DELETE")
+		assertions.Equal(r.URL.Path, "/spaces/"+spaceID+"/assets/1x0xpXu4pSGS4OukSyWGUK/published")
 
-		checkHeaders(r, assert)
+		checkHeaders(r, assertions)
 
 		w.WriteHeader(200)
-		fmt.Fprintln(w, readTestData("spaces-id1-assets-1x0xpXu4pSGS4OukSyWGUK.json"))
+		_, _ = fmt.Fprintln(w, readTestData("spaces-id1-assets-1x0xpXu4pSGS4OukSyWGUK.json"))
 	})
 
 	// test server
@@ -200,24 +200,24 @@ func TestContentTypesServiceUnpublish(t *testing.T) {
 
 	// test content type
 	asset, err := assetFromTestData("spaces-id1-assets-1x0xpXu4pSGS4OukSyWGUK.json")
-	assert.Nil(err)
+	assertions.Nil(err)
 
 	err = cma.Assets.Unpublish(spaceID, asset)
-	assert.Nil(err)
+	assertions.Nil(err)
 }
 
 func TestAssetsServiceArchive(t *testing.T) {
 	var err error
-	assert := assert.New(t)
+	assertions := assert.New(t)
 
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		assert.Equal(r.Method, "PUT")
-		assert.Equal(r.URL.Path, "/spaces/"+spaceID+"/assets/1x0xpXu4pSGS4OukSyWGUK/archived")
+		assertions.Equal(r.Method, "PUT")
+		assertions.Equal(r.URL.Path, "/spaces/"+spaceID+"/assets/1x0xpXu4pSGS4OukSyWGUK/archived")
 
-		checkHeaders(r, assert)
+		checkHeaders(r, assertions)
 
 		w.WriteHeader(200)
-		fmt.Fprintln(w, readTestData("spaces-id1-assets-1x0xpXu4pSGS4OukSyWGUK.json"))
+		_, _ = fmt.Fprintln(w, readTestData("spaces-id1-assets-1x0xpXu4pSGS4OukSyWGUK.json"))
 	})
 
 	// test server
@@ -230,24 +230,24 @@ func TestAssetsServiceArchive(t *testing.T) {
 
 	// test content type
 	asset, err := assetFromTestData("spaces-id1-assets-1x0xpXu4pSGS4OukSyWGUK.json")
-	assert.Nil(err)
+	assertions.Nil(err)
 
 	err = cma.Assets.Archive(spaceID, asset)
-	assert.Nil(err)
+	assertions.Nil(err)
 }
 
 func TestContentTypesServiceUnarchive(t *testing.T) {
 	var err error
-	assert := assert.New(t)
+	assertions := assert.New(t)
 
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		assert.Equal(r.Method, "DELETE")
-		assert.Equal(r.URL.Path, "/spaces/"+spaceID+"/assets/1x0xpXu4pSGS4OukSyWGUK/archived")
+		assertions.Equal(r.Method, "DELETE")
+		assertions.Equal(r.URL.Path, "/spaces/"+spaceID+"/assets/1x0xpXu4pSGS4OukSyWGUK/archived")
 
-		checkHeaders(r, assert)
+		checkHeaders(r, assertions)
 
 		w.WriteHeader(200)
-		fmt.Fprintln(w, readTestData("spaces-id1-assets-1x0xpXu4pSGS4OukSyWGUK.json"))
+		_, _ = fmt.Fprintln(w, readTestData("spaces-id1-assets-1x0xpXu4pSGS4OukSyWGUK.json"))
 	})
 
 	// test server
@@ -260,8 +260,8 @@ func TestContentTypesServiceUnarchive(t *testing.T) {
 
 	// test content type
 	asset, err := assetFromTestData("spaces-id1-assets-1x0xpXu4pSGS4OukSyWGUK.json")
-	assert.Nil(err)
+	assertions.Nil(err)
 
 	err = cma.Assets.Unarchive(spaceID, asset)
-	assert.Nil(err)
+	assertions.Nil(err)
 }

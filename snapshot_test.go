@@ -11,16 +11,16 @@ import (
 
 func TestSnapshotsServiceListEntrySnapshots(t *testing.T) {
 	var err error
-	assert := assert.New(t)
+	assertions := assert.New(t)
 
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		assert.Equal(r.Method, "GET")
-		assert.Equal(r.URL.Path, "/spaces/"+spaceID+"/environments/master/entries/hfM9RCJIk0wIm06WkEOQY/snapshots")
+		assertions.Equal(r.Method, "GET")
+		assertions.Equal(r.URL.Path, "/spaces/"+spaceID+"/environments/master/entries/hfM9RCJIk0wIm06WkEOQY/snapshots")
 
-		checkHeaders(r, assert)
+		checkHeaders(r, assertions)
 
 		w.WriteHeader(200)
-		fmt.Fprintln(w, readTestData("snapshot-entry.json"))
+		_, _ = fmt.Fprintln(w, readTestData("snapshot-entry.json"))
 	})
 
 	// test server
@@ -32,21 +32,21 @@ func TestSnapshotsServiceListEntrySnapshots(t *testing.T) {
 	cma.BaseURL = server.URL
 
 	_, err = cma.Snapshots.ListEntrySnapshots(spaceID, "hfM9RCJIk0wIm06WkEOQY").Next()
-	assert.Nil(err)
+	assertions.Nil(err)
 }
 
 func TestEntriesServiceGetEntrySnapshot(t *testing.T) {
 	var err error
-	assert := assert.New(t)
+	assertions := assert.New(t)
 
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		assert.Equal(r.Method, "GET")
-		assert.Equal(r.URL.Path, "/spaces/"+spaceID+"/environments/master/entries/hfM9RCJIk0wIm06WkEOQY/snapshots/4FLrUHftHW3v2BLi9fzfjU")
+		assertions.Equal(r.Method, "GET")
+		assertions.Equal(r.URL.Path, "/spaces/"+spaceID+"/environments/master/entries/hfM9RCJIk0wIm06WkEOQY/snapshots/4FLrUHftHW3v2BLi9fzfjU")
 
-		checkHeaders(r, assert)
+		checkHeaders(r, assertions)
 
 		w.WriteHeader(200)
-		fmt.Fprintln(w, readTestData("snapshot-entry_1.json"))
+		_, _ = fmt.Fprintln(w, readTestData("snapshot-entry_1.json"))
 	})
 
 	// test server
@@ -58,21 +58,21 @@ func TestEntriesServiceGetEntrySnapshot(t *testing.T) {
 	cma.BaseURL = server.URL
 
 	_, err = cma.Snapshots.GetEntrySnapshot(spaceID, "hfM9RCJIk0wIm06WkEOQY", "4FLrUHftHW3v2BLi9fzfjU")
-	assert.Nil(err)
+	assertions.Nil(err)
 }
 
 func TestSnapshotsServiceListContentTypeSnapshots(t *testing.T) {
 	var err error
-	assert := assert.New(t)
+	assertions := assert.New(t)
 
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		assert.Equal(r.Method, "GET")
-		assert.Equal(r.URL.Path, "/spaces/"+spaceID+"/environments/master/content_types/hfM9RCJIk0wIm06WkEOQY/snapshots")
+		assertions.Equal(r.Method, "GET")
+		assertions.Equal(r.URL.Path, "/spaces/"+spaceID+"/environments/master/content_types/hfM9RCJIk0wIm06WkEOQY/snapshots")
 
-		checkHeaders(r, assert)
+		checkHeaders(r, assertions)
 
 		w.WriteHeader(200)
-		fmt.Fprintln(w, readTestData("snapshot-content_type.json"))
+		_, _ = fmt.Fprintln(w, readTestData("snapshot-content_type.json"))
 	})
 
 	// test server
@@ -84,21 +84,21 @@ func TestSnapshotsServiceListContentTypeSnapshots(t *testing.T) {
 	cma.BaseURL = server.URL
 
 	_, err = cma.Snapshots.ListContentTypeSnapshots(spaceID, "hfM9RCJIk0wIm06WkEOQY").Next()
-	assert.Nil(err)
+	assertions.Nil(err)
 }
 
 func TestEntriesServiceGetContentTypeSnapshot(t *testing.T) {
 	var err error
-	assert := assert.New(t)
+	assertions := assert.New(t)
 
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		assert.Equal(r.Method, "GET")
-		assert.Equal(r.URL.Path, "/spaces/"+spaceID+"/environments/master/content_types/hfM9RCJIk0wIm06WkEOQY/snapshots/4FLrUHftHW3v2BLi9fzfjU")
+		assertions.Equal(r.Method, "GET")
+		assertions.Equal(r.URL.Path, "/spaces/"+spaceID+"/environments/master/content_types/hfM9RCJIk0wIm06WkEOQY/snapshots/4FLrUHftHW3v2BLi9fzfjU")
 
-		checkHeaders(r, assert)
+		checkHeaders(r, assertions)
 
 		w.WriteHeader(200)
-		fmt.Fprintln(w, readTestData("snapshot-content_type_1.json"))
+		_, _ = fmt.Fprintln(w, readTestData("snapshot-content_type_1.json"))
 	})
 
 	// test server
@@ -110,5 +110,5 @@ func TestEntriesServiceGetContentTypeSnapshot(t *testing.T) {
 	cma.BaseURL = server.URL
 
 	_, err = cma.Snapshots.GetContentTypeSnapshots(spaceID, "hfM9RCJIk0wIm06WkEOQY", "4FLrUHftHW3v2BLi9fzfjU")
-	assert.Nil(err)
+	assertions.Nil(err)
 }

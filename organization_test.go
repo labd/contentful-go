@@ -11,16 +11,16 @@ import (
 
 func TestOrganizationsServiceList(t *testing.T) {
 	var err error
-	assert := assert.New(t)
+	assertions := assert.New(t)
 
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		assert.Equal(r.Method, "GET")
-		assert.Equal(r.URL.Path, "/organizations")
+		assertions.Equal(r.Method, "GET")
+		assertions.Equal(r.URL.Path, "/organizations")
 
-		checkHeaders(r, assert)
+		checkHeaders(r, assertions)
 
 		w.WriteHeader(200)
-		fmt.Fprintln(w, readTestData("organization.json"))
+		_, _ = fmt.Fprintln(w, readTestData("organization.json"))
 	})
 
 	// test server
@@ -32,5 +32,5 @@ func TestOrganizationsServiceList(t *testing.T) {
 	cma.BaseURL = server.URL
 
 	_, err = cma.Organizations.List().Next()
-	assert.Nil(err)
+	assertions.Nil(err)
 }

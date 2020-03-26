@@ -37,16 +37,16 @@ func TestAPIKeyService_List(t *testing.T) {
 
 func TestAPIKeyServiceGet(t *testing.T) {
 	var err error
-	assert := assert.New(t)
+	assertions := assert.New(t)
 
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		assert.Equal(r.Method, "GET")
-		assert.Equal(r.URL.Path, "/spaces/"+spaceID+"/api_keys/exampleapikey")
+		assertions.Equal(r.Method, "GET")
+		assertions.Equal(r.URL.Path, "/spaces/"+spaceID+"/api_keys/exampleapikey")
 
-		checkHeaders(r, assert)
+		checkHeaders(r, assertions)
 
 		w.WriteHeader(200)
-		fmt.Fprintln(w, readTestData("api_key_1.json"))
+		_, _ = fmt.Fprintln(w, readTestData("api_key_1.json"))
 	})
 
 	// test server
@@ -58,17 +58,17 @@ func TestAPIKeyServiceGet(t *testing.T) {
 	cma.BaseURL = server.URL
 
 	_, err = cma.APIKeys.Get(spaceID, "exampleapikey")
-	assert.Nil(err)
+	assertions.Nil(err)
 }
 
 func TestAPIKeyServiceDelete(t *testing.T) {
 	var err error
-	assert := assert.New(t)
+	assertions := assert.New(t)
 
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		assert.Equal(r.Method, "DELETE")
-		assert.Equal(r.RequestURI, "/spaces/"+spaceID+"/api_keys/exampleapikey")
-		checkHeaders(r, assert)
+		assertions.Equal(r.Method, "DELETE")
+		assertions.Equal(r.RequestURI, "/spaces/"+spaceID+"/api_keys/exampleapikey")
+		checkHeaders(r, assertions)
 
 		w.WriteHeader(200)
 	})
@@ -83,9 +83,9 @@ func TestAPIKeyServiceDelete(t *testing.T) {
 
 	// test locale
 	key, err := apiKeyFromTestData("api_key_1.json")
-	assert.Nil(err)
+	assertions.Nil(err)
 
 	// delete locale
 	err = cma.APIKeys.Delete(spaceID, key)
-	assert.Nil(err)
+	assertions.Nil(err)
 }

@@ -45,14 +45,14 @@ func ExampleContentTypesService_Upsert_create() {
 		DisplayField: "field1_id",
 		Description:  "content type description",
 		Fields: []*Field{
-			&Field{
+			{
 				ID:       "field1_id",
 				Name:     "field1",
 				Type:     "Symbol",
 				Required: false,
 				Disabled: false,
 			},
-			&Field{
+			{
 				ID:       "field2_id",
 				Name:     "field2",
 				Type:     "Symbol",
@@ -148,16 +148,16 @@ func ExampleContentTypesService_Delete_allDrafts() {
 
 func TestContentTypesServiceList(t *testing.T) {
 	var err error
-	assert := assert.New(t)
+	assertions := assert.New(t)
 
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		assert.Equal(r.Method, "GET")
-		assert.Equal(r.URL.Path, "/spaces/"+spaceID+"/content_types")
+		assertions.Equal(r.Method, "GET")
+		assertions.Equal(r.URL.Path, "/spaces/"+spaceID+"/content_types")
 
-		checkHeaders(r, assert)
+		checkHeaders(r, assertions)
 
 		w.WriteHeader(200)
-		fmt.Fprintln(w, readTestData("content_types.json"))
+		_, _ = fmt.Fprintln(w, readTestData("content_types.json"))
 	})
 
 	// test server
@@ -169,21 +169,21 @@ func TestContentTypesServiceList(t *testing.T) {
 	cma.BaseURL = server.URL
 
 	_, err = cma.ContentTypes.List(spaceID).Next()
-	assert.Nil(err)
+	assertions.Nil(err)
 }
 
 func TestContentTypesServiceListActivated(t *testing.T) {
 	var err error
-	assert := assert.New(t)
+	assertions := assert.New(t)
 
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		assert.Equal(r.Method, "GET")
-		assert.Equal(r.URL.Path, "/spaces/"+spaceID+"/public/content_types")
+		assertions.Equal(r.Method, "GET")
+		assertions.Equal(r.URL.Path, "/spaces/"+spaceID+"/public/content_types")
 
-		checkHeaders(r, assert)
+		checkHeaders(r, assertions)
 
 		w.WriteHeader(200)
-		fmt.Fprintln(w, readTestData("content_types.json"))
+		_, _ = fmt.Fprintln(w, readTestData("content_types.json"))
 	})
 
 	// test server
@@ -195,21 +195,21 @@ func TestContentTypesServiceListActivated(t *testing.T) {
 	cma.BaseURL = server.URL
 
 	_, err = cma.ContentTypes.ListActivated(spaceID).Next()
-	assert.Nil(err)
+	assertions.Nil(err)
 }
 
 func TestContentTypesServiceActivate(t *testing.T) {
 	var err error
-	assert := assert.New(t)
+	assertions := assert.New(t)
 
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		assert.Equal(r.Method, "PUT")
-		assert.Equal(r.URL.Path, "/spaces/"+spaceID+"/content_types/63Vgs0BFK0USe4i2mQUGK6/published")
+		assertions.Equal(r.Method, "PUT")
+		assertions.Equal(r.URL.Path, "/spaces/"+spaceID+"/content_types/63Vgs0BFK0USe4i2mQUGK6/published")
 
-		checkHeaders(r, assert)
+		checkHeaders(r, assertions)
 
 		w.WriteHeader(200)
-		fmt.Fprintln(w, readTestData("content_type.json"))
+		_, _ = fmt.Fprintln(w, readTestData("content_type.json"))
 	})
 
 	// test server
@@ -222,24 +222,24 @@ func TestContentTypesServiceActivate(t *testing.T) {
 
 	// test content type
 	ct, err := contentTypeFromTestData("content_type.json")
-	assert.Nil(err)
+	assertions.Nil(err)
 
 	err = cma.ContentTypes.Activate(spaceID, ct)
-	assert.Nil(err)
+	assertions.Nil(err)
 }
 
 func TestContentTypesServiceDeactivate(t *testing.T) {
 	var err error
-	assert := assert.New(t)
+	assertions := assert.New(t)
 
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		assert.Equal(r.Method, "DELETE")
-		assert.Equal(r.URL.Path, "/spaces/"+spaceID+"/content_types/63Vgs0BFK0USe4i2mQUGK6/published")
+		assertions.Equal(r.Method, "DELETE")
+		assertions.Equal(r.URL.Path, "/spaces/"+spaceID+"/content_types/63Vgs0BFK0USe4i2mQUGK6/published")
 
-		checkHeaders(r, assert)
+		checkHeaders(r, assertions)
 
 		w.WriteHeader(200)
-		fmt.Fprintln(w, readTestData("content_type.json"))
+		_, _ = fmt.Fprintln(w, readTestData("content_type.json"))
 	})
 
 	// test server
@@ -252,46 +252,46 @@ func TestContentTypesServiceDeactivate(t *testing.T) {
 
 	// test content type
 	ct, err := contentTypeFromTestData("content_type.json")
-	assert.Nil(err)
+	assertions.Nil(err)
 
 	err = cma.ContentTypes.Deactivate(spaceID, ct)
-	assert.Nil(err)
+	assertions.Nil(err)
 }
 
 func TestContentTypeSaveForCreate(t *testing.T) {
 	var err error
-	assert := assert.New(t)
+	assertions := assert.New(t)
 
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		assert.Equal(r.Method, "POST")
-		assert.Equal(r.RequestURI, "/spaces/"+spaceID+"/content_types")
-		checkHeaders(r, assert)
+		assertions.Equal(r.Method, "POST")
+		assertions.Equal(r.RequestURI, "/spaces/"+spaceID+"/content_types")
+		checkHeaders(r, assertions)
 
 		var payload map[string]interface{}
 		err := json.NewDecoder(r.Body).Decode(&payload)
-		assert.Nil(err)
-		assert.Equal("ct-name", payload["name"])
-		assert.Equal("ct-description", payload["description"])
+		assertions.Nil(err)
+		assertions.Equal("ct-name", payload["name"])
+		assertions.Equal("ct-description", payload["description"])
 
 		fields := payload["fields"].([]interface{})
-		assert.Equal(2, len(fields))
+		assertions.Equal(2, len(fields))
 
 		field1 := fields[0].(map[string]interface{})
 		field2 := fields[1].(map[string]interface{})
 
-		assert.Equal("field1", field1["id"].(string))
-		assert.Equal("field1-name", field1["name"].(string))
-		assert.Equal("Symbol", field1["type"].(string))
+		assertions.Equal("field1", field1["id"].(string))
+		assertions.Equal("field1-name", field1["name"].(string))
+		assertions.Equal("Symbol", field1["type"].(string))
 
-		assert.Equal("field2", field2["id"].(string))
-		assert.Equal("field2-name", field2["name"].(string))
-		assert.Equal("Symbol", field2["type"].(string))
-		assert.Equal(true, field2["disabled"].(bool))
+		assertions.Equal("field2", field2["id"].(string))
+		assertions.Equal("field2-name", field2["name"].(string))
+		assertions.Equal("Symbol", field2["type"].(string))
+		assertions.Equal(true, field2["disabled"].(bool))
 
-		assert.Equal(field1["id"].(string), payload["displayField"])
+		assertions.Equal(field1["id"].(string), payload["displayField"])
 
 		w.WriteHeader(201)
-		fmt.Fprintln(w, string(readTestData("content_type.json")))
+		_, _ = fmt.Fprintln(w, string(readTestData("content_type.json")))
 	})
 
 	// test server
@@ -324,51 +324,51 @@ func TestContentTypeSaveForCreate(t *testing.T) {
 	}
 
 	err = cma.ContentTypes.Upsert("id1", ct)
-	assert.Nil(err)
-	assert.Equal("63Vgs0BFK0USe4i2mQUGK6", ct.Sys.ID)
-	assert.Equal("ct-name", ct.Name)
-	assert.Equal("ct-description", ct.Description)
+	assertions.Nil(err)
+	assertions.Equal("63Vgs0BFK0USe4i2mQUGK6", ct.Sys.ID)
+	assertions.Equal("ct-name", ct.Name)
+	assertions.Equal("ct-description", ct.Description)
 }
 
 func TestContentTypeSaveForUpdate(t *testing.T) {
 	var err error
-	assert := assert.New(t)
+	assertions := assert.New(t)
 
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		assert.Equal(r.Method, "PUT")
-		assert.Equal(r.RequestURI, "/spaces/"+spaceID+"/content_types/63Vgs0BFK0USe4i2mQUGK6")
-		checkHeaders(r, assert)
+		assertions.Equal(r.Method, "PUT")
+		assertions.Equal(r.RequestURI, "/spaces/"+spaceID+"/content_types/63Vgs0BFK0USe4i2mQUGK6")
+		checkHeaders(r, assertions)
 
 		var payload map[string]interface{}
 		err := json.NewDecoder(r.Body).Decode(&payload)
-		assert.Nil(err)
-		assert.Equal("ct-name-updated", payload["name"])
-		assert.Equal("ct-description-updated", payload["description"])
+		assertions.Nil(err)
+		assertions.Equal("ct-name-updated", payload["name"])
+		assertions.Equal("ct-description-updated", payload["description"])
 
 		fields := payload["fields"].([]interface{})
-		assert.Equal(3, len(fields))
+		assertions.Equal(3, len(fields))
 
 		field1 := fields[0].(map[string]interface{})
 		field2 := fields[1].(map[string]interface{})
 		field3 := fields[2].(map[string]interface{})
 
-		assert.Equal("field1", field1["id"].(string))
-		assert.Equal("field1-name-updated", field1["name"].(string))
-		assert.Equal("String", field1["type"].(string))
+		assertions.Equal("field1", field1["id"].(string))
+		assertions.Equal("field1-name-updated", field1["name"].(string))
+		assertions.Equal("String", field1["type"].(string))
 
-		assert.Equal("field2", field2["id"].(string))
-		assert.Equal("field2-name-updated", field2["name"].(string))
-		assert.Equal("Integer", field2["type"].(string))
-		assert.Nil(field2["disabled"])
+		assertions.Equal("field2", field2["id"].(string))
+		assertions.Equal("field2-name-updated", field2["name"].(string))
+		assertions.Equal("Integer", field2["type"].(string))
+		assertions.Nil(field2["disabled"])
 
-		assert.Equal("field3", field3["id"].(string))
-		assert.Equal("field3-name", field3["name"].(string))
-		assert.Equal("Date", field3["type"].(string))
+		assertions.Equal("field3", field3["id"].(string))
+		assertions.Equal("field3-name", field3["name"].(string))
+		assertions.Equal("Date", field3["type"].(string))
 
-		assert.Equal(field3["id"].(string), payload["displayField"])
+		assertions.Equal(field3["id"].(string), payload["displayField"])
 
 		w.WriteHeader(200)
-		fmt.Fprintln(w, string(readTestData("content_type-updated.json")))
+		_, _ = fmt.Fprintln(w, string(readTestData("content_type-updated.json")))
 	})
 
 	// test server
@@ -381,7 +381,7 @@ func TestContentTypeSaveForUpdate(t *testing.T) {
 
 	// test content type
 	ct, err := contentTypeFromTestData("content_type.json")
-	assert.Nil(err)
+	assertions.Nil(err)
 
 	ct.Name = "ct-name-updated"
 	ct.Description = "ct-description-updated"
@@ -405,25 +405,25 @@ func TestContentTypeSaveForUpdate(t *testing.T) {
 	ct.Fields = append(ct.Fields, field3)
 	ct.DisplayField = ct.Fields[2].ID
 
-	cma.ContentTypes.Upsert("id1", ct)
-	assert.Nil(err)
-	assert.Equal("63Vgs0BFK0USe4i2mQUGK6", ct.Sys.ID)
-	assert.Equal("ct-name-updated", ct.Name)
-	assert.Equal("ct-description-updated", ct.Description)
-	assert.Equal(2, ct.Sys.Version)
+	_ = cma.ContentTypes.Upsert("id1", ct)
+	assertions.Nil(err)
+	assertions.Equal("63Vgs0BFK0USe4i2mQUGK6", ct.Sys.ID)
+	assertions.Equal("ct-name-updated", ct.Name)
+	assertions.Equal("ct-description-updated", ct.Description)
+	assertions.Equal(2, ct.Sys.Version)
 }
 
 func TestContentTypeCreateWithoutID(t *testing.T) {
 	var err error
-	assert := assert.New(t)
+	assertions := assert.New(t)
 
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		assert.Equal(r.Method, "POST")
-		assert.Equal(r.RequestURI, "/spaces/id1/content_types")
-		checkHeaders(r, assert)
+		assertions.Equal(r.Method, "POST")
+		assertions.Equal(r.RequestURI, "/spaces/id1/content_types")
+		checkHeaders(r, assertions)
 
 		w.WriteHeader(200)
-		fmt.Fprintln(w, string(readTestData("content_type-updated.json")))
+		_, _ = fmt.Fprintln(w, string(readTestData("content_type-updated.json")))
 	})
 
 	// test server
@@ -440,21 +440,21 @@ func TestContentTypeCreateWithoutID(t *testing.T) {
 		Name: "MyContentType",
 	}
 
-	cma.ContentTypes.Upsert("id1", ct)
-	assert.Nil(err)
+	_ = cma.ContentTypes.Upsert("id1", ct)
+	assertions.Nil(err)
 }
 
 func TestContentTypeCreateWithID(t *testing.T) {
 	var err error
-	assert := assert.New(t)
+	assertions := assert.New(t)
 
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		assert.Equal(r.Method, "PUT")
-		assert.Equal(r.RequestURI, "/spaces/id1/content_types/mycontenttype")
-		checkHeaders(r, assert)
+		assertions.Equal(r.Method, "PUT")
+		assertions.Equal(r.RequestURI, "/spaces/id1/content_types/mycontenttype")
+		checkHeaders(r, assertions)
 
 		w.WriteHeader(200)
-		fmt.Fprintln(w, string(readTestData("content_type-updated.json")))
+		_, _ = fmt.Fprintln(w, string(readTestData("content_type-updated.json")))
 	})
 
 	// test server
@@ -473,18 +473,18 @@ func TestContentTypeCreateWithID(t *testing.T) {
 		Name: "MyContentType",
 	}
 
-	cma.ContentTypes.Upsert("id1", ct)
-	assert.Nil(err)
+	_ = cma.ContentTypes.Upsert("id1", ct)
+	assertions.Nil(err)
 }
 
 func TestContentTypeDelete(t *testing.T) {
 	var err error
-	assert := assert.New(t)
+	assertions := assert.New(t)
 
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		assert.Equal(r.Method, "DELETE")
-		assert.Equal(r.RequestURI, "/spaces/"+spaceID+"/content_types/63Vgs0BFK0USe4i2mQUGK6")
-		checkHeaders(r, assert)
+		assertions.Equal(r.Method, "DELETE")
+		assertions.Equal(r.RequestURI, "/spaces/"+spaceID+"/content_types/63Vgs0BFK0USe4i2mQUGK6")
+		checkHeaders(r, assertions)
 
 		w.WriteHeader(200)
 	})
@@ -499,40 +499,40 @@ func TestContentTypeDelete(t *testing.T) {
 
 	// test content type
 	ct, err := contentTypeFromTestData("content_type.json")
-	assert.Nil(err)
+	assertions.Nil(err)
 
 	// delete content type
 	err = cma.ContentTypes.Delete("id1", ct)
-	assert.Nil(err)
+	assertions.Nil(err)
 }
 
 func TestContentTypeFieldRef(t *testing.T) {
 	var err error
-	assert := assert.New(t)
+	assertions := assert.New(t)
 
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		assert.Equal(r.Method, "POST")
-		assert.Equal(r.RequestURI, "/spaces/"+spaceID+"/content_types")
-		checkHeaders(r, assert)
+		assertions.Equal(r.Method, "POST")
+		assertions.Equal(r.RequestURI, "/spaces/"+spaceID+"/content_types")
+		checkHeaders(r, assertions)
 
 		var payload map[string]interface{}
 		err := json.NewDecoder(r.Body).Decode(&payload)
-		assert.Nil(err)
+		assertions.Nil(err)
 
 		fields := payload["fields"].([]interface{})
-		assert.Equal(1, len(fields))
+		assertions.Equal(1, len(fields))
 
 		field1 := fields[0].(map[string]interface{})
-		assert.Equal("Link", field1["type"].(string))
+		assertions.Equal("Link", field1["type"].(string))
 		validations := field1["validations"].([]interface{})
-		assert.Equal(1, len(validations))
+		assertions.Equal(1, len(validations))
 		validation := validations[0].(map[string]interface{})
 		linkValidationValue := validation["linkContentType"].([]interface{})
-		assert.Equal(1, len(linkValidationValue))
-		assert.Equal("63Vgs0BFK0USe4i2mQUGK6", linkValidationValue[0].(string))
+		assertions.Equal(1, len(linkValidationValue))
+		assertions.Equal("63Vgs0BFK0USe4i2mQUGK6", linkValidationValue[0].(string))
 
 		w.WriteHeader(201)
-		fmt.Fprintln(w, string(readTestData("content_type.json")))
+		_, _ = fmt.Fprintln(w, string(readTestData("content_type.json")))
 	})
 
 	// test server
@@ -545,7 +545,7 @@ func TestContentTypeFieldRef(t *testing.T) {
 
 	// test content type
 	linkCt, err := contentTypeFromTestData("content_type.json")
-	assert.Nil(err)
+	assertions.Nil(err)
 
 	field1 := &Field{
 		ID:   "field1",
@@ -566,37 +566,37 @@ func TestContentTypeFieldRef(t *testing.T) {
 	}
 
 	err = cma.ContentTypes.Upsert("id1", ct)
-	assert.Nil(err)
+	assertions.Nil(err)
 }
 
 func TestContentTypeFieldArray(t *testing.T) {
 	var err error
-	assert := assert.New(t)
+	assertions := assert.New(t)
 
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		assert.Equal(r.Method, "POST")
-		assert.Equal(r.RequestURI, "/spaces/"+spaceID+"/content_types")
-		checkHeaders(r, assert)
+		assertions.Equal(r.Method, "POST")
+		assertions.Equal(r.RequestURI, "/spaces/"+spaceID+"/content_types")
+		checkHeaders(r, assertions)
 
 		var payload map[string]interface{}
 		err := json.NewDecoder(r.Body).Decode(&payload)
-		assert.Nil(err)
+		assertions.Nil(err)
 
 		fields := payload["fields"].([]interface{})
-		assert.Equal(1, len(fields))
+		assertions.Equal(1, len(fields))
 
 		field1 := fields[0].(map[string]interface{})
-		assert.Equal("Array", field1["type"].(string))
+		assertions.Equal("Array", field1["type"].(string))
 
 		arrayItemSchema := field1["items"].(map[string]interface{})
-		assert.Equal("Text", arrayItemSchema["type"].(string))
+		assertions.Equal("Text", arrayItemSchema["type"].(string))
 
 		arrayItemSchemaValidations := arrayItemSchema["validations"].([]interface{})
 		validation1 := arrayItemSchemaValidations[0].(map[string]interface{})
-		assert.Equal(true, validation1["unique"].(bool))
+		assertions.Equal(true, validation1["unique"].(bool))
 
 		w.WriteHeader(201)
-		fmt.Fprintln(w, string(readTestData("content_type.json")))
+		_, _ = fmt.Fprintln(w, string(readTestData("content_type.json")))
 	})
 
 	// test server
@@ -629,53 +629,53 @@ func TestContentTypeFieldArray(t *testing.T) {
 	}
 
 	err = cma.ContentTypes.Upsert("id1", ct)
-	assert.Nil(err)
+	assertions.Nil(err)
 }
 
 func TestContentTypeFieldValidationRangeUniquePredefinedValues(t *testing.T) {
 	var err error
-	assert := assert.New(t)
+	assertions := assert.New(t)
 
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		assert.Equal(r.Method, "POST")
-		assert.Equal(r.RequestURI, "/spaces/"+spaceID+"/content_types")
-		checkHeaders(r, assert)
+		assertions.Equal(r.Method, "POST")
+		assertions.Equal(r.RequestURI, "/spaces/"+spaceID+"/content_types")
+		checkHeaders(r, assertions)
 
 		var payload map[string]interface{}
 		err := json.NewDecoder(r.Body).Decode(&payload)
-		assert.Nil(err)
+		assertions.Nil(err)
 
 		fields := payload["fields"].([]interface{})
-		assert.Equal(1, len(fields))
+		assertions.Equal(1, len(fields))
 
 		field1 := fields[0].(map[string]interface{})
-		assert.Equal("Integer", field1["type"].(string))
+		assertions.Equal("Integer", field1["type"].(string))
 
 		validations := field1["validations"].([]interface{})
 
 		// unique validation
 		validationUnique := validations[0].(map[string]interface{})
-		assert.Equal(false, validationUnique["unique"].(bool))
+		assertions.Equal(false, validationUnique["unique"].(bool))
 
 		// range validation
 		validationRange := validations[1].(map[string]interface{})
 		rangeValues := validationRange["range"].(map[string]interface{})
 		errorMessage := validationRange["message"].(string)
-		assert.Equal("error message", errorMessage)
-		assert.Equal(float64(20), rangeValues["min"].(float64))
-		assert.Equal(float64(30), rangeValues["max"].(float64))
+		assertions.Equal("error message", errorMessage)
+		assertions.Equal(float64(20), rangeValues["min"].(float64))
+		assertions.Equal(float64(30), rangeValues["max"].(float64))
 
 		// predefined validation
 		validationPredefinedValues := validations[2].(map[string]interface{})
 		predefinedValues := validationPredefinedValues["in"].([]interface{})
-		assert.Equal(3, len(predefinedValues))
-		assert.Equal("error message 2", validationPredefinedValues["message"].(string))
-		assert.Equal(float64(20), predefinedValues[0].(float64))
-		assert.Equal(float64(21), predefinedValues[1].(float64))
-		assert.Equal(float64(22), predefinedValues[2].(float64))
+		assertions.Equal(3, len(predefinedValues))
+		assertions.Equal("error message 2", validationPredefinedValues["message"].(string))
+		assertions.Equal(float64(20), predefinedValues[0].(float64))
+		assertions.Equal(float64(21), predefinedValues[1].(float64))
+		assertions.Equal(float64(22), predefinedValues[2].(float64))
 
 		w.WriteHeader(201)
-		fmt.Fprintln(w, string(readTestData("content_type.json")))
+		_, _ = fmt.Fprintln(w, string(readTestData("content_type.json")))
 	})
 
 	// test server
@@ -716,40 +716,40 @@ func TestContentTypeFieldValidationRangeUniquePredefinedValues(t *testing.T) {
 	}
 
 	err = cma.ContentTypes.Upsert("id1", ct)
-	assert.Nil(err)
+	assertions.Nil(err)
 }
 
 func TestContentTypeFieldTypeMedia(t *testing.T) {
 	var err error
-	assert := assert.New(t)
+	assertions := assert.New(t)
 
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		assert.Equal(r.Method, "POST")
-		assert.Equal(r.RequestURI, "/spaces/"+spaceID+"/content_types")
-		checkHeaders(r, assert)
+		assertions.Equal(r.Method, "POST")
+		assertions.Equal(r.RequestURI, "/spaces/"+spaceID+"/content_types")
+		checkHeaders(r, assertions)
 
 		var payload map[string]interface{}
 		err := json.NewDecoder(r.Body).Decode(&payload)
-		assert.Nil(err)
+		assertions.Nil(err)
 
 		fields := payload["fields"].([]interface{})
-		assert.Equal(1, len(fields))
+		assertions.Equal(1, len(fields))
 
 		field1 := fields[0].(map[string]interface{})
-		assert.Equal("Link", field1["type"].(string))
-		assert.Equal("Asset", field1["linkType"].(string))
+		assertions.Equal("Link", field1["type"].(string))
+		assertions.Equal("Asset", field1["linkType"].(string))
 
 		validations := field1["validations"].([]interface{})
 
 		// mime type validation
 		validationMimeType := validations[0].(map[string]interface{})
 		linkMimetypeGroup := validationMimeType["linkMimetypeGroup"].([]interface{})
-		assert.Equal(12, len(linkMimetypeGroup))
+		assertions.Equal(12, len(linkMimetypeGroup))
 		mimetypes := []string{}
 		for _, mimetype := range linkMimetypeGroup {
 			mimetypes = append(mimetypes, mimetype.(string))
 		}
-		assert.Equal(mimetypes, []string{
+		assertions.Equal(mimetypes, []string{
 			MimeTypeAttachment,
 			MimeTypePlainText,
 			MimeTypeImage,
@@ -774,25 +774,25 @@ func TestContentTypeFieldTypeMedia(t *testing.T) {
 		heightMax := int(heightData["max"].(float64))
 
 		_, ok := widthData["max"].(float64)
-		assert.False(ok)
+		assertions.False(ok)
 
 		_, ok = heightData["min"].(float64)
-		assert.False(ok)
+		assertions.False(ok)
 
-		assert.Equal("custom error message", errorMessage)
-		assert.Equal(100, widthMin)
-		assert.Equal(300, heightMax)
+		assertions.Equal("custom error message", errorMessage)
+		assertions.Equal(100, widthMin)
+		assertions.Equal(300, heightMax)
 
 		// size validation
 		validationSize := validations[2].(map[string]interface{})
 		sizeData := validationSize["assetFileSize"].(map[string]interface{})
 		min := int(sizeData["min"].(float64))
 		max := int(sizeData["max"].(float64))
-		assert.Equal(30, min)
-		assert.Equal(400, max)
+		assertions.Equal(30, min)
+		assertions.Equal(400, max)
 
 		w.WriteHeader(201)
-		fmt.Fprintln(w, string(readTestData("content_type.json")))
+		_, _ = fmt.Fprintln(w, string(readTestData("content_type.json")))
 	})
 
 	// test server
@@ -851,16 +851,16 @@ func TestContentTypeFieldTypeMedia(t *testing.T) {
 	}
 
 	err = cma.ContentTypes.Upsert("id1", ct)
-	assert.Nil(err)
+	assertions.Nil(err)
 }
 
 func TestContentTypeFieldValidationsUnmarshal(t *testing.T) {
 	var err error
-	assert := assert.New(t)
+	assertions := assert.New(t)
 
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(201)
-		fmt.Fprintln(w, string(readTestData("content_type_with_validations.json")))
+		_, _ = fmt.Fprintln(w, string(readTestData("content_type_with_validations.json")))
 	})
 
 	server := httptest.NewServer(handler)
@@ -870,7 +870,7 @@ func TestContentTypeFieldValidationsUnmarshal(t *testing.T) {
 	cma.BaseURL = server.URL
 
 	ct, err := cma.ContentTypes.Get(spaceID, "validationsTest")
-	assert.Nil(err)
+	assertions.Nil(err)
 
 	uniqueValidations := []FieldValidation{}
 	linkValidations := []FieldValidation{}
@@ -885,7 +885,7 @@ func TestContentTypeFieldValidationsUnmarshal(t *testing.T) {
 
 	for _, field := range ct.Fields {
 		if field.Name == "text-short" {
-			assert.Equal(4, len(field.Validations))
+			assertions.Equal(4, len(field.Validations))
 			uniqueValidations = append(uniqueValidations, field.Validations[0])
 			sizeValidations = append(sizeValidations, field.Validations[1])
 			regexValidations = append(regexValidations, field.Validations[2])
@@ -893,38 +893,38 @@ func TestContentTypeFieldValidationsUnmarshal(t *testing.T) {
 		}
 
 		if field.Name == "text-long" {
-			assert.Equal(3, len(field.Validations))
+			assertions.Equal(3, len(field.Validations))
 			sizeValidations = append(sizeValidations, field.Validations[0])
 			regexValidations = append(regexValidations, field.Validations[1])
 			preDefinedValidations = append(preDefinedValidations, field.Validations[2])
 		}
 
 		if field.Name == "number-integer" || field.Name == "number-decimal" {
-			assert.Equal(3, len(field.Validations))
+			assertions.Equal(3, len(field.Validations))
 			uniqueValidations = append(uniqueValidations, field.Validations[0])
 			rangeValidations = append(rangeValidations, field.Validations[1])
 			preDefinedValidations = append(preDefinedValidations, field.Validations[2])
 		}
 
 		if field.Name == "date" {
-			assert.Equal(1, len(field.Validations))
+			assertions.Equal(1, len(field.Validations))
 			dateValidations = append(dateValidations, field.Validations[0])
 		}
 
 		if field.Name == "location" || field.Name == "bool" {
-			assert.Equal(0, len(field.Validations))
+			assertions.Equal(0, len(field.Validations))
 		}
 
 		if field.Name == "media-onefile" {
-			assert.Equal(3, len(field.Validations))
+			assertions.Equal(3, len(field.Validations))
 			mimeTypeValidations = append(mimeTypeValidations, field.Validations[0])
 			dimensionValidations = append(dimensionValidations, field.Validations[1])
 			fileSizeValidations = append(fileSizeValidations, field.Validations[2])
 		}
 
 		if field.Name == "media-manyfiles" {
-			assert.Equal(1, len(field.Validations))
-			assert.Equal(3, len(field.Items.Validations))
+			assertions.Equal(1, len(field.Validations))
+			assertions.Equal(3, len(field.Items.Validations))
 			sizeValidations = append(sizeValidations, field.Validations[0])
 			mimeTypeValidations = append(mimeTypeValidations, field.Items.Validations[0])
 			dimensionValidations = append(dimensionValidations, field.Items.Validations[1])
@@ -932,18 +932,18 @@ func TestContentTypeFieldValidationsUnmarshal(t *testing.T) {
 		}
 
 		if field.Name == "json" {
-			assert.Equal(1, len(field.Validations))
+			assertions.Equal(1, len(field.Validations))
 			sizeValidations = append(sizeValidations, field.Validations[0])
 		}
 
 		if field.Name == "ref-onref" {
-			assert.Equal(1, len(field.Validations))
+			assertions.Equal(1, len(field.Validations))
 			linkValidations = append(linkValidations, field.Validations[0])
 		}
 
 		if field.Name == "ref-manyRefs" {
-			assert.Equal(1, len(field.Validations))
-			assert.Equal(1, len(field.Items.Validations))
+			assertions.Equal(1, len(field.Validations))
+			assertions.Equal(1, len(field.Items.Validations))
 			linkValidations = append(linkValidations, field.Items.Validations[0])
 			sizeValidations = append(sizeValidations, field.Validations[0])
 		}
@@ -951,51 +951,51 @@ func TestContentTypeFieldValidationsUnmarshal(t *testing.T) {
 
 	for _, validation := range uniqueValidations {
 		_, ok := validation.(FieldValidationUnique)
-		assert.True(ok)
+		assertions.True(ok)
 	}
 
 	for _, validation := range linkValidations {
 		_, ok := validation.(FieldValidationLink)
-		assert.True(ok)
+		assertions.True(ok)
 	}
 
 	for _, validation := range sizeValidations {
 		_, ok := validation.(FieldValidationSize)
-		assert.True(ok)
+		assertions.True(ok)
 	}
 
 	for _, validation := range regexValidations {
 		_, ok := validation.(FieldValidationRegex)
-		assert.True(ok)
+		assertions.True(ok)
 	}
 
 	for _, validation := range preDefinedValidations {
 		_, ok := validation.(FieldValidationPredefinedValues)
-		assert.True(ok)
+		assertions.True(ok)
 	}
 
 	for _, validation := range rangeValidations {
 		_, ok := validation.(FieldValidationRange)
-		assert.True(ok)
+		assertions.True(ok)
 	}
 
 	for _, validation := range dateValidations {
 		_, ok := validation.(FieldValidationDate)
-		assert.True(ok)
+		assertions.True(ok)
 	}
 
 	for _, validation := range mimeTypeValidations {
 		_, ok := validation.(FieldValidationMimeType)
-		assert.True(ok)
+		assertions.True(ok)
 	}
 
 	for _, validation := range dimensionValidations {
 		_, ok := validation.(FieldValidationDimension)
-		assert.True(ok)
+		assertions.True(ok)
 	}
 
 	for _, validation := range fileSizeValidations {
 		_, ok := validation.(FieldValidationFileSize)
-		assert.True(ok)
+		assertions.True(ok)
 	}
 }

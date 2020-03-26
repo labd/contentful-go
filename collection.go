@@ -25,7 +25,7 @@ type Collection struct {
 	Includes interface{}   `json:"includes"`
 }
 
-// NewCollection initilazies a new collection
+// NewCollection initializes a new collection
 func NewCollection(options *CollectionOptions) *Collection {
 	query := NewQuery()
 	query.Order("sys.createdAt", true)
@@ -65,7 +65,7 @@ func (col *Collection) ToContentType() []*ContentType {
 	var contentTypes []*ContentType
 
 	byteArray, _ := json.Marshal(col.Items)
-	json.NewDecoder(bytes.NewReader(byteArray)).Decode(&contentTypes)
+	_ = json.NewDecoder(bytes.NewReader(byteArray)).Decode(&contentTypes)
 
 	return contentTypes
 }
@@ -75,7 +75,7 @@ func (col *Collection) ToEnvironment() []*Environment {
 	var environments []*Environment
 
 	byteArray, _ := json.Marshal(col.Items)
-	json.NewDecoder(bytes.NewReader(byteArray)).Decode(&environments)
+	_ = json.NewDecoder(bytes.NewReader(byteArray)).Decode(&environments)
 
 	return environments
 }
@@ -85,7 +85,7 @@ func (col *Collection) ToEnvironmentAlias() []*EnvironmentAlias {
 	var environmentAlias []*EnvironmentAlias
 
 	byteArray, _ := json.Marshal(col.Items)
-	json.NewDecoder(bytes.NewReader(byteArray)).Decode(&environmentAlias)
+	_ = json.NewDecoder(bytes.NewReader(byteArray)).Decode(&environmentAlias)
 
 	return environmentAlias
 }
@@ -95,7 +95,7 @@ func (col *Collection) ToSpace() []*Space {
 	var spaces []*Space
 
 	byteArray, _ := json.Marshal(col.Items)
-	json.NewDecoder(bytes.NewReader(byteArray)).Decode(&spaces)
+	_ = json.NewDecoder(bytes.NewReader(byteArray)).Decode(&spaces)
 
 	return spaces
 }
@@ -105,7 +105,7 @@ func (col *Collection) ToEntry() []*Entry {
 	var entries []*Entry
 
 	byteArray, _ := json.Marshal(col.Items)
-	json.NewDecoder(bytes.NewReader(byteArray)).Decode(&entries)
+	_ = json.NewDecoder(bytes.NewReader(byteArray)).Decode(&entries)
 
 	return entries
 }
@@ -115,7 +115,7 @@ func (col *Collection) ToLocale() []*Locale {
 	var locales []*Locale
 
 	byteArray, _ := json.Marshal(col.Items)
-	json.NewDecoder(bytes.NewReader(byteArray)).Decode(&locales)
+	_ = json.NewDecoder(bytes.NewReader(byteArray)).Decode(&locales)
 
 	return locales
 }
@@ -125,7 +125,7 @@ func (col *Collection) ToAsset() []*Asset {
 	var assets []*Asset
 
 	byteArray, _ := json.Marshal(col.Items)
-	json.NewDecoder(bytes.NewReader(byteArray)).Decode(&assets)
+	_ = json.NewDecoder(bytes.NewReader(byteArray)).Decode(&assets)
 
 	return assets
 }
@@ -135,7 +135,7 @@ func (col *Collection) ToAPIKey() []*APIKey {
 	var apiKeys []*APIKey
 
 	byteArray, _ := json.Marshal(col.Items)
-	json.NewDecoder(bytes.NewReader(byteArray)).Decode(&apiKeys)
+	_ = json.NewDecoder(bytes.NewReader(byteArray)).Decode(&apiKeys)
 
 	return apiKeys
 }
@@ -145,7 +145,7 @@ func (col *Collection) ToWebhook() []*Webhook {
 	var webhooks []*Webhook
 
 	byteArray, _ := json.Marshal(col.Items)
-	json.NewDecoder(bytes.NewReader(byteArray)).Decode(&webhooks)
+	_ = json.NewDecoder(bytes.NewReader(byteArray)).Decode(&webhooks)
 
 	return webhooks
 }
@@ -155,7 +155,7 @@ func (col *Collection) ToUser() []*User {
 	var user []*User
 
 	byteArray, _ := json.Marshal(col.Items)
-	json.NewDecoder(bytes.NewReader(byteArray)).Decode(&user)
+	_ = json.NewDecoder(bytes.NewReader(byteArray)).Decode(&user)
 
 	return user
 }
@@ -165,7 +165,7 @@ func (col *Collection) ToOrganization() []*Organization {
 	var organization []*Organization
 
 	byteArray, _ := json.Marshal(col.Items)
-	json.NewDecoder(bytes.NewReader(byteArray)).Decode(&organization)
+	_ = json.NewDecoder(bytes.NewReader(byteArray)).Decode(&organization)
 
 	return organization
 }
@@ -175,7 +175,7 @@ func (col *Collection) ToEntrySnapshot() []*EntrySnapshot {
 	var snapshot []*EntrySnapshot
 
 	byteArray, _ := json.Marshal(col.Items)
-	json.NewDecoder(bytes.NewReader(byteArray)).Decode(&snapshot)
+	_ = json.NewDecoder(bytes.NewReader(byteArray)).Decode(&snapshot)
 
 	return snapshot
 }
@@ -185,7 +185,7 @@ func (col *Collection) ToContentTypeSnapshot() []*ContentTypeSnapshot {
 	var snapshot []*ContentTypeSnapshot
 
 	byteArray, _ := json.Marshal(col.Items)
-	json.NewDecoder(bytes.NewReader(byteArray)).Decode(&snapshot)
+	_ = json.NewDecoder(bytes.NewReader(byteArray)).Decode(&snapshot)
 
 	return snapshot
 }
@@ -195,7 +195,7 @@ func (col *Collection) ToAccessToken() []*AccessToken {
 	var accessTokens []*AccessToken
 
 	byteArray, _ := json.Marshal(col.Items)
-	json.NewDecoder(bytes.NewReader(byteArray)).Decode(&accessTokens)
+	_ = json.NewDecoder(bytes.NewReader(byteArray)).Decode(&accessTokens)
 
 	return accessTokens
 }

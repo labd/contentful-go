@@ -12,39 +12,39 @@ import (
 
 func TestWebhookSaveForCreate(t *testing.T) {
 	var err error
-	assert := assert.New(t)
+	assertions := assert.New(t)
 
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		assert.Equal(r.Method, "POST")
-		assert.Equal(r.RequestURI, "/spaces/"+spaceID+"/webhook_definitions")
-		checkHeaders(r, assert)
+		assertions.Equal(r.Method, "POST")
+		assertions.Equal(r.RequestURI, "/spaces/"+spaceID+"/webhook_definitions")
+		checkHeaders(r, assertions)
 
 		var payload map[string]interface{}
 		err := json.NewDecoder(r.Body).Decode(&payload)
-		assert.Nil(err)
-		assert.Equal("webhook-name", payload["name"])
-		assert.Equal("https://www.example.com/test", payload["url"])
-		assert.Equal("username", payload["httpBasicUsername"])
-		assert.Equal("password", payload["httpBasicPassword"])
+		assertions.Nil(err)
+		assertions.Equal("webhook-name", payload["name"])
+		assertions.Equal("https://www.example.com/test", payload["url"])
+		assertions.Equal("username", payload["httpBasicUsername"])
+		assertions.Equal("password", payload["httpBasicPassword"])
 
 		topics := payload["topics"].([]interface{})
-		assert.Equal(2, len(topics))
-		assert.Equal("Entry.create", topics[0].(string))
-		assert.Equal("ContentType.create", topics[1].(string))
+		assertions.Equal(2, len(topics))
+		assertions.Equal("Entry.create", topics[0].(string))
+		assertions.Equal("ContentType.create", topics[1].(string))
 
 		headers := payload["headers"].([]interface{})
-		assert.Equal(2, len(headers))
+		assertions.Equal(2, len(headers))
 		header1 := headers[0].(map[string]interface{})
 		header2 := headers[1].(map[string]interface{})
 
-		assert.Equal("header1", header1["key"].(string))
-		assert.Equal("header1-value", header1["value"].(string))
+		assertions.Equal("header1", header1["key"].(string))
+		assertions.Equal("header1-value", header1["value"].(string))
 
-		assert.Equal("header2", header2["key"].(string))
-		assert.Equal("header2-value", header2["value"].(string))
+		assertions.Equal("header2", header2["key"].(string))
+		assertions.Equal("header2-value", header2["value"].(string))
 
 		w.WriteHeader(201)
-		fmt.Fprintln(w, string(readTestData("webhook.json")))
+		_, _ = fmt.Fprintln(w, string(readTestData("webhook.json")))
 	})
 
 	// test server
@@ -65,11 +65,11 @@ func TestWebhookSaveForCreate(t *testing.T) {
 		HTTPBasicUsername: "username",
 		HTTPBasicPassword: "password",
 		Headers: []*WebhookHeader{
-			&WebhookHeader{
+			{
 				Key:   "header1",
 				Value: "header1-value",
 			},
-			&WebhookHeader{
+			{
 				Key:   "header2",
 				Value: "header2-value",
 			},
@@ -77,48 +77,48 @@ func TestWebhookSaveForCreate(t *testing.T) {
 	}
 
 	err = cma.Webhooks.Upsert(spaceID, webhook)
-	assert.Nil(err)
-	assert.Equal("7fstd9fZ9T2p3kwD49FxhI", webhook.Sys.ID)
-	assert.Equal("webhook-name", webhook.Name)
-	assert.Equal("username", webhook.HTTPBasicUsername)
+	assertions.Nil(err)
+	assertions.Equal("7fstd9fZ9T2p3kwD49FxhI", webhook.Sys.ID)
+	assertions.Equal("webhook-name", webhook.Name)
+	assertions.Equal("username", webhook.HTTPBasicUsername)
 }
 
 func TestWebhookSaveForUpdate(t *testing.T) {
 	var err error
-	assert := assert.New(t)
+	assertions := assert.New(t)
 
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		assert.Equal(r.Method, "PUT")
-		assert.Equal(r.RequestURI, "/spaces/"+spaceID+"/webhook_definitions/7fstd9fZ9T2p3kwD49FxhI")
-		checkHeaders(r, assert)
+		assertions.Equal(r.Method, "PUT")
+		assertions.Equal(r.RequestURI, "/spaces/"+spaceID+"/webhook_definitions/7fstd9fZ9T2p3kwD49FxhI")
+		checkHeaders(r, assertions)
 
 		var payload map[string]interface{}
 		err := json.NewDecoder(r.Body).Decode(&payload)
-		assert.Nil(err)
-		assert.Equal("updated-webhook-name", payload["name"])
-		assert.Equal("https://www.example.com/test-updated", payload["url"])
-		assert.Equal("updated-username", payload["httpBasicUsername"])
-		assert.Equal("updated-password", payload["httpBasicPassword"])
+		assertions.Nil(err)
+		assertions.Equal("updated-webhook-name", payload["name"])
+		assertions.Equal("https://www.example.com/test-updated", payload["url"])
+		assertions.Equal("updated-username", payload["httpBasicUsername"])
+		assertions.Equal("updated-password", payload["httpBasicPassword"])
 
 		topics := payload["topics"].([]interface{})
-		assert.Equal(3, len(topics))
-		assert.Equal("Entry.create", topics[0].(string))
-		assert.Equal("ContentType.create", topics[1].(string))
-		assert.Equal("Asset.create", topics[2].(string))
+		assertions.Equal(3, len(topics))
+		assertions.Equal("Entry.create", topics[0].(string))
+		assertions.Equal("ContentType.create", topics[1].(string))
+		assertions.Equal("Asset.create", topics[2].(string))
 
 		headers := payload["headers"].([]interface{})
-		assert.Equal(2, len(headers))
+		assertions.Equal(2, len(headers))
 		header1 := headers[0].(map[string]interface{})
 		header2 := headers[1].(map[string]interface{})
 
-		assert.Equal("header1", header1["key"].(string))
-		assert.Equal("updated-header1-value", header1["value"].(string))
+		assertions.Equal("header1", header1["key"].(string))
+		assertions.Equal("updated-header1-value", header1["value"].(string))
 
-		assert.Equal("header2", header2["key"].(string))
-		assert.Equal("updated-header2-value", header2["value"].(string))
+		assertions.Equal("header2", header2["key"].(string))
+		assertions.Equal("updated-header2-value", header2["value"].(string))
 
 		w.WriteHeader(200)
-		fmt.Fprintln(w, string(readTestData("webhook-updated.json")))
+		_, _ = fmt.Fprintln(w, string(readTestData("webhook-updated.json")))
 	})
 
 	// test server
@@ -131,7 +131,7 @@ func TestWebhookSaveForUpdate(t *testing.T) {
 
 	// test webhook
 	webhook, err := webhookFromTestData("webhook.json")
-	assert.Nil(err)
+	assertions.Nil(err)
 
 	webhook.Name = "updated-webhook-name"
 	webhook.URL = "https://www.example.com/test-updated"
@@ -143,32 +143,32 @@ func TestWebhookSaveForUpdate(t *testing.T) {
 	webhook.HTTPBasicUsername = "updated-username"
 	webhook.HTTPBasicPassword = "updated-password"
 	webhook.Headers = []*WebhookHeader{
-		&WebhookHeader{
+		{
 			Key:   "header1",
 			Value: "updated-header1-value",
 		},
-		&WebhookHeader{
+		{
 			Key:   "header2",
 			Value: "updated-header2-value",
 		},
 	}
 
 	err = cma.Webhooks.Upsert(spaceID, webhook)
-	assert.Nil(err)
-	assert.Equal("7fstd9fZ9T2p3kwD49FxhI", webhook.Sys.ID)
-	assert.Equal(1, webhook.Sys.Version)
-	assert.Equal("updated-webhook-name", webhook.Name)
-	assert.Equal("updated-username", webhook.HTTPBasicUsername)
+	assertions.Nil(err)
+	assertions.Equal("7fstd9fZ9T2p3kwD49FxhI", webhook.Sys.ID)
+	assertions.Equal(1, webhook.Sys.Version)
+	assertions.Equal("updated-webhook-name", webhook.Name)
+	assertions.Equal("updated-username", webhook.HTTPBasicUsername)
 }
 
 func TestWebhookDelete(t *testing.T) {
 	var err error
-	assert := assert.New(t)
+	assertions := assert.New(t)
 
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		assert.Equal(r.Method, "DELETE")
-		assert.Equal(r.RequestURI, "/spaces/"+spaceID+"/webhook_definitions/7fstd9fZ9T2p3kwD49FxhI")
-		checkHeaders(r, assert)
+		assertions.Equal(r.Method, "DELETE")
+		assertions.Equal(r.RequestURI, "/spaces/"+spaceID+"/webhook_definitions/7fstd9fZ9T2p3kwD49FxhI")
+		checkHeaders(r, assertions)
 
 		w.WriteHeader(200)
 	})
@@ -183,8 +183,8 @@ func TestWebhookDelete(t *testing.T) {
 
 	// test webhook
 	webhook, err := webhookFromTestData("webhook.json")
-	assert.Nil(err)
+	assertions.Nil(err)
 
 	err = cma.Webhooks.Delete(spaceID, webhook)
-	assert.Nil(err)
+	assertions.Nil(err)
 }
