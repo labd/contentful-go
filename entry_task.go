@@ -3,6 +3,7 @@ package contentful
 import (
 	"fmt"
 	"net/http"
+	"net/url"
 )
 
 // EntryTasksService service
@@ -45,4 +46,23 @@ func (service *EntryTasksService) List(spaceID, entryID string) *Collection {
 	col.req = req
 
 	return col
+}
+
+// Get returns a single entry task
+func (service *EntryTasksService) Get(spaceID, entryID, entryTaskID string) (*EntryTask, error) {
+	path := fmt.Sprintf("/spaces/%s/environments/%s/entries/%s/tasks/%s", spaceID, service.c.Environment, entryID, entryTaskID)
+	query := url.Values{}
+	method := "GET"
+
+	req, err := service.c.newRequest(method, path, query, nil)
+	if err != nil {
+		return &EntryTask{}, err
+	}
+
+	var entryTask EntryTask
+	if ok := service.c.do(req, &entryTask); ok != nil {
+		return nil, err
+	}
+
+	return &entryTask, err
 }

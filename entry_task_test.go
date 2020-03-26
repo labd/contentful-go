@@ -37,3 +37,30 @@ func TestEntryTasksService_List(t *testing.T) {
 	assertions.Equal(1, len(entryTasks))
 	assertions.Equal("Review translation", entryTasks[0].Body)
 }
+
+func TestEntryTasksService_Get(t *testing.T) {
+	var err error
+	assertions := assert.New(t)
+
+	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		assertions.Equal(r.Method, "GET")
+		assertions.Equal(r.URL.Path, "/spaces/"+spaceID+"/environments/master/entries/5KsDBWseXY6QegucYAoacS/tasks/RHfHVRz3QkAgcMq4CGg2m5")
+
+		checkHeaders(r, assertions)
+
+		w.WriteHeader(200)
+		_, _ = fmt.Fprintln(w, readTestData("entry_task_1.json"))
+	})
+
+	// test server
+	server := httptest.NewServer(handler)
+	defer server.Close()
+
+	// cma client
+	cma = NewCMA(CMAToken)
+	cma.BaseURL = server.URL
+
+	entryTask, err := cma.EntryTasks.Get(spaceID, "5KsDBWseXY6QegucYAoacS", "RHfHVRz3QkAgcMq4CGg2m5")
+	assertions.Nil(err)
+	assertions.Equal("RHfHVRz3QkAgcMq4CGg2m5", entryTask.Sys.ID)
+}
