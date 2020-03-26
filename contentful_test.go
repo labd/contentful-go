@@ -188,6 +188,18 @@ func accessTokenFromTestFile(fileName string) (*AccessToken, error) {
 	return &accessToken, nil
 }
 
+func entryTaskFromTestFile(fileName string) (*EntryTask, error) {
+	content := readTestData(fileName)
+
+	var entryTask EntryTask
+	err := json.NewDecoder(strings.NewReader(content)).Decode(&entryTask)
+	if err != nil {
+		return nil, err
+	}
+
+	return &entryTask, nil
+}
+
 func setup() {
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		fixture := strings.Replace(r.URL.Path, "/", "-", -1)
