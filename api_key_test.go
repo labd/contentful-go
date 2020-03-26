@@ -1,7 +1,6 @@
 package contentful
 
 import (
-	"encoding/json"
 	"fmt"
 	"net/http"
 	"net/http/httptest"
@@ -10,18 +9,18 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestEnvironmentAliasesServicesList(t *testing.T) {
+func TestAPIKeyService_List(t *testing.T) {
 	var err error
 	assertions := assert.New(t)
 
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		assertions.Equal(r.Method, "GET")
-		assertions.Equal(r.URL.Path, "/spaces/"+spaceID+"/environment_aliases")
+		assertions.Equal(r.URL.Path, "/spaces/"+spaceID+"/api_keys")
 
 		checkHeaders(r, assertions)
 
 		w.WriteHeader(200)
-		_, _ = fmt.Fprintln(w, readTestData("environment-alias.json"))
+		_, _ = fmt.Fprintln(w, readTestData("api_key.json"))
 	})
 
 	// test server
@@ -32,23 +31,22 @@ func TestEnvironmentAliasesServicesList(t *testing.T) {
 	cma = NewCMA(CMAToken)
 	cma.BaseURL = server.URL
 
-	_, err = cma.EnvironmentAliases.List(spaceID).Next()
+	_, err = cma.APIKeys.List(spaceID).Next()
 	assertions.Nil(err)
 }
 
-func TestEnvironmentAliasesServicesGet(t *testing.T) {
+func TestAPIKeyServiceGet(t *testing.T) {
 	var err error
 	assertions := assert.New(t)
 
-	// Only tests master environment, as this is the only environment that always exists.
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		assertions.Equal(r.Method, "GET")
-		assertions.Equal(r.URL.Path, "/spaces/"+spaceID+"/environment_aliases/master")
+		assertions.Equal(r.URL.Path, "/spaces/"+spaceID+"/api_keys/exampleapikey")
 
 		checkHeaders(r, assertions)
 
 		w.WriteHeader(200)
-		_, _ = fmt.Fprintln(w, readTestData("environment-alias_1.json"))
+		_, _ = fmt.Fprintln(w, readTestData("api_key_1.json"))
 	})
 
 	// test server
@@ -59,27 +57,20 @@ func TestEnvironmentAliasesServicesGet(t *testing.T) {
 	cma = NewCMA(CMAToken)
 	cma.BaseURL = server.URL
 
-	_, err = cma.EnvironmentAliases.Get(spaceID, "master")
+	_, err = cma.APIKeys.Get(spaceID, "exampleapikey")
 	assertions.Nil(err)
 }
 
-func TestEnvironmentAliasesServiceUpdate(t *testing.T) {
+func TestAPIKeyServiceDelete(t *testing.T) {
 	var err error
 	assertions := assert.New(t)
 
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		assertions.Equal(r.Method, "PUT")
-		assertions.Equal(r.RequestURI, "/spaces/"+spaceID+"/environment_aliases/master")
-
+		assertions.Equal(r.Method, "DELETE")
+		assertions.Equal(r.RequestURI, "/spaces/"+spaceID+"/api_keys/exampleapikey")
 		checkHeaders(r, assertions)
 
-		var payload EnvironmentAlias
-		err := json.NewDecoder(r.Body).Decode(&payload)
-		assertions.Nil(err)
-		assertions.Equal("staging", payload.Alias.Sys.ID)
-
 		w.WriteHeader(200)
-		_, _ = fmt.Fprintln(w, string(readTestData("environment-alias_1.json")))
 	})
 
 	// test server
@@ -90,11 +81,11 @@ func TestEnvironmentAliasesServiceUpdate(t *testing.T) {
 	cma = NewCMA(CMAToken)
 	cma.BaseURL = server.URL
 
-	environmentAlias, err := environmentAliasFromTestData("environment-alias_1.json")
+	// test locale
+	key, err := apiKeyFromTestData("api_key_1.json")
 	assertions.Nil(err)
 
-	environmentAlias.Alias.Sys.ID = "staging"
-
-	err = cma.EnvironmentAliases.Update(spaceID, environmentAlias)
+	// delete locale
+	err = cma.APIKeys.Delete(spaceID, key)
 	assertions.Nil(err)
 }

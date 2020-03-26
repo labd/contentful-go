@@ -96,16 +96,16 @@ func ExampleSpacesService_Delete_all() {
 
 func TestSpacesServiceList(t *testing.T) {
 	var err error
-	assert := assert.New(t)
+	assertions := assert.New(t)
 
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		assert.Equal(r.Method, "GET")
-		assert.Equal(r.URL.Path, "/spaces")
+		assertions.Equal(r.Method, "GET")
+		assertions.Equal(r.URL.Path, "/spaces")
 
-		checkHeaders(r, assert)
+		checkHeaders(r, assertions)
 
 		w.WriteHeader(200)
-		fmt.Fprintln(w, readTestData("spaces.json"))
+		_, _ = fmt.Fprintln(w, readTestData("spaces.json"))
 	})
 
 	// test server
@@ -117,34 +117,34 @@ func TestSpacesServiceList(t *testing.T) {
 	cma.BaseURL = server.URL
 
 	collection, err := cma.Spaces.List().Next()
-	assert.Nil(err)
+	assertions.Nil(err)
 
 	spaces := collection.ToSpace()
-	assert.Equal(2, len(spaces))
-	assert.Equal("id1", spaces[0].Sys.ID)
-	assert.Equal("id2", spaces[1].Sys.ID)
+	assertions.Equal(2, len(spaces))
+	assertions.Equal("id1", spaces[0].Sys.ID)
+	assertions.Equal("id2", spaces[1].Sys.ID)
 }
 
 func TestSpacesServiceList_Pagination(t *testing.T) {
 	var err error
-	assert := assert.New(t)
+	assertions := assert.New(t)
 
 	requestCount := 1
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		assert.Equal(r.Method, "GET")
-		assert.Equal(r.URL.Path, "/spaces")
-		checkHeaders(r, assert)
+		assertions.Equal(r.Method, "GET")
+		assertions.Equal(r.URL.Path, "/spaces")
+		checkHeaders(r, assertions)
 
 		w.WriteHeader(200)
 		query := r.URL.Query()
 		if requestCount == 1 {
-			assert.Equal(query.Get("order"), "-sys.createdAt")
-			assert.Equal(query.Get("skip"), "")
-			fmt.Fprintln(w, readTestData("spaces.json"))
+			assertions.Equal(query.Get("order"), "-sys.createdAt")
+			assertions.Equal(query.Get("skip"), "")
+			_, _ = fmt.Fprintln(w, readTestData("spaces.json"))
 		} else {
-			assert.Equal(query.Get("order"), "-sys.createdAt")
-			assert.Equal(query.Get("skip"), "100")
-			fmt.Fprintln(w, readTestData("spaces-page-2.json"))
+			assertions.Equal(query.Get("order"), "-sys.createdAt")
+			assertions.Equal(query.Get("skip"), "100")
+			_, _ = fmt.Fprintln(w, readTestData("spaces-page-2.json"))
 		}
 		requestCount++
 	})
@@ -158,25 +158,25 @@ func TestSpacesServiceList_Pagination(t *testing.T) {
 	cma.BaseURL = server.URL
 
 	collection, err := cma.Spaces.List().Next()
-	assert.Nil(err)
+	assertions.Nil(err)
 
 	nextPage, err := collection.Next()
-	assert.Nil(err)
-	assert.IsType(&Collection{}, nextPage)
+	assertions.Nil(err)
+	assertions.IsType(&Collection{}, nextPage)
 }
 
 func TestSpacesServiceGet(t *testing.T) {
 	var err error
-	assert := assert.New(t)
+	assertions := assert.New(t)
 
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		assert.Equal(r.Method, "GET")
-		assert.Equal(r.URL.Path, "/spaces/"+spaceID)
+		assertions.Equal(r.Method, "GET")
+		assertions.Equal(r.URL.Path, "/spaces/"+spaceID)
 
-		checkHeaders(r, assert)
+		checkHeaders(r, assertions)
 
 		w.WriteHeader(200)
-		fmt.Fprintln(w, readTestData("space-1.json"))
+		_, _ = fmt.Fprintln(w, readTestData("space-1.json"))
 	})
 
 	// test server
@@ -188,26 +188,26 @@ func TestSpacesServiceGet(t *testing.T) {
 	cma.BaseURL = server.URL
 
 	space, err := cma.Spaces.Get(spaceID)
-	assert.Nil(err)
-	assert.Equal("id1", space.Sys.ID)
+	assertions.Nil(err)
+	assertions.Equal("id1", space.Sys.ID)
 }
 
 func TestSpaceSaveForCreate(t *testing.T) {
-	assert := assert.New(t)
+	assertions := assert.New(t)
 
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		assert.Equal(r.Method, "POST")
-		assert.Equal(r.RequestURI, "/spaces")
-		checkHeaders(r, assert)
+		assertions.Equal(r.Method, "POST")
+		assertions.Equal(r.RequestURI, "/spaces")
+		checkHeaders(r, assertions)
 
 		var payload map[string]interface{}
 		err := json.NewDecoder(r.Body).Decode(&payload)
-		assert.Nil(err)
-		assert.Equal("new space", payload["name"])
-		assert.Equal("en", payload["defaultLocale"])
+		assertions.Nil(err)
+		assertions.Equal("new space", payload["name"])
+		assertions.Equal("en", payload["defaultLocale"])
 
 		w.WriteHeader(201)
-		fmt.Fprintln(w, string(readTestData("spaces-newspace.json")))
+		_, _ = fmt.Fprintln(w, string(readTestData("spaces-newspace.json")))
 	})
 
 	// test server
@@ -224,29 +224,29 @@ func TestSpaceSaveForCreate(t *testing.T) {
 	}
 
 	err := cma.Spaces.Upsert(space)
-	assert.Nil(err)
-	assert.Equal("newspace", space.Sys.ID)
-	assert.Equal("new space", space.Name)
-	assert.Equal("en", space.DefaultLocale)
+	assertions.Nil(err)
+	assertions.Equal("newspace", space.Sys.ID)
+	assertions.Equal("new space", space.Name)
+	assertions.Equal("en", space.DefaultLocale)
 }
 
 func TestSpaceSaveForUpdate(t *testing.T) {
 	var err error
-	assert := assert.New(t)
+	assertions := assert.New(t)
 
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		assert.Equal(r.Method, "PUT")
-		assert.Equal(r.RequestURI, "/spaces/newspace")
-		checkHeaders(r, assert)
+		assertions.Equal(r.Method, "PUT")
+		assertions.Equal(r.RequestURI, "/spaces/newspace")
+		checkHeaders(r, assertions)
 
 		var payload map[string]interface{}
 		err := json.NewDecoder(r.Body).Decode(&payload)
-		assert.Nil(err)
-		assert.Equal("changed-space-name", payload["name"])
-		assert.Equal("de", payload["defaultLocale"])
+		assertions.Nil(err)
+		assertions.Equal("changed-space-name", payload["name"])
+		assertions.Equal("de", payload["defaultLocale"])
 
 		w.WriteHeader(200)
-		fmt.Fprintln(w, string(readTestData("spaces-newspace-updated.json")))
+		_, _ = fmt.Fprintln(w, string(readTestData("spaces-newspace-updated.json")))
 	})
 
 	// test server
@@ -258,26 +258,26 @@ func TestSpaceSaveForUpdate(t *testing.T) {
 	cma.BaseURL = server.URL
 
 	space, err := spaceFromTestData("spaces-newspace.json")
-	assert.Nil(err)
+	assertions.Nil(err)
 
 	space.Name = "changed-space-name"
 	space.DefaultLocale = "de"
 
 	err = cma.Spaces.Upsert(space)
-	assert.Nil(err)
-	assert.Equal("changed-space-name", space.Name)
-	assert.Equal("de", space.DefaultLocale)
-	assert.Equal(2, space.Sys.Version)
+	assertions.Nil(err)
+	assertions.Equal("changed-space-name", space.Name)
+	assertions.Equal("de", space.DefaultLocale)
+	assertions.Equal(2, space.Sys.Version)
 }
 
 func TestSpaceDelete(t *testing.T) {
 	var err error
-	assert := assert.New(t)
+	assertions := assert.New(t)
 
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		assert.Equal(r.Method, "DELETE")
-		assert.Equal(r.RequestURI, "/spaces/"+spaceID)
-		checkHeaders(r, assert)
+		assertions.Equal(r.Method, "DELETE")
+		assertions.Equal(r.RequestURI, "/spaces/"+spaceID)
+		checkHeaders(r, assertions)
 
 		w.WriteHeader(200)
 	})
@@ -291,8 +291,8 @@ func TestSpaceDelete(t *testing.T) {
 	cma.BaseURL = server.URL
 
 	space, err := spaceFromTestData("spaces-" + spaceID + ".json")
-	assert.Nil(err)
+	assertions.Nil(err)
 
 	err = cma.Spaces.Delete(space)
-	assert.Nil(err)
+	assertions.Nil(err)
 }

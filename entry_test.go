@@ -12,16 +12,16 @@ import (
 
 func TestEntriesServiceList(t *testing.T) {
 	var err error
-	assert := assert.New(t)
+	assertions := assert.New(t)
 
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		assert.Equal(r.Method, "GET")
-		assert.Equal(r.URL.Path, "/spaces/"+spaceID+"/environments/master/entries")
+		assertions.Equal(r.Method, "GET")
+		assertions.Equal(r.URL.Path, "/spaces/"+spaceID+"/environments/master/entries")
 
-		checkHeaders(r, assert)
+		checkHeaders(r, assertions)
 
 		w.WriteHeader(200)
-		fmt.Fprintln(w, readTestData("entry.json"))
+		_, _ = fmt.Fprintln(w, readTestData("entry.json"))
 	})
 
 	// test server
@@ -33,21 +33,21 @@ func TestEntriesServiceList(t *testing.T) {
 	cma.BaseURL = server.URL
 
 	_, err = cma.Entries.List(spaceID).Next()
-	assert.Nil(err)
+	assertions.Nil(err)
 }
 
 func TestEntriesServiceGet(t *testing.T) {
 	var err error
-	assert := assert.New(t)
+	assertions := assert.New(t)
 
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		assert.Equal(r.Method, "GET")
-		assert.Equal(r.URL.Path, "/spaces/"+spaceID+"/entries/5KsDBWseXY6QegucYAoacS")
+		assertions.Equal(r.Method, "GET")
+		assertions.Equal(r.URL.Path, "/spaces/"+spaceID+"/entries/5KsDBWseXY6QegucYAoacS")
 
-		checkHeaders(r, assert)
+		checkHeaders(r, assertions)
 
 		w.WriteHeader(200)
-		fmt.Fprintln(w, readTestData("entry_1.json"))
+		_, _ = fmt.Fprintln(w, readTestData("entry_1.json"))
 	})
 
 	// test server
@@ -59,17 +59,17 @@ func TestEntriesServiceGet(t *testing.T) {
 	cma.BaseURL = server.URL
 
 	_, err = cma.Entries.Get(spaceID, "5KsDBWseXY6QegucYAoacS")
-	assert.Nil(err)
+	assertions.Nil(err)
 }
 
 func TestEntriesServiceDelete(t *testing.T) {
 	var err error
-	assert := assert.New(t)
+	assertions := assert.New(t)
 
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		assert.Equal(r.Method, "DELETE")
-		assert.Equal(r.RequestURI, "/spaces/"+spaceID+"/entries/4aGeQYgByqQFJtToAOh2JJ")
-		checkHeaders(r, assert)
+		assertions.Equal(r.Method, "DELETE")
+		assertions.Equal(r.RequestURI, "/spaces/"+spaceID+"/entries/4aGeQYgByqQFJtToAOh2JJ")
+		checkHeaders(r, assertions)
 
 		w.WriteHeader(200)
 	})
@@ -84,35 +84,35 @@ func TestEntriesServiceDelete(t *testing.T) {
 
 	// test locale
 	entry, err := entryFromTestData("locale_1.json")
-	assert.Nil(err)
+	assertions.Nil(err)
 
 	// delete locale
 	err = cma.Entries.Delete(spaceID, entry.Sys.ID)
-	assert.Nil(err)
+	assertions.Nil(err)
 }
 
 func TestEntriesServiceUpsertCreate(t *testing.T) {
 	var err error
-	assert := assert.New(t)
+	assertions := assert.New(t)
 
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		assert.Equal(r.Method, "POST")
-		assert.Equal(r.RequestURI, "/spaces/"+spaceID+"/entries")
+		assertions.Equal(r.Method, "POST")
+		assertions.Equal(r.RequestURI, "/spaces/"+spaceID+"/entries")
 
-		checkHeaders(r, assert)
+		checkHeaders(r, assertions)
 
 		var payload map[string]interface{}
 		err := json.NewDecoder(r.Body).Decode(&payload)
-		assert.Nil(err)
+		assertions.Nil(err)
 
 		fields := payload["Fields"].(map[string]interface{})
 		title := fields["title"].(map[string]interface{})
 		body := fields["body"].(map[string]interface{})
-		assert.Equal("Hello, World!", title["en-US"].(string))
-		assert.Equal("Bacon is healthy!", body["en-US"].(string))
+		assertions.Equal("Hello, World!", title["en-US"].(string))
+		assertions.Equal("Bacon is healthy!", body["en-US"].(string))
 
 		w.WriteHeader(200)
-		fmt.Fprintln(w, readTestData("entry_1.json"))
+		_, _ = fmt.Fprintln(w, readTestData("entry_1.json"))
 	})
 
 	// test server
@@ -136,31 +136,31 @@ func TestEntriesServiceUpsertCreate(t *testing.T) {
 	}
 
 	err = cma.Entries.Upsert(spaceID, entry)
-	assert.Nil(err)
+	assertions.Nil(err)
 }
 
 func TestEntriessServiceUpsertUpdate(t *testing.T) {
 	var err error
-	assert := assert.New(t)
+	assertions := assert.New(t)
 
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		assert.Equal(r.Method, "PUT")
-		assert.Equal(r.RequestURI, "/spaces/"+spaceID+"/entries/5KsDBWseXY6QegucYAoacS")
+		assertions.Equal(r.Method, "PUT")
+		assertions.Equal(r.RequestURI, "/spaces/"+spaceID+"/entries/5KsDBWseXY6QegucYAoacS")
 
-		checkHeaders(r, assert)
+		checkHeaders(r, assertions)
 
 		var payload map[string]interface{}
 		err := json.NewDecoder(r.Body).Decode(&payload)
-		assert.Nil(err)
+		assertions.Nil(err)
 
 		fields := payload["Fields"].(map[string]interface{})
 		title := fields["title"].(map[string]interface{})
 		body := fields["body"].(map[string]interface{})
-		assert.Equal("Hello, World!", title["en-US"].(string))
-		assert.Equal("Edited text", body["en-US"].(string))
+		assertions.Equal("Hello, World!", title["en-US"].(string))
+		assertions.Equal("Edited text", body["en-US"].(string))
 
 		w.WriteHeader(200)
-		fmt.Fprintln(w, readTestData("entry_1.json"))
+		_, _ = fmt.Fprintln(w, readTestData("entry_1.json"))
 	})
 
 	// test server
@@ -172,27 +172,27 @@ func TestEntriessServiceUpsertUpdate(t *testing.T) {
 	cma.BaseURL = server.URL
 
 	entry, err := entryFromTestData("entry_1.json")
-	assert.Nil(err)
+	assertions.Nil(err)
 
 	body := entry.Fields["body"].(map[string]interface{})
 	body["en-US"] = "Edited text"
 
 	err = cma.Entries.Upsert(spaceID, entry)
-	assert.Nil(err)
+	assertions.Nil(err)
 }
 
 func TestEntriesServicePublish(t *testing.T) {
 	var err error
-	assert := assert.New(t)
+	assertions := assert.New(t)
 
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		assert.Equal(r.Method, "PUT")
-		assert.Equal(r.URL.Path, "/spaces/"+spaceID+"/entries/5KsDBWseXY6QegucYAoacS/published")
+		assertions.Equal(r.Method, "PUT")
+		assertions.Equal(r.URL.Path, "/spaces/"+spaceID+"/entries/5KsDBWseXY6QegucYAoacS/published")
 
-		checkHeaders(r, assert)
+		checkHeaders(r, assertions)
 
 		w.WriteHeader(200)
-		fmt.Fprintln(w, readTestData("entry_1.json"))
+		_, _ = fmt.Fprintln(w, readTestData("entry_1.json"))
 	})
 
 	// test server
@@ -205,24 +205,24 @@ func TestEntriesServicePublish(t *testing.T) {
 
 	// test content type
 	e, err := entryFromTestData("entry_1.json")
-	assert.Nil(err)
+	assertions.Nil(err)
 
 	err = cma.Entries.Publish(spaceID, e)
-	assert.Nil(err)
+	assertions.Nil(err)
 }
 
 func TestEntriesServiceUnpublish(t *testing.T) {
 	var err error
-	assert := assert.New(t)
+	assertions := assert.New(t)
 
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		assert.Equal(r.Method, "DELETE")
-		assert.Equal(r.URL.Path, "/spaces/"+spaceID+"/entries/5KsDBWseXY6QegucYAoacS/published")
+		assertions.Equal(r.Method, "DELETE")
+		assertions.Equal(r.URL.Path, "/spaces/"+spaceID+"/entries/5KsDBWseXY6QegucYAoacS/published")
 
-		checkHeaders(r, assert)
+		checkHeaders(r, assertions)
 
 		w.WriteHeader(200)
-		fmt.Fprintln(w, readTestData("entry_1.json"))
+		_, _ = fmt.Fprintln(w, readTestData("entry_1.json"))
 	})
 
 	// test server
@@ -235,24 +235,24 @@ func TestEntriesServiceUnpublish(t *testing.T) {
 
 	// test content type
 	e, err := entryFromTestData("entry_1.json")
-	assert.Nil(err)
+	assertions.Nil(err)
 
 	err = cma.Entries.Unpublish(spaceID, e)
-	assert.Nil(err)
+	assertions.Nil(err)
 }
 
 func TestEntriesServiceArchive(t *testing.T) {
 	var err error
-	assert := assert.New(t)
+	assertions := assert.New(t)
 
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		assert.Equal(r.Method, "PUT")
-		assert.Equal(r.URL.Path, "/spaces/"+spaceID+"/entries/5KsDBWseXY6QegucYAoacS/archived")
+		assertions.Equal(r.Method, "PUT")
+		assertions.Equal(r.URL.Path, "/spaces/"+spaceID+"/entries/5KsDBWseXY6QegucYAoacS/archived")
 
-		checkHeaders(r, assert)
+		checkHeaders(r, assertions)
 
 		w.WriteHeader(200)
-		fmt.Fprintln(w, readTestData("entry_1.json"))
+		_, _ = fmt.Fprintln(w, readTestData("entry_1.json"))
 	})
 
 	// test server
@@ -265,24 +265,24 @@ func TestEntriesServiceArchive(t *testing.T) {
 
 	// test content type
 	e, err := entryFromTestData("entry_1.json")
-	assert.Nil(err)
+	assertions.Nil(err)
 
 	err = cma.Entries.Archive(spaceID, e)
-	assert.Nil(err)
+	assertions.Nil(err)
 }
 
 func TestEntriesServiceUnarchive(t *testing.T) {
 	var err error
-	assert := assert.New(t)
+	assertions := assert.New(t)
 
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		assert.Equal(r.Method, "DELETE")
-		assert.Equal(r.URL.Path, "/spaces/"+spaceID+"/entries/5KsDBWseXY6QegucYAoacS/archived")
+		assertions.Equal(r.Method, "DELETE")
+		assertions.Equal(r.URL.Path, "/spaces/"+spaceID+"/entries/5KsDBWseXY6QegucYAoacS/archived")
 
-		checkHeaders(r, assert)
+		checkHeaders(r, assertions)
 
 		w.WriteHeader(200)
-		fmt.Fprintln(w, readTestData("entry_1.json"))
+		_, _ = fmt.Fprintln(w, readTestData("entry_1.json"))
 	})
 
 	// test server
@@ -295,8 +295,8 @@ func TestEntriesServiceUnarchive(t *testing.T) {
 
 	// test content type
 	e, err := entryFromTestData("entry_1.json")
-	assert.Nil(err)
+	assertions.Nil(err)
 
 	err = cma.Entries.Unarchive(spaceID, e)
-	assert.Nil(err)
+	assertions.Nil(err)
 }

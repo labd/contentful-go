@@ -12,16 +12,16 @@ import (
 
 func TestEnvironmentsServiceList(t *testing.T) {
 	var err error
-	assert := assert.New(t)
+	assertions := assert.New(t)
 
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		assert.Equal(r.Method, "GET")
-		assert.Equal(r.URL.Path, "/spaces/"+spaceID+"/environments")
+		assertions.Equal(r.Method, "GET")
+		assertions.Equal(r.URL.Path, "/spaces/"+spaceID+"/environments")
 
-		checkHeaders(r, assert)
+		checkHeaders(r, assertions)
 
 		w.WriteHeader(200)
-		fmt.Fprintln(w, readTestData("environments.json"))
+		_, _ = fmt.Fprintln(w, readTestData("environments.json"))
 	})
 
 	// test server
@@ -33,22 +33,22 @@ func TestEnvironmentsServiceList(t *testing.T) {
 	cma.BaseURL = server.URL
 
 	_, err = cma.Environments.List(spaceID).Next()
-	assert.Nil(err)
+	assertions.Nil(err)
 }
 
 func TestEnvironmentsServiceGet(t *testing.T) {
 	var err error
-	assert := assert.New(t)
+	assertions := assert.New(t)
 
 	// Only tests master environment, as this is the only environment that always exists.
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		assert.Equal(r.Method, "GET")
-		assert.Equal(r.URL.Path, "/spaces/"+spaceID+"/environments/master")
+		assertions.Equal(r.Method, "GET")
+		assertions.Equal(r.URL.Path, "/spaces/"+spaceID+"/environments/master")
 
-		checkHeaders(r, assert)
+		checkHeaders(r, assertions)
 
 		w.WriteHeader(200)
-		fmt.Fprintln(w, readTestData("environment.json"))
+		_, _ = fmt.Fprintln(w, readTestData("environment.json"))
 	})
 
 	// test server
@@ -60,26 +60,26 @@ func TestEnvironmentsServiceGet(t *testing.T) {
 	cma.BaseURL = server.URL
 
 	_, err = cma.Environments.Get(spaceID, "master")
-	assert.Nil(err)
+	assertions.Nil(err)
 }
 
 func TestEnvironmentsServiceUpsertCreate(t *testing.T) {
 	var err error
-	assert := assert.New(t)
+	assertions := assert.New(t)
 
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		assert.Equal(r.Method, "POST")
-		assert.Equal(r.RequestURI, "/spaces/"+spaceID+"/environments")
+		assertions.Equal(r.Method, "POST")
+		assertions.Equal(r.RequestURI, "/spaces/"+spaceID+"/environments")
 
-		checkHeaders(r, assert)
+		checkHeaders(r, assertions)
 
 		var payload map[string]interface{}
 		err := json.NewDecoder(r.Body).Decode(&payload)
-		assert.Nil(err)
-		assert.Equal("staging", payload["name"])
+		assertions.Nil(err)
+		assertions.Equal("staging", payload["name"])
 
 		w.WriteHeader(200)
-		fmt.Fprintln(w, readTestData("environment_1.json"))
+		_, _ = fmt.Fprintln(w, readTestData("environment_1.json"))
 	})
 
 	// test server
@@ -95,26 +95,26 @@ func TestEnvironmentsServiceUpsertCreate(t *testing.T) {
 	}
 
 	err = cma.Environments.Upsert(spaceID, environment)
-	assert.Nil(err)
+	assertions.Nil(err)
 }
 
 func TestEnvironmentsServiceUpsertUpdate(t *testing.T) {
 	var err error
-	assert := assert.New(t)
+	assertions := assert.New(t)
 
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		assert.Equal(r.Method, "PUT")
-		assert.Equal(r.RequestURI, "/spaces/"+spaceID+"/environments/staging")
+		assertions.Equal(r.Method, "PUT")
+		assertions.Equal(r.RequestURI, "/spaces/"+spaceID+"/environments/staging")
 
-		checkHeaders(r, assert)
+		checkHeaders(r, assertions)
 
 		var payload map[string]interface{}
 		err := json.NewDecoder(r.Body).Decode(&payload)
-		assert.Nil(err)
-		assert.Equal("modified-name", payload["name"])
+		assertions.Nil(err)
+		assertions.Equal("modified-name", payload["name"])
 
 		w.WriteHeader(200)
-		fmt.Fprintln(w, string(readTestData("environment_1.json")))
+		_, _ = fmt.Fprintln(w, string(readTestData("environment_1.json")))
 	})
 
 	// test server
@@ -126,22 +126,22 @@ func TestEnvironmentsServiceUpsertUpdate(t *testing.T) {
 	cma.BaseURL = server.URL
 
 	environment, err := environmentFromTestData("environment_1.json")
-	assert.Nil(err)
+	assertions.Nil(err)
 
 	environment.Name = "modified-name"
 
 	err = cma.Environments.Upsert(spaceID, environment)
-	assert.Nil(err)
+	assertions.Nil(err)
 }
 
 func TestEnvironmentsServiceDelete(t *testing.T) {
 	var err error
-	assert := assert.New(t)
+	assertions := assert.New(t)
 
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		assert.Equal(r.Method, "DELETE")
-		assert.Equal(r.RequestURI, "/spaces/"+spaceID+"/environments/staging")
-		checkHeaders(r, assert)
+		assertions.Equal(r.Method, "DELETE")
+		assertions.Equal(r.RequestURI, "/spaces/"+spaceID+"/environments/staging")
+		checkHeaders(r, assertions)
 
 		w.WriteHeader(200)
 	})
@@ -156,9 +156,9 @@ func TestEnvironmentsServiceDelete(t *testing.T) {
 
 	// test environment
 	environment, err := environmentFromTestData("environment_1.json")
-	assert.Nil(err)
+	assertions.Nil(err)
 
 	// delete environment
 	err = cma.Environments.Delete(spaceID, environment)
-	assert.Nil(err)
+	assertions.Nil(err)
 }
