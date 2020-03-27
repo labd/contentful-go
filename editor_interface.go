@@ -1,6 +1,8 @@
 package contentful
 
 import (
+	"bytes"
+	"encoding/json"
 	"fmt"
 	"net/url"
 )
@@ -29,16 +31,6 @@ type Sidebar struct {
 	WidgetID        string            `json:"widgetId"`
 	Settings        map[string]string `json:"settings, omitempty"`
 	Disabled        bool              `json:"disabled"`
-}
-
-// GetVersion returns entity version
-func (editorInterface *EditorInterface) GetVersion() int {
-	version := 1
-	if editorInterface.Sys != nil {
-		version = editorInterface.Sys.Version
-	}
-
-	return version
 }
 
 // List returns an EditorInterface collection
@@ -74,4 +66,27 @@ func (service *EditorInterfacesService) Get(spaceID, contentTypeID string) (*Edi
 	}
 
 	return &editorInterface, err
+}
+
+// Update updates an editor interface
+func (service *EditorInterfacesService) Update(spaceID, contentTypeID string, e *EditorInterface) error {
+	bytesArray, err := json.Marshal(e)
+	if err != nil {
+		return err
+	}
+
+	var path string
+	var method string
+
+	if contentTypeID != "" {
+		path = fmt.Sprintf("/spaces/%s/environments/%s/content_types/%s/editor_interface", spaceID, service.c.Environment, contentTypeID)
+		method = "PUT"
+	}
+
+	req, err := service.c.newRequest(method, path, nil, bytes.NewReader(bytesArray))
+	if err != nil {
+		return err
+	}
+
+	return service.c.do(req, e)
 }

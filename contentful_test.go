@@ -212,6 +212,18 @@ func scheduledActionFromTestFile(fileName string) (*ScheduledAction, error) {
 	return &scheduledAction, nil
 }
 
+func editorInterfaceFromTestFile(fileName string) (*EditorInterface, error) {
+	content := readTestData(fileName)
+
+	var editorInterface EditorInterface
+	err := json.NewDecoder(strings.NewReader(content)).Decode(&editorInterface)
+	if err != nil {
+		return nil, err
+	}
+
+	return &editorInterface, nil
+}
+
 func setup() {
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		fixture := strings.Replace(r.URL.Path, "/", "-", -1)
