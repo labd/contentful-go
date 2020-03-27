@@ -1,0 +1,29 @@
+{
+  "sys": {
+    "id": "default",
+    "type": "Editor Interface",
+    "contentType": {
+      "sys": {
+        "type": "Link",
+        "linkType": "ContentType",
+        "id": "hfM9RCJIk0wIm06WkEOQY"
+      }
+    }
+  },
+  "controls": [
+    {
+      "fieldId": "name",
+      "widgetNamespace": "builtin",
+      "widgetId": "changed id",
+      "settings": {}
+    }
+  ],
+  "sidebar": [
+    {
+      "widgetNamespace": "extension",
+      "widgetId": "someuiextension",
+      "settings": {},
+      "disabled": false
+    }
+  ]
+}

@@ -219,3 +219,13 @@ func (col *Collection) ToScheduledAction() []*ScheduledAction {
 
 	return scheduledActions
 }
+
+// ToEditorInterface cast Items to EditorInterface model
+func (col *Collection) ToEditorInterface() []*EditorInterface {
+	var editorInterface []*EditorInterface
+
+	byteArray, _ := json.Marshal(col.Items)
+	_ = json.NewDecoder(bytes.NewReader(byteArray)).Decode(&editorInterface)
+
+	return editorInterface
+}
