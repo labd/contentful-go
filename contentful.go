@@ -39,6 +39,7 @@ type Client struct {
 	Assets             *AssetsService
 	ContentTypes       *ContentTypesService
 	Entries            *EntriesService
+	EntryTasks         *EntryTasksService
 	Locales            *LocalesService
 	Webhooks           *WebhooksService
 }
@@ -77,6 +78,7 @@ func NewCMA(token string) *Client {
 	c.Assets = (*AssetsService)(&c.commonService)
 	c.ContentTypes = (*ContentTypesService)(&c.commonService)
 	c.Entries = (*EntriesService)(&c.commonService)
+	c.EntryTasks = (*EntryTasksService)(&c.commonService)
 	c.Locales = (*LocalesService)(&c.commonService)
 	c.Webhooks = (*WebhooksService)(&c.commonService)
 	return c

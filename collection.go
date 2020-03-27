@@ -190,7 +190,7 @@ func (col *Collection) ToContentTypeSnapshot() []*ContentTypeSnapshot {
 	return snapshot
 }
 
-// ToAccessToken cast Items to AccessToken model for content types
+// ToAccessToken cast Items to AccessToken model
 func (col *Collection) ToAccessToken() []*AccessToken {
 	var accessTokens []*AccessToken
 
@@ -198,4 +198,14 @@ func (col *Collection) ToAccessToken() []*AccessToken {
 	_ = json.NewDecoder(bytes.NewReader(byteArray)).Decode(&accessTokens)
 
 	return accessTokens
+}
+
+// ToEntryTask cast Items to EntryTask model
+func (col *Collection) ToEntryTask() []*EntryTask {
+	var entryTasks []*EntryTask
+
+	byteArray, _ := json.Marshal(col.Items)
+	_ = json.NewDecoder(bytes.NewReader(byteArray)).Decode(&entryTasks)
+
+	return entryTasks
 }
