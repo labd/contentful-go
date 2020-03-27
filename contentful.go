@@ -44,6 +44,7 @@ type Client struct {
 	Locales            *LocalesService
 	Webhooks           *WebhooksService
 	EditorInterfaces   *EditorInterfacesService
+	Extensions         *ExtensionsService
 }
 
 type service struct {
@@ -85,6 +86,7 @@ func NewCMA(token string) *Client {
 	c.Locales = (*LocalesService)(&c.commonService)
 	c.Webhooks = (*WebhooksService)(&c.commonService)
 	c.EditorInterfaces = (*EditorInterfacesService)(&c.commonService)
+	c.Extensions = (*ExtensionsService)(&c.commonService)
 	return c
 }
 
