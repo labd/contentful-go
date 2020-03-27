@@ -209,3 +209,13 @@ func (col *Collection) ToEntryTask() []*EntryTask {
 
 	return entryTasks
 }
+
+// ToScheduledAction cast Items to ScheduledAction model
+func (col *Collection) ToScheduledAction() []*ScheduledAction {
+	var scheduledActions []*ScheduledAction
+
+	byteArray, _ := json.Marshal(col.Items)
+	_ = json.NewDecoder(bytes.NewReader(byteArray)).Decode(&scheduledActions)
+
+	return scheduledActions
+}
