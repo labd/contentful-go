@@ -229,3 +229,13 @@ func (col *Collection) ToEditorInterface() []*EditorInterface {
 
 	return editorInterface
 }
+
+// ToExtension cast Items to Extension model
+func (col *Collection) ToExtension() []*Extension {
+	var extension []*Extension
+
+	byteArray, _ := json.Marshal(col.Items)
+	_ = json.NewDecoder(bytes.NewReader(byteArray)).Decode(&extension)
+
+	return extension
+}

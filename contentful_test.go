@@ -224,6 +224,18 @@ func editorInterfaceFromTestFile(fileName string) (*EditorInterface, error) {
 	return &editorInterface, nil
 }
 
+func extensionFromTestFile(fileName string) (*Extension, error) {
+	content := readTestData(fileName)
+
+	var extension Extension
+	err := json.NewDecoder(strings.NewReader(content)).Decode(&extension)
+	if err != nil {
+		return nil, err
+	}
+
+	return &extension, nil
+}
+
 func setup() {
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		fixture := strings.Replace(r.URL.Path, "/", "-", -1)
