@@ -46,6 +46,7 @@ type Client struct {
 	WebhookCalls       *WebhookCallsService
 	EditorInterfaces   *EditorInterfacesService
 	Extensions         *ExtensionsService
+	AppDefinitions     *AppDefinitionsService
 }
 
 type service struct {
@@ -89,6 +90,7 @@ func NewCMA(token string) *Client {
 	c.WebhookCalls = (*WebhookCallsService)(&c.commonService)
 	c.EditorInterfaces = (*EditorInterfacesService)(&c.commonService)
 	c.Extensions = (*ExtensionsService)(&c.commonService)
+	c.AppDefinitions = (*AppDefinitionsService)(&c.commonService)
 	return c
 }
 

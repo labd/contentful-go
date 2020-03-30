@@ -249,3 +249,13 @@ func (col *Collection) ToWebhookCall() []*WebhookCall {
 
 	return webhookCall
 }
+
+// ToAppDefinition cast Items to AppDefinition model
+func (col *Collection) ToAppDefinition() []*AppDefinition {
+	var appDefinitions []*AppDefinition
+
+	byteArray, _ := json.Marshal(col.Items)
+	_ = json.NewDecoder(bytes.NewReader(byteArray)).Decode(&appDefinitions)
+
+	return appDefinitions
+}
