@@ -97,3 +97,16 @@ func (service *AppDefinitionsService) Upsert(organizationID string, definition *
 
 	return service.c.do(req, definition)
 }
+
+// Delete the app definition
+func (service *AppDefinitionsService) Delete(organizationID, appDefinitionID string) error {
+	path := fmt.Sprintf("/organizations/%s/app_definitions/%s", organizationID, appDefinitionID)
+	method := "DELETE"
+
+	req, err := service.c.newRequest(method, path, nil, nil)
+	if err != nil {
+		return err
+	}
+
+	return service.c.do(req, nil)
+}
