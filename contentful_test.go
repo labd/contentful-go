@@ -236,6 +236,18 @@ func extensionFromTestFile(fileName string) (*Extension, error) {
 	return &extension, nil
 }
 
+func appDefinitionFromTestData(fileName string) (*AppDefinition, error) {
+	content := readTestData(fileName)
+
+	var appDefinition AppDefinition
+	err := json.NewDecoder(strings.NewReader(content)).Decode(&appDefinition)
+	if err != nil {
+		return nil, err
+	}
+
+	return &appDefinition, nil
+}
+
 func setup() {
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		fixture := strings.Replace(r.URL.Path, "/", "-", -1)

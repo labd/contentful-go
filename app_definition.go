@@ -1,9 +1,12 @@
 package contentful
 
 import (
+	"bytes"
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"net/url"
+	"strconv"
 )
 
 // AppDefinitionsService service
@@ -65,4 +68,32 @@ func (service *AppDefinitionsService) Get(organizationID, appDefinitionID string
 	}
 
 	return &definition, err
+}
+
+// Upsert updates or creates a new entry
+func (service *AppDefinitionsService) Upsert(organizationID string, definition *AppDefinition) error {
+	bytesArray, err := json.Marshal(definition)
+	if err != nil {
+		return err
+	}
+
+	var path string
+	var method string
+
+	if definition.Sys != nil && definition.Sys.ID != "" {
+		path = fmt.Sprintf("/organizations/%s/app_definitions/%s", organizationID, definition.Sys.ID)
+		method = "PUT"
+	} else {
+		path = fmt.Sprintf("/organizations/%s/app_definitions", organizationID)
+		method = "POST"
+	}
+
+	req, err := service.c.newRequest(method, path, nil, bytes.NewReader(bytesArray))
+	if err != nil {
+		return err
+	}
+
+	req.Header.Set("X-Contentful-Version", strconv.Itoa(definition.GetVersion()))
+
+	return service.c.do(req, definition)
 }
