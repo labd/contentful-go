@@ -102,3 +102,16 @@ func (service *ExtensionsService) Upsert(spaceID string, e *Extension) error {
 
 	return service.c.do(req, e)
 }
+
+// Delete the extension
+func (service *ExtensionsService) Delete(spaceID string, extensionID string) error {
+	path := fmt.Sprintf("/spaces/%s/environments/%s/extensions/%s", spaceID, service.c.Environment, extensionID)
+	method := "DELETE"
+
+	req, err := service.c.newRequest(method, path, nil, nil)
+	if err != nil {
+		return err
+	}
+
+	return service.c.do(req, nil)
+}
