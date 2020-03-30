@@ -1,0 +1,45 @@
+{
+  "sys": {
+    "type": "WebhookCallDetails",
+    "id": "bar",
+    "space": {
+      "sys": {
+        "type": "Link",
+        "linkType": "Space",
+        "id": "yadj1kx9rmg0"
+      }
+    },
+    "createdBy": {
+      "sys": {
+        "type": "Link",
+        "linkType": "WebhookDefinition",
+        "id": "foobar"
+      }
+    },
+    "createdAt": "2016-03-01T08:43:22.024Z"
+  },
+  "request": {
+    "url": "https://webhooks.example.com/endpoint",
+    "method": "POST",
+    "headers": {
+      "X-Contentful-Topic": "ContentManagement.Entry.publish",
+      "Content-Type": "application/vnd.contentful.management.v1+json"
+    },
+    "body": "{}"
+  },
+  "response": {
+    "url": "https://webhooks.example.com/endpoint",
+    "headers": {
+      "Content-Type": "text/html; charset=utf-8",
+      "Content-Length": "2"
+    },
+    "body": "ok",
+    "statusCode": 200
+  },
+  "statusCode": 200,
+  "errors": [],
+  "eventType": "publish",
+  "url": "https://webhooks.example.com/endpoint",
+  "requestAt": "2016-03-01T08:43:22.024Z",
+  "responseAt": "2016-03-01T08:43:22.330Z"
+}

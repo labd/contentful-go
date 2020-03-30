@@ -239,3 +239,13 @@ func (col *Collection) ToExtension() []*Extension {
 
 	return extension
 }
+
+// ToWebhookCall cast Items to WebhookCall model
+func (col *Collection) ToWebhookCall() []*WebhookCall {
+	var webhookCall []*WebhookCall
+
+	byteArray, _ := json.Marshal(col.Items)
+	_ = json.NewDecoder(bytes.NewReader(byteArray)).Decode(&webhookCall)
+
+	return webhookCall
+}
