@@ -50,16 +50,6 @@ type HealthDetails struct {
 	Healthy int `json:"healthy"`
 }
 
-// GetVersion returns entity version
-func (webhookCall *WebhookCall) GetVersion() int {
-	version := 1
-	if webhookCall.Sys != nil {
-		version = webhookCall.Sys.Version
-	}
-
-	return version
-}
-
 // List returns a webhook calls collection
 func (service *WebhookCallsService) List(spaceID, webhookID string) *Collection {
 	path := fmt.Sprintf("/spaces/%s/webhooks/%s/calls", spaceID, webhookID)
