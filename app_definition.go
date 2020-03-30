@@ -3,6 +3,7 @@ package contentful
 import (
 	"fmt"
 	"net/http"
+	"net/url"
 )
 
 // AppDefinitionsService service
@@ -45,4 +46,23 @@ func (service *AppDefinitionsService) List(organizationID string) *Collection {
 	col.req = req
 
 	return col
+}
+
+// Get returns a single entry
+func (service *AppDefinitionsService) Get(organizationID, appDefinitionID string) (*AppDefinition, error) {
+	path := fmt.Sprintf("/organizations/%s/app_definitions/%s", organizationID, appDefinitionID)
+	query := url.Values{}
+	method := "GET"
+
+	req, err := service.c.newRequest(method, path, query, nil)
+	if err != nil {
+		return &AppDefinition{}, err
+	}
+
+	var definition AppDefinition
+	if ok := service.c.do(req, &definition); ok != nil {
+		return nil, err
+	}
+
+	return &definition, err
 }
