@@ -137,7 +137,7 @@ func TestAppDefinitionsService_Upsert_Update(t *testing.T) {
 	cma = NewCMA(CMAToken)
 	cma.BaseURL = server.URL
 
-	definition, err := appDefinitionFromTestData("app_definition_1.json")
+	definition, err := appDefinitionFromTestFile("app_definition_1.json")
 	assertions.Nil(err)
 
 	definition.Name = "Hello Pluto"
@@ -169,7 +169,7 @@ func TestAppDefinitionsService_Delete(t *testing.T) {
 	cma = NewCMA(CMAToken)
 	cma.BaseURL = server.URL
 
-	definition, err := appDefinitionFromTestData("app_definition_1.json")
+	definition, err := appDefinitionFromTestFile("app_definition_1.json")
 	assertions.Nil(err)
 
 	err = cma.AppDefinitions.Delete("organization_id", definition.Sys.ID)
