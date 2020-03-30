@@ -76,11 +76,11 @@ func TestAppDefinitionsService_Upsert_Create(t *testing.T) {
 		assertions.Equal(r.RequestURI, "/organizations/organization_id/app_definitions")
 		checkHeaders(r, assertions)
 
-		//var payload map[string]interface{}
-		//err := json.NewDecoder(r.Body).Decode(&payload)
-		//assertions.Nil(err)
-		//assertions.Equal("new space", payload["name"])
-		//assertions.Equal("en", payload["defaultLocale"])
+		var payload map[string]interface{}
+		err := json.NewDecoder(r.Body).Decode(&payload)
+		assertions.Nil(err)
+		assertions.Equal("Hello Pluto", payload["name"])
+		assertions.Equal("https://example.com/hellopluto.html", payload["src"])
 
 		w.WriteHeader(201)
 		_, _ = fmt.Fprintln(w, string(readTestData("app_definition_1.json")))
