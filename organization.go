@@ -23,7 +23,7 @@ func (o *Organization) GetVersion() int {
 	return version
 }
 
-// List returns an environments collection
+// List returns an organizations collection
 func (service *OrganizationsService) List() *Collection {
 	path := fmt.Sprintf("/organizations")
 	method := "GET"

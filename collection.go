@@ -269,3 +269,13 @@ func (col *Collection) ToAppInstallation() []*AppInstallation {
 
 	return appInstallation
 }
+
+// ToUsage cast Items to Usage model
+func (col *Collection) ToUsage() []*Usage {
+	var usage []*Usage
+
+	byteArray, _ := json.Marshal(col.Items)
+	_ = json.NewDecoder(bytes.NewReader(byteArray)).Decode(&usage)
+
+	return usage
+}

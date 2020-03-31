@@ -1,0 +1,35 @@
+{
+  "sys": {
+    "type": "Array"
+  },
+  "total": 100,
+  "skip": 0,
+  "limit": 25,
+  "items": [
+    {
+      "sys": {
+        "id": "<usage_metric_id>",
+        "type": "OrganizationPeriodicUsage",
+        "organization": {
+          "sys": {
+            "type": "Link",
+            "linkType": "Organization",
+            "id": "organization_id"
+          }
+        }
+      },
+      "unitOfMeasure": "apiRequestCount",
+      "metric": "cma",
+      "dateRange": {
+        "startAt": "2020-01-01",
+        "endAt": "2020-01-03"
+      },
+      "usage": 100,
+      "usagePerDay": {
+        "2020-01-01": 30,
+        "2020-01-02": 30,
+        "2020-01-03": 40
+      }
+    }
+  ]
+}
