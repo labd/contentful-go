@@ -139,3 +139,27 @@ func TestAppInstallationsService_Upsert_Update(t *testing.T) {
 	assertions.Nil(err)
 	assertions.Equal("ipsum", installation.Parameters["lorum"])
 }
+
+func TestAppInstallationsService_Delete(t *testing.T) {
+	var err error
+	assertions := assert.New(t)
+
+	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		assertions.Equal(r.Method, "DELETE")
+		assertions.Equal(r.RequestURI, "/spaces/"+spaceID+"/environments/master/app_installations/app_definition_id")
+		checkHeaders(r, assertions)
+
+		w.WriteHeader(200)
+	})
+
+	// test server
+	server := httptest.NewServer(handler)
+	defer server.Close()
+
+	// cma client
+	cma = NewCMA(CMAToken)
+	cma.BaseURL = server.URL
+
+	err = cma.AppInstallations.Delete(spaceID, "app_definition_id")
+	assertions.Nil(err)
+}

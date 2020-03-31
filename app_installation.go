@@ -90,3 +90,16 @@ func (service *AppInstallationsService) Upsert(spaceID, appDefinitionID string, 
 
 	return service.c.do(req, installation)
 }
+
+// Delete the entry
+func (service *AppInstallationsService) Delete(spaceID, appDefinitionID string) error {
+	path := fmt.Sprintf("/spaces/%s/environments/%s/app_installations/%s", spaceID, service.c.Environment, appDefinitionID)
+	method := "DELETE"
+
+	req, err := service.c.newRequest(method, path, nil, nil)
+	if err != nil {
+		return err
+	}
+
+	return service.c.do(req, nil)
+}
