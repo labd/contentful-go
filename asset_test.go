@@ -205,7 +205,7 @@ func TestAssetsService_Delete(t *testing.T) {
 	cma = NewCMA(CMAToken)
 	cma.BaseURL = server.URL
 
-	// test locale
+	// test asset
 	asset, err := assetFromTestData("asset_1.json")
 	assertions.Nil(err)
 
@@ -236,7 +236,7 @@ func TestAssetsService_Process(t *testing.T) {
 	cma = NewCMA(CMAToken)
 	cma.BaseURL = server.URL
 
-	// test content type
+	// test asset
 	asset, err := assetFromTestData("asset_1.json")
 	assertions.Nil(err)
 
@@ -266,7 +266,7 @@ func TestAssetsService_Publish(t *testing.T) {
 	cma = NewCMA(CMAToken)
 	cma.BaseURL = server.URL
 
-	// test content type
+	// test asset
 	asset, err := assetFromTestData("asset_1.json")
 	assertions.Nil(err)
 
@@ -296,7 +296,7 @@ func TestContentTypesService_Unpublish(t *testing.T) {
 	cma = NewCMA(CMAToken)
 	cma.BaseURL = server.URL
 
-	// test content type
+	// test asset
 	asset, err := assetFromTestData("asset_1.json")
 	assertions.Nil(err)
 
@@ -326,7 +326,7 @@ func TestAssetsService_Archive(t *testing.T) {
 	cma = NewCMA(CMAToken)
 	cma.BaseURL = server.URL
 
-	// test content type
+	// test asset
 	asset, err := assetFromTestData("asset_1.json")
 	assertions.Nil(err)
 
@@ -356,7 +356,7 @@ func TestContentTypesService_Unarchive(t *testing.T) {
 	cma = NewCMA(CMAToken)
 	cma.BaseURL = server.URL
 
-	// test content type
+	// test asset
 	asset, err := assetFromTestData("asset_1.json")
 	assertions.Nil(err)
 
