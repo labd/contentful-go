@@ -32,8 +32,11 @@ func TestAPIKeyService_List(t *testing.T) {
 	cma = NewCMA(CMAToken)
 	cma.BaseURL = server.URL
 
-	_, err = cma.APIKeys.List(spaceID).Next()
+	res, err := cma.APIKeys.List(spaceID).Next()
 	assertions.Nil(err)
+	keys := res.ToAPIKey()
+	assertions.Equal(1, len(keys))
+	assertions.Equal("exampleapikey", keys[0].Sys.ID)
 }
 
 func TestAPIKeyService_Get(t *testing.T) {
@@ -58,8 +61,9 @@ func TestAPIKeyService_Get(t *testing.T) {
 	cma = NewCMA(CMAToken)
 	cma.BaseURL = server.URL
 
-	_, err = cma.APIKeys.Get(spaceID, "exampleapikey")
+	key, err := cma.APIKeys.Get(spaceID, "exampleapikey")
 	assertions.Nil(err)
+	assertions.Equal("exampleapikey", key.Sys.ID)
 }
 
 func TestAPIKeyService_Upsert_Create(t *testing.T) {
