@@ -1,9 +1,12 @@
 package contentful
 
 import (
+	"bytes"
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"net/url"
+	"strconv"
 )
 
 // AppInstallationsService service
@@ -58,4 +61,32 @@ func (service *AppInstallationsService) Get(spaceID, appDefinitionID string) (*A
 	}
 
 	return &installation, err
+}
+
+// Upsert updates or creates a new app installation
+func (service *AppInstallationsService) Upsert(spaceID, appDefinitionID string, installation *AppInstallation) error {
+	bytesArray, err := json.Marshal(installation)
+	if err != nil {
+		return err
+	}
+
+	var path string
+	var method string
+
+	if appDefinitionID != "" {
+		path = fmt.Sprintf("/spaces/%s/environments/%s/app_installations/%s", spaceID, service.c.Environment, appDefinitionID)
+		method = "PUT"
+	} else {
+		path = fmt.Sprintf("/spaces/%s/environments/%s/app_installations", spaceID, service.c.Environment)
+		method = "POST"
+	}
+
+	req, err := service.c.newRequest(method, path, nil, bytes.NewReader(bytesArray))
+	if err != nil {
+		return err
+	}
+
+	req.Header.Set("X-Contentful-Version", strconv.Itoa(installation.GetVersion()))
+
+	return service.c.do(req, installation)
 }
