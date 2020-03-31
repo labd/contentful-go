@@ -51,7 +51,7 @@ func (service *AppDefinitionsService) List(organizationID string) *Collection {
 	return col
 }
 
-// Get returns a single entry
+// Get returns a single app definition
 func (service *AppDefinitionsService) Get(organizationID, appDefinitionID string) (*AppDefinition, error) {
 	path := fmt.Sprintf("/organizations/%s/app_definitions/%s", organizationID, appDefinitionID)
 	query := url.Values{}
@@ -70,7 +70,7 @@ func (service *AppDefinitionsService) Get(organizationID, appDefinitionID string
 	return &definition, err
 }
 
-// Upsert updates or creates a new entry
+// Upsert updates or creates a new app definition
 func (service *AppDefinitionsService) Upsert(organizationID string, definition *AppDefinition) error {
 	bytesArray, err := json.Marshal(definition)
 	if err != nil {
