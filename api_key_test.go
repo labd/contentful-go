@@ -80,7 +80,7 @@ func TestAPIKeyService_Upsert_Create(t *testing.T) {
 		assertions.Equal("Example API Key", payload["name"])
 
 		w.WriteHeader(201)
-		_, _ = fmt.Fprintln(w, string(readTestData("api_key_1.json")))
+		_, _ = fmt.Fprintln(w, readTestData("api_key_1.json"))
 	})
 
 	// test server
@@ -133,7 +133,7 @@ func TestAPIKeyService_Upsert_Update(t *testing.T) {
 		assertions.Equal("This name is updated", payload["name"])
 
 		w.WriteHeader(200)
-		_, _ = fmt.Fprintln(w, string(readTestData("api_key_updated.json")))
+		_, _ = fmt.Fprintln(w, readTestData("api_key_updated.json"))
 	})
 
 	// test server
@@ -154,7 +154,7 @@ func TestAPIKeyService_Upsert_Update(t *testing.T) {
 	assertions.Equal("This name is updated", key.Name)
 }
 
-func TestAPIKeyServiceDelete(t *testing.T) {
+func TestAPIKeyService_Delete(t *testing.T) {
 	var err error
 	assertions := assert.New(t)
 

@@ -122,7 +122,7 @@ func TestAccessTokensService_Revoke(t *testing.T) {
 		assertions.Equal("2020-03-25T14:40:24Z", payload["revokedAt"])
 
 		w.WriteHeader(200)
-		_, _ = fmt.Fprintln(w, string(readTestData("access_token_updated.json")))
+		_, _ = fmt.Fprintln(w, readTestData("access_token_updated.json"))
 	})
 
 	// test server

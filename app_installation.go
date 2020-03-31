@@ -45,8 +45,8 @@ func (service *AppInstallationsService) List(spaceID string) *Collection {
 }
 
 // Get returns a single app installation
-func (service *AppInstallationsService) Get(spaceID, appDefinitionID string) (*AppInstallation, error) {
-	path := fmt.Sprintf("/spaces/%s/environments/%s/app_installations/%s", spaceID, service.c.Environment, appDefinitionID)
+func (service *AppInstallationsService) Get(spaceID, appInstallationID string) (*AppInstallation, error) {
+	path := fmt.Sprintf("/spaces/%s/environments/%s/app_installations/%s", spaceID, service.c.Environment, appInstallationID)
 	query := url.Values{}
 	method := "GET"
 
@@ -64,7 +64,7 @@ func (service *AppInstallationsService) Get(spaceID, appDefinitionID string) (*A
 }
 
 // Upsert updates or creates a new app installation
-func (service *AppInstallationsService) Upsert(spaceID, appDefinitionID string, installation *AppInstallation) error {
+func (service *AppInstallationsService) Upsert(spaceID, appInstallationID string, installation *AppInstallation) error {
 	bytesArray, err := json.Marshal(installation)
 	if err != nil {
 		return err
@@ -73,8 +73,8 @@ func (service *AppInstallationsService) Upsert(spaceID, appDefinitionID string, 
 	var path string
 	var method string
 
-	if appDefinitionID != "" {
-		path = fmt.Sprintf("/spaces/%s/environments/%s/app_installations/%s", spaceID, service.c.Environment, appDefinitionID)
+	if appInstallationID != "" {
+		path = fmt.Sprintf("/spaces/%s/environments/%s/app_installations/%s", spaceID, service.c.Environment, appInstallationID)
 		method = "PUT"
 	} else {
 		path = fmt.Sprintf("/spaces/%s/environments/%s/app_installations", spaceID, service.c.Environment)
@@ -91,9 +91,9 @@ func (service *AppInstallationsService) Upsert(spaceID, appDefinitionID string, 
 	return service.c.do(req, installation)
 }
 
-// Delete the entry
-func (service *AppInstallationsService) Delete(spaceID, appDefinitionID string) error {
-	path := fmt.Sprintf("/spaces/%s/environments/%s/app_installations/%s", spaceID, service.c.Environment, appDefinitionID)
+// Delete the app installation
+func (service *AppInstallationsService) Delete(spaceID, appInstallationID string) error {
+	path := fmt.Sprintf("/spaces/%s/environments/%s/app_installations/%s", spaceID, service.c.Environment, appInstallationID)
 	method := "DELETE"
 
 	req, err := service.c.newRequest(method, path, nil, nil)

@@ -83,7 +83,7 @@ func TestAppDefinitionsService_Upsert_Create(t *testing.T) {
 		assertions.Equal("https://example.com/app.html", payload["src"])
 
 		w.WriteHeader(201)
-		_, _ = fmt.Fprintln(w, string(readTestData("app_definition_1.json")))
+		_, _ = fmt.Fprintln(w, readTestData("app_definition_1.json"))
 	})
 
 	// test server
@@ -126,7 +126,7 @@ func TestAppDefinitionsService_Upsert_Update(t *testing.T) {
 		assertions.Equal("https://example.com/hellopluto.html", payload["src"])
 
 		w.WriteHeader(200)
-		_, _ = fmt.Fprintln(w, string(readTestData("app_definition_updated.json")))
+		_, _ = fmt.Fprintln(w, readTestData("app_definition_updated.json"))
 	})
 
 	// test server
