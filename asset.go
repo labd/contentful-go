@@ -198,7 +198,7 @@ func (service *AssetsService) Upsert(spaceID string, asset *Asset) error {
 	var path string
 	var method string
 
-	if asset.Sys.CreatedAt != "" {
+	if asset.Sys != nil && asset.Sys.ID != "" {
 		path = fmt.Sprintf("/spaces/%s/assets/%s", spaceID, asset.Sys.ID)
 		method = "PUT"
 	} else {
