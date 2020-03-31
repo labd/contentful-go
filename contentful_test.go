@@ -236,7 +236,7 @@ func extensionFromTestFile(fileName string) (*Extension, error) {
 	return &extension, nil
 }
 
-func appDefinitionFromTestData(fileName string) (*AppDefinition, error) {
+func appDefinitionFromTestFile(fileName string) (*AppDefinition, error) {
 	content := readTestData(fileName)
 
 	var appDefinition AppDefinition
@@ -246,6 +246,18 @@ func appDefinitionFromTestData(fileName string) (*AppDefinition, error) {
 	}
 
 	return &appDefinition, nil
+}
+
+func appInstallationFromTestFile(fileName string) (*AppInstallation, error) {
+	content := readTestData(fileName)
+
+	var appInstallation AppInstallation
+	err := json.NewDecoder(strings.NewReader(content)).Decode(&appInstallation)
+	if err != nil {
+		return nil, err
+	}
+
+	return &appInstallation, nil
 }
 
 func setup() {

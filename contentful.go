@@ -47,6 +47,7 @@ type Client struct {
 	EditorInterfaces   *EditorInterfacesService
 	Extensions         *ExtensionsService
 	AppDefinitions     *AppDefinitionsService
+	AppInstallations   *AppInstallationsService
 }
 
 type service struct {
@@ -91,6 +92,7 @@ func NewCMA(token string) *Client {
 	c.EditorInterfaces = (*EditorInterfacesService)(&c.commonService)
 	c.Extensions = (*ExtensionsService)(&c.commonService)
 	c.AppDefinitions = (*AppDefinitionsService)(&c.commonService)
+	c.AppInstallations = (*AppInstallationsService)(&c.commonService)
 	return c
 }
 

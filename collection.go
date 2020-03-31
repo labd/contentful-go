@@ -259,3 +259,13 @@ func (col *Collection) ToAppDefinition() []*AppDefinition {
 
 	return appDefinitions
 }
+
+// ToAppInstallation cast Items to AppInstallation model
+func (col *Collection) ToAppInstallation() []*AppInstallation {
+	var appInstallation []*AppInstallation
+
+	byteArray, _ := json.Marshal(col.Items)
+	_ = json.NewDecoder(bytes.NewReader(byteArray)).Decode(&appInstallation)
+
+	return appInstallation
+}
