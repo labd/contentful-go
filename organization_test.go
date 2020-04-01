@@ -31,6 +31,9 @@ func TestOrganizationsServiceList(t *testing.T) {
 	cma = NewCMA(CMAToken)
 	cma.BaseURL = server.URL
 
-	_, err = cma.Organizations.List().Next()
+	collection, err := cma.Organizations.List().Next()
 	assertions.Nil(err)
+	organization := collection.ToOrganization()
+	assertions.Equal(1, len(organization))
+	assertions.Equal("My organization", organization[0].Name)
 }

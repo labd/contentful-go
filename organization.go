@@ -13,16 +13,6 @@ type Organization struct {
 	Name string `json:"name"`
 }
 
-// GetVersion returns entity version
-func (o *Organization) GetVersion() int {
-	version := 1
-	if o.Sys != nil {
-		version = o.Sys.Version
-	}
-
-	return version
-}
-
 // List returns an organizations collection
 func (service *OrganizationsService) List() *Collection {
 	path := fmt.Sprintf("/organizations")
