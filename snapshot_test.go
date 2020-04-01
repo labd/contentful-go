@@ -76,7 +76,7 @@ func TestSnapshotsService_ListContentTypeSnapshots(t *testing.T) {
 		checkHeaders(r, assertions)
 
 		w.WriteHeader(200)
-		_, _ = fmt.Fprintln(w, readTestData("snapshot-content_type.json"))
+		_, _ = fmt.Fprintln(w, readTestData("snapshot_content_type.json"))
 	})
 
 	// test server
@@ -105,7 +105,7 @@ func TestEntriesServiceGetContentTypeSnapshot(t *testing.T) {
 		checkHeaders(r, assertions)
 
 		w.WriteHeader(200)
-		_, _ = fmt.Fprintln(w, readTestData("snapshot-content_type_1.json"))
+		_, _ = fmt.Fprintln(w, readTestData("snapshot_content_type_1.json"))
 	})
 
 	// test server

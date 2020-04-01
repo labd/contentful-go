@@ -20,7 +20,7 @@ func TestUserServiceMe(t *testing.T) {
 		checkHeaders(r, assertions)
 
 		w.WriteHeader(200)
-		_, _ = fmt.Fprintln(w, readTestData("user-me.json"))
+		_, _ = fmt.Fprintln(w, readTestData("user_me.json"))
 	})
 
 	// test server
