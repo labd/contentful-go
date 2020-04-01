@@ -32,8 +32,10 @@ func TestEntriesServiceList(t *testing.T) {
 	cma = NewCMA(CMAToken)
 	cma.BaseURL = server.URL
 
-	_, err = cma.Entries.List(spaceID).Next()
+	collection, err := cma.Entries.List(spaceID).Next()
 	assertions.Nil(err)
+	entry := collection.ToEntry()
+	assertions.Equal("5KsDBWseXY6QegucYAoacS", entry[0].Sys.ID)
 }
 
 func TestEntriesServiceGet(t *testing.T) {

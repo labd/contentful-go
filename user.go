@@ -20,16 +20,6 @@ type User struct {
 	TwoFactorAuthenticationEnabled bool   `json:"2faEnabled"`
 }
 
-// GetVersion returns entity version
-func (user *User) GetVersion() int {
-	version := 1
-	if user.Sys != nil {
-		version = user.Sys.Version
-	}
-
-	return version
-}
-
 // Me returns current authenticated user
 func (service *UsersService) Me() (*User, error) {
 	path := fmt.Sprintf("/users/me")

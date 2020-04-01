@@ -168,8 +168,11 @@ func TestContentTypesServiceList(t *testing.T) {
 	cma = NewCMA(CMAToken)
 	cma.BaseURL = server.URL
 
-	_, err = cma.ContentTypes.List(spaceID).Next()
+	collection, err := cma.ContentTypes.List(spaceID).Next()
 	assertions.Nil(err)
+	contentType := collection.ToContentType()
+	assertions.Equal(4, len(contentType))
+	assertions.Equal("City", contentType[0].Name)
 }
 
 func TestContentTypesServiceListActivated(t *testing.T) {

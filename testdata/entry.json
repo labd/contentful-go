@@ -1,62 +1,62 @@
 {
   "sys": {
-    "space": {
-      "sys": {
-        "type": "Link",
-        "linkType": "Space",
-        "id": "cfexampleapi"
-      }
-    },
-    "id": "foocat",
-    "type": "Entry",
-    "createdAt": "2013-06-27T22:46:19.513Z",
-    "updatedAt": "2013-09-04T09:19:39.027Z",
-    "revision": 5,
-    "contentType": {
-      "sys": {
-        "type": "Link",
-        "linkType": "ContentType",
-        "id": "cat"
-      }
-    }
+    "type": "Array"
   },
-  "fields": {
-    "name": {
-      "en-US": "Nyan Cat",
-      "tlh": "Nyan vIghro'"
-    },
-    "likes": {
-      "en-US": [
-        "rainbows",
-        "fish"
-      ]
-    },
-    "color": {
-      "en-US": "rainbow"
-    },
-    "bestFriend": {
-      "en-US": {
-        "sys": {
-          "type": "Link",
-          "linkType": "Entry",
-          "id": "happycat"
+  "total": 1,
+  "skip": 0,
+  "limit": 100,
+  "items": [
+    {
+      "fields": {
+        "title": {
+          "en-US": "Hello, World!"
+        },
+        "body": {
+          "en-US": "Bacon is healthy!"
         }
-      }
-    },
-    "birthday": {
-      "en-US": "2011-04-04T22:00:00+00:00"
-    },
-    "lives": {
-      "en-US": 1337
-    },
-    "image": {
-      "en-US": {
-        "sys": {
-          "type": "Link",
-          "linkType": "Asset",
-          "id": "nyancat"
+      },
+      "sys": {
+        "id": "5KsDBWseXY6QegucYAoacS",
+        "type": "Entry",
+        "contentType": {
+          "sys": {
+            "type": "Link",
+            "linkType": "ContentType",
+            "id": "hfM9RCJIk0wIm06WkEOQY"
+          }
+        },
+        "version": 1,
+        "space": {
+          "sys": {
+            "type": "Link",
+            "linkType": "Space",
+            "id": "yadj1kx9rmg0"
+          }
+        },
+        "environment": {
+          "sys": {
+            "type": "Link",
+            "linkType": "Environment",
+            "id": "staging"
+          }
+        },
+        "createdAt": "2015-05-18T11:29:46.809Z",
+        "createdBy": {
+          "sys": {
+            "type": "Link",
+            "linkType": "User",
+            "id": "7BslKh9TdKGOK41VmLDjFZ"
+          }
+        },
+        "updatedAt": "2015-05-18T11:29:46.809Z",
+        "updatedBy": {
+          "sys": {
+            "type": "Link",
+            "linkType": "User",
+            "id": "4FLrUHftHW3v2BLi9fzfjU"
+          }
         }
       }
     }
-  }
+  ]
 }

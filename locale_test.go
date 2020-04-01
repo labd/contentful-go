@@ -21,7 +21,7 @@ func TestLocalesServiceList(t *testing.T) {
 		checkHeaders(r, assertions)
 
 		w.WriteHeader(200)
-		_, _ = fmt.Fprintln(w, readTestData("locales.json"))
+		_, _ = fmt.Fprintln(w, readTestData("locale.json"))
 	})
 
 	// test server
@@ -32,8 +32,10 @@ func TestLocalesServiceList(t *testing.T) {
 	cma = NewCMA(CMAToken)
 	cma.BaseURL = server.URL
 
-	_, err = cma.Locales.List(spaceID).Next()
+	collection, err := cma.Locales.List(spaceID).Next()
 	assertions.Nil(err)
+	locale := collection.ToLocale()
+	assertions.Equal("34N35DoyUQAtaKwWTgZs34", locale[0].Sys.ID)
 }
 
 func TestLocalesServiceGet(t *testing.T) {

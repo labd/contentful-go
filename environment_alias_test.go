@@ -32,8 +32,11 @@ func TestEnvironmentAliasesServicesList(t *testing.T) {
 	cma = NewCMA(CMAToken)
 	cma.BaseURL = server.URL
 
-	_, err = cma.EnvironmentAliases.List(spaceID).Next()
+	collection, err := cma.EnvironmentAliases.List(spaceID).Next()
 	assertions.Nil(err)
+	environmentAlias := collection.ToEnvironmentAlias()
+	assertions.Equal(1, len(environmentAlias))
+	assertions.Equal("master-18-3-2020", environmentAlias[0].Alias.Sys.ID)
 }
 
 func TestEnvironmentAliasesServicesGet(t *testing.T) {
