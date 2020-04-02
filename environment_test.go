@@ -10,7 +10,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestEnvironmentsServiceList(t *testing.T) {
+func TestEnvironmentsService_List(t *testing.T) {
 	var err error
 	assertions := assert.New(t)
 
@@ -21,7 +21,7 @@ func TestEnvironmentsServiceList(t *testing.T) {
 		checkHeaders(r, assertions)
 
 		w.WriteHeader(200)
-		_, _ = fmt.Fprintln(w, readTestData("environments.json"))
+		_, _ = fmt.Fprintln(w, readTestData("environment.json"))
 	})
 
 	// test server
@@ -32,11 +32,14 @@ func TestEnvironmentsServiceList(t *testing.T) {
 	cma = NewCMA(CMAToken)
 	cma.BaseURL = server.URL
 
-	_, err = cma.Environments.List(spaceID).Next()
+	collection, err := cma.Environments.List(spaceID).Next()
 	assertions.Nil(err)
+	environment := collection.ToEnvironment()
+	assertions.Equal(1, len(environment))
+	assertions.Equal("master", environment[0].Name)
 }
 
-func TestEnvironmentsServiceGet(t *testing.T) {
+func TestEnvironmentsService_Get(t *testing.T) {
 	var err error
 	assertions := assert.New(t)
 
@@ -63,7 +66,34 @@ func TestEnvironmentsServiceGet(t *testing.T) {
 	assertions.Nil(err)
 }
 
-func TestEnvironmentsServiceUpsertCreate(t *testing.T) {
+func TestEnvironmentsService_Get_2(t *testing.T) {
+	var err error
+	assertions := assert.New(t)
+
+	// Only tests master environment, as this is the only environment that always exists.
+	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		assertions.Equal(r.Method, "GET")
+		assertions.Equal(r.URL.Path, "/spaces/"+spaceID+"/environments/master")
+
+		checkHeaders(r, assertions)
+
+		w.WriteHeader(400)
+		_, _ = fmt.Fprintln(w, readTestData("environment.json"))
+	})
+
+	// test server
+	server := httptest.NewServer(handler)
+	defer server.Close()
+
+	// cma client
+	cma = NewCMA(CMAToken)
+	cma.BaseURL = server.URL
+
+	_, err = cma.Environments.Get(spaceID, "master")
+	assertions.NotNil(err)
+}
+
+func TestEnvironmentsService_Upsert_Create(t *testing.T) {
 	var err error
 	assertions := assert.New(t)
 
@@ -98,7 +128,7 @@ func TestEnvironmentsServiceUpsertCreate(t *testing.T) {
 	assertions.Nil(err)
 }
 
-func TestEnvironmentsServiceUpsertUpdate(t *testing.T) {
+func TestEnvironmentsService_Upsert_Update(t *testing.T) {
 	var err error
 	assertions := assert.New(t)
 
@@ -114,7 +144,7 @@ func TestEnvironmentsServiceUpsertUpdate(t *testing.T) {
 		assertions.Equal("modified-name", payload["name"])
 
 		w.WriteHeader(200)
-		_, _ = fmt.Fprintln(w, string(readTestData("environment_1.json")))
+		_, _ = fmt.Fprintln(w, readTestData("environment_1.json"))
 	})
 
 	// test server
@@ -134,7 +164,7 @@ func TestEnvironmentsServiceUpsertUpdate(t *testing.T) {
 	assertions.Nil(err)
 }
 
-func TestEnvironmentsServiceDelete(t *testing.T) {
+func TestEnvironmentsService_Delete(t *testing.T) {
 	var err error
 	assertions := assert.New(t)
 

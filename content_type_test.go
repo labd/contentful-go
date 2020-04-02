@@ -68,7 +68,7 @@ func ExampleContentTypesService_Upsert_create() {
 	}
 }
 
-func ExampleContentTypesService_Upsert_update() {
+func ExampleContentTypesService_Upsert_Update() {
 	cma := NewCMA("cma-token")
 
 	contentType, err := cma.ContentTypes.Get("space-id", "content-type-id")
@@ -168,8 +168,11 @@ func TestContentTypesServiceList(t *testing.T) {
 	cma = NewCMA(CMAToken)
 	cma.BaseURL = server.URL
 
-	_, err = cma.ContentTypes.List(spaceID).Next()
+	collection, err := cma.ContentTypes.List(spaceID).Next()
 	assertions.Nil(err)
+	contentType := collection.ToContentType()
+	assertions.Equal(4, len(contentType))
+	assertions.Equal("City", contentType[0].Name)
 }
 
 func TestContentTypesServiceListActivated(t *testing.T) {
@@ -196,6 +199,59 @@ func TestContentTypesServiceListActivated(t *testing.T) {
 
 	_, err = cma.ContentTypes.ListActivated(spaceID).Next()
 	assertions.Nil(err)
+}
+
+func TestContentTypesService_Get(t *testing.T) {
+	var err error
+	assertions := assert.New(t)
+
+	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		assertions.Equal(r.Method, "GET")
+		assertions.Equal(r.URL.Path, "/spaces/"+spaceID+"/content_types/63Vgs0BFK0USe4i2mQUGK6")
+
+		checkHeaders(r, assertions)
+
+		w.WriteHeader(200)
+		_, _ = fmt.Fprintln(w, readTestData("content_type.json"))
+	})
+
+	// test server
+	server := httptest.NewServer(handler)
+	defer server.Close()
+
+	// cma client
+	cma = NewCMA(CMAToken)
+	cma.BaseURL = server.URL
+
+	contentType, err := cma.ContentTypes.Get(spaceID, "63Vgs0BFK0USe4i2mQUGK6")
+	assertions.Nil(err)
+	assertions.Equal("63Vgs0BFK0USe4i2mQUGK6", contentType.Sys.ID)
+}
+
+func TestContentTypesService_Get_2(t *testing.T) {
+	var err error
+	assertions := assert.New(t)
+
+	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		assertions.Equal(r.Method, "GET")
+		assertions.Equal(r.URL.Path, "/spaces/"+spaceID+"/content_types/63Vgs0BFK0USe4i2mQUGK6")
+
+		checkHeaders(r, assertions)
+
+		w.WriteHeader(400)
+		_, _ = fmt.Fprintln(w, readTestData("content_type.json"))
+	})
+
+	// test server
+	server := httptest.NewServer(handler)
+	defer server.Close()
+
+	// cma client
+	cma = NewCMA(CMAToken)
+	cma.BaseURL = server.URL
+
+	_, err = cma.ContentTypes.Get(spaceID, "63Vgs0BFK0USe4i2mQUGK6")
+	assertions.NotNil(err)
 }
 
 func TestContentTypesServiceActivate(t *testing.T) {
@@ -291,7 +347,7 @@ func TestContentTypeSaveForCreate(t *testing.T) {
 		assertions.Equal(field1["id"].(string), payload["displayField"])
 
 		w.WriteHeader(201)
-		_, _ = fmt.Fprintln(w, string(readTestData("content_type.json")))
+		_, _ = fmt.Fprintln(w, readTestData("content_type.json"))
 	})
 
 	// test server
@@ -368,7 +424,7 @@ func TestContentTypeSaveForUpdate(t *testing.T) {
 		assertions.Equal(field3["id"].(string), payload["displayField"])
 
 		w.WriteHeader(200)
-		_, _ = fmt.Fprintln(w, string(readTestData("content_type-updated.json")))
+		_, _ = fmt.Fprintln(w, readTestData("content_type-updated.json"))
 	})
 
 	// test server
@@ -423,7 +479,7 @@ func TestContentTypeCreateWithoutID(t *testing.T) {
 		checkHeaders(r, assertions)
 
 		w.WriteHeader(200)
-		_, _ = fmt.Fprintln(w, string(readTestData("content_type-updated.json")))
+		_, _ = fmt.Fprintln(w, readTestData("content_type-updated.json"))
 	})
 
 	// test server
@@ -454,7 +510,7 @@ func TestContentTypeCreateWithID(t *testing.T) {
 		checkHeaders(r, assertions)
 
 		w.WriteHeader(200)
-		_, _ = fmt.Fprintln(w, string(readTestData("content_type-updated.json")))
+		_, _ = fmt.Fprintln(w, readTestData("content_type-updated.json"))
 	})
 
 	// test server
@@ -532,7 +588,7 @@ func TestContentTypeFieldRef(t *testing.T) {
 		assertions.Equal("63Vgs0BFK0USe4i2mQUGK6", linkValidationValue[0].(string))
 
 		w.WriteHeader(201)
-		_, _ = fmt.Fprintln(w, string(readTestData("content_type.json")))
+		_, _ = fmt.Fprintln(w, readTestData("content_type.json"))
 	})
 
 	// test server
@@ -596,7 +652,7 @@ func TestContentTypeFieldArray(t *testing.T) {
 		assertions.Equal(true, validation1["unique"].(bool))
 
 		w.WriteHeader(201)
-		_, _ = fmt.Fprintln(w, string(readTestData("content_type.json")))
+		_, _ = fmt.Fprintln(w, readTestData("content_type.json"))
 	})
 
 	// test server
@@ -675,7 +731,7 @@ func TestContentTypeFieldValidationRangeUniquePredefinedValues(t *testing.T) {
 		assertions.Equal(float64(22), predefinedValues[2].(float64))
 
 		w.WriteHeader(201)
-		_, _ = fmt.Fprintln(w, string(readTestData("content_type.json")))
+		_, _ = fmt.Fprintln(w, readTestData("content_type.json"))
 	})
 
 	// test server
@@ -745,7 +801,7 @@ func TestContentTypeFieldTypeMedia(t *testing.T) {
 		validationMimeType := validations[0].(map[string]interface{})
 		linkMimetypeGroup := validationMimeType["linkMimetypeGroup"].([]interface{})
 		assertions.Equal(12, len(linkMimetypeGroup))
-		mimetypes := []string{}
+		var mimetypes []string
 		for _, mimetype := range linkMimetypeGroup {
 			mimetypes = append(mimetypes, mimetype.(string))
 		}
@@ -792,7 +848,7 @@ func TestContentTypeFieldTypeMedia(t *testing.T) {
 		assertions.Equal(400, max)
 
 		w.WriteHeader(201)
-		_, _ = fmt.Fprintln(w, string(readTestData("content_type.json")))
+		_, _ = fmt.Fprintln(w, readTestData("content_type.json"))
 	})
 
 	// test server
@@ -860,7 +916,7 @@ func TestContentTypeFieldValidationsUnmarshal(t *testing.T) {
 
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(201)
-		_, _ = fmt.Fprintln(w, string(readTestData("content_type_with_validations.json")))
+		_, _ = fmt.Fprintln(w, readTestData("content_type_with_validations.json"))
 	})
 
 	server := httptest.NewServer(handler)
@@ -872,16 +928,16 @@ func TestContentTypeFieldValidationsUnmarshal(t *testing.T) {
 	ct, err := cma.ContentTypes.Get(spaceID, "validationsTest")
 	assertions.Nil(err)
 
-	uniqueValidations := []FieldValidation{}
-	linkValidations := []FieldValidation{}
-	sizeValidations := []FieldValidation{}
-	regexValidations := []FieldValidation{}
-	preDefinedValidations := []FieldValidation{}
-	rangeValidations := []FieldValidation{}
-	dateValidations := []FieldValidation{}
-	mimeTypeValidations := []FieldValidation{}
-	dimensionValidations := []FieldValidation{}
-	fileSizeValidations := []FieldValidation{}
+	var uniqueValidations []FieldValidation
+	var linkValidations []FieldValidation
+	var sizeValidations []FieldValidation
+	var regexValidations []FieldValidation
+	var preDefinedValidations []FieldValidation
+	var rangeValidations []FieldValidation
+	var dateValidations []FieldValidation
+	var mimeTypeValidations []FieldValidation
+	var dimensionValidations []FieldValidation
+	var fileSizeValidations []FieldValidation
 
 	for _, field := range ct.Fields {
 		if field.Name == "text-short" {

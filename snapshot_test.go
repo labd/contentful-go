@@ -9,7 +9,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestSnapshotsServiceListEntrySnapshots(t *testing.T) {
+func TestSnapshotsService_ListEntrySnapshots(t *testing.T) {
 	var err error
 	assertions := assert.New(t)
 
@@ -20,7 +20,7 @@ func TestSnapshotsServiceListEntrySnapshots(t *testing.T) {
 		checkHeaders(r, assertions)
 
 		w.WriteHeader(200)
-		_, _ = fmt.Fprintln(w, readTestData("snapshot-entry.json"))
+		_, _ = fmt.Fprintln(w, readTestData("snapshot_entry.json"))
 	})
 
 	// test server
@@ -31,11 +31,14 @@ func TestSnapshotsServiceListEntrySnapshots(t *testing.T) {
 	cma = NewCMA(CMAToken)
 	cma.BaseURL = server.URL
 
-	_, err = cma.Snapshots.ListEntrySnapshots(spaceID, "hfM9RCJIk0wIm06WkEOQY").Next()
+	collection, err := cma.Snapshots.ListEntrySnapshots(spaceID, "hfM9RCJIk0wIm06WkEOQY").Next()
 	assertions.Nil(err)
+	entrySnapshot := collection.ToEntrySnapshot()
+	assertions.Equal(1, len(entrySnapshot))
+	assertions.Equal("Hello, World!", entrySnapshot[0].EntrySnapshotDetail.Fields["title"].(map[string]interface{})["en-US"])
 }
 
-func TestEntriesServiceGetEntrySnapshot(t *testing.T) {
+func TestSnapshotsService_GetEntrySnapshot(t *testing.T) {
 	var err error
 	assertions := assert.New(t)
 
@@ -46,7 +49,34 @@ func TestEntriesServiceGetEntrySnapshot(t *testing.T) {
 		checkHeaders(r, assertions)
 
 		w.WriteHeader(200)
-		_, _ = fmt.Fprintln(w, readTestData("snapshot-entry_1.json"))
+		_, _ = fmt.Fprintln(w, readTestData("snapshot_entry_1.json"))
+	})
+
+	// test server
+	server := httptest.NewServer(handler)
+	defer server.Close()
+
+	// cma client
+	cma = NewCMA(CMAToken)
+	cma.BaseURL = server.URL
+
+	entrySnapshot, err := cma.Snapshots.GetEntrySnapshot(spaceID, "hfM9RCJIk0wIm06WkEOQY", "4FLrUHftHW3v2BLi9fzfjU")
+	assertions.Nil(err)
+	assertions.Equal("Hello, World!", entrySnapshot.EntrySnapshotDetail.Fields["title"].(map[string]interface{})["en-US"])
+}
+
+func TestSnapshotsService_GetEntrySnapshot_2(t *testing.T) {
+	var err error
+	assertions := assert.New(t)
+
+	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		assertions.Equal(r.Method, "GET")
+		assertions.Equal(r.URL.Path, "/spaces/"+spaceID+"/environments/master/entries/hfM9RCJIk0wIm06WkEOQY/snapshots/4FLrUHftHW3v2BLi9fzfjU")
+
+		checkHeaders(r, assertions)
+
+		w.WriteHeader(400)
+		_, _ = fmt.Fprintln(w, readTestData("snapshot_entry_1.json"))
 	})
 
 	// test server
@@ -61,7 +91,7 @@ func TestEntriesServiceGetEntrySnapshot(t *testing.T) {
 	assertions.Nil(err)
 }
 
-func TestSnapshotsServiceListContentTypeSnapshots(t *testing.T) {
+func TestSnapshotsService_ListContentTypeSnapshots(t *testing.T) {
 	var err error
 	assertions := assert.New(t)
 
@@ -72,7 +102,7 @@ func TestSnapshotsServiceListContentTypeSnapshots(t *testing.T) {
 		checkHeaders(r, assertions)
 
 		w.WriteHeader(200)
-		_, _ = fmt.Fprintln(w, readTestData("snapshot-content_type.json"))
+		_, _ = fmt.Fprintln(w, readTestData("snapshot_content_type.json"))
 	})
 
 	// test server
@@ -83,11 +113,14 @@ func TestSnapshotsServiceListContentTypeSnapshots(t *testing.T) {
 	cma = NewCMA(CMAToken)
 	cma.BaseURL = server.URL
 
-	_, err = cma.Snapshots.ListContentTypeSnapshots(spaceID, "hfM9RCJIk0wIm06WkEOQY").Next()
+	collection, err := cma.Snapshots.ListContentTypeSnapshots(spaceID, "hfM9RCJIk0wIm06WkEOQY").Next()
 	assertions.Nil(err)
+	entrySnapshot := collection.ToContentTypeSnapshot()
+	assertions.Equal(1, len(entrySnapshot))
+	assertions.Equal("Blog Post", entrySnapshot[0].ContentTypeSnapshotDetail.Name)
 }
 
-func TestEntriesServiceGetContentTypeSnapshot(t *testing.T) {
+func TestSnapshotsService_GetContentTypeSnapshots(t *testing.T) {
 	var err error
 	assertions := assert.New(t)
 
@@ -98,7 +131,35 @@ func TestEntriesServiceGetContentTypeSnapshot(t *testing.T) {
 		checkHeaders(r, assertions)
 
 		w.WriteHeader(200)
-		_, _ = fmt.Fprintln(w, readTestData("snapshot-content_type_1.json"))
+		_, _ = fmt.Fprintln(w, readTestData("snapshot_content_type_1.json"))
+	})
+
+	// test server
+	server := httptest.NewServer(handler)
+	defer server.Close()
+
+	// cma client
+	cma = NewCMA(CMAToken)
+	cma.BaseURL = server.URL
+
+	entrySnapshot, err := cma.Snapshots.GetContentTypeSnapshots(spaceID, "hfM9RCJIk0wIm06WkEOQY", "4FLrUHftHW3v2BLi9fzfjU")
+	assertions.Nil(err)
+	assertions.Equal("Blog Post", entrySnapshot.ContentTypeSnapshotDetail.Name)
+
+}
+
+func TestSnapshotsService_GetContentTypeSnapshots_2(t *testing.T) {
+	var err error
+	assertions := assert.New(t)
+
+	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		assertions.Equal(r.Method, "GET")
+		assertions.Equal(r.URL.Path, "/spaces/"+spaceID+"/environments/master/content_types/hfM9RCJIk0wIm06WkEOQY/snapshots/4FLrUHftHW3v2BLi9fzfjU")
+
+		checkHeaders(r, assertions)
+
+		w.WriteHeader(400)
+		_, _ = fmt.Fprintln(w, readTestData("snapshot_content_type_1.json"))
 	})
 
 	// test server
@@ -111,4 +172,5 @@ func TestEntriesServiceGetContentTypeSnapshot(t *testing.T) {
 
 	_, err = cma.Snapshots.GetContentTypeSnapshots(spaceID, "hfM9RCJIk0wIm06WkEOQY", "4FLrUHftHW3v2BLi9fzfjU")
 	assertions.Nil(err)
+
 }

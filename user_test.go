@@ -9,7 +9,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestUserServiceMe(t *testing.T) {
+func TestUsersService_Me(t *testing.T) {
 	var err error
 	assertions := assert.New(t)
 
@@ -20,7 +20,7 @@ func TestUserServiceMe(t *testing.T) {
 		checkHeaders(r, assertions)
 
 		w.WriteHeader(200)
-		_, _ = fmt.Fprintln(w, readTestData("user-me.json"))
+		_, _ = fmt.Fprintln(w, readTestData("user_me.json"))
 	})
 
 	// test server
@@ -33,4 +33,30 @@ func TestUserServiceMe(t *testing.T) {
 
 	_, err = cma.Users.Me()
 	assertions.Nil(err)
+}
+
+func TestUsersService_Me_2(t *testing.T) {
+	var err error
+	assertions := assert.New(t)
+
+	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		assertions.Equal(r.Method, "GET")
+		assertions.Equal(r.URL.Path, "/users/me")
+
+		checkHeaders(r, assertions)
+
+		w.WriteHeader(400)
+		_, _ = fmt.Fprintln(w, readTestData("user_me.json"))
+	})
+
+	// test server
+	server := httptest.NewServer(handler)
+	defer server.Close()
+
+	// cma client
+	cma = NewCMA(CMAToken)
+	cma.BaseURL = server.URL
+
+	_, err = cma.Users.Me()
+	assertions.NotEmpty(err)
 }

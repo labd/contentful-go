@@ -20,6 +20,7 @@
   "sys": {
     "id": "3A13SXSDwO8c46NrjigFYT",
     "type": "ScheduledAction",
+    "version": 2,
     "status": "scheduled",
     "createdAt": "2020-01-01T13:00:00.000Z",
     "createdBy": {

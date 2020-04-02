@@ -9,7 +9,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestOrganizationsServiceList(t *testing.T) {
+func TestOrganizationsService_List(t *testing.T) {
 	var err error
 	assertions := assert.New(t)
 
@@ -31,6 +31,9 @@ func TestOrganizationsServiceList(t *testing.T) {
 	cma = NewCMA(CMAToken)
 	cma.BaseURL = server.URL
 
-	_, err = cma.Organizations.List().Next()
+	collection, err := cma.Organizations.List().Next()
 	assertions.Nil(err)
+	organization := collection.ToOrganization()
+	assertions.Equal(1, len(organization))
+	assertions.Equal("My organization", organization[0].Name)
 }

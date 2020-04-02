@@ -10,7 +10,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestEnvironmentAliasesServicesList(t *testing.T) {
+func TestEnvironmentAliasesServices_List(t *testing.T) {
 	var err error
 	assertions := assert.New(t)
 
@@ -21,7 +21,7 @@ func TestEnvironmentAliasesServicesList(t *testing.T) {
 		checkHeaders(r, assertions)
 
 		w.WriteHeader(200)
-		_, _ = fmt.Fprintln(w, readTestData("environment-alias.json"))
+		_, _ = fmt.Fprintln(w, readTestData("environment_alias.json"))
 	})
 
 	// test server
@@ -32,11 +32,14 @@ func TestEnvironmentAliasesServicesList(t *testing.T) {
 	cma = NewCMA(CMAToken)
 	cma.BaseURL = server.URL
 
-	_, err = cma.EnvironmentAliases.List(spaceID).Next()
+	collection, err := cma.EnvironmentAliases.List(spaceID).Next()
 	assertions.Nil(err)
+	environmentAlias := collection.ToEnvironmentAlias()
+	assertions.Equal(1, len(environmentAlias))
+	assertions.Equal("master-18-3-2020", environmentAlias[0].Alias.Sys.ID)
 }
 
-func TestEnvironmentAliasesServicesGet(t *testing.T) {
+func TestEnvironmentAliasesServices_Get(t *testing.T) {
 	var err error
 	assertions := assert.New(t)
 
@@ -48,7 +51,7 @@ func TestEnvironmentAliasesServicesGet(t *testing.T) {
 		checkHeaders(r, assertions)
 
 		w.WriteHeader(200)
-		_, _ = fmt.Fprintln(w, readTestData("environment-alias_1.json"))
+		_, _ = fmt.Fprintln(w, readTestData("environment_alias_1.json"))
 	})
 
 	// test server
@@ -63,7 +66,34 @@ func TestEnvironmentAliasesServicesGet(t *testing.T) {
 	assertions.Nil(err)
 }
 
-func TestEnvironmentAliasesServiceUpdate(t *testing.T) {
+func TestEnvironmentAliasesServices_Get_2(t *testing.T) {
+	var err error
+	assertions := assert.New(t)
+
+	// Only tests master environment, as this is the only environment that always exists.
+	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		assertions.Equal(r.Method, "GET")
+		assertions.Equal(r.URL.Path, "/spaces/"+spaceID+"/environment_aliases/master")
+
+		checkHeaders(r, assertions)
+
+		w.WriteHeader(400)
+		_, _ = fmt.Fprintln(w, readTestData("environment_alias_1.json"))
+	})
+
+	// test server
+	server := httptest.NewServer(handler)
+	defer server.Close()
+
+	// cma client
+	cma = NewCMA(CMAToken)
+	cma.BaseURL = server.URL
+
+	_, err = cma.EnvironmentAliases.Get(spaceID, "master")
+	assertions.NotNil(err)
+}
+
+func TestEnvironmentAliasesService_Update(t *testing.T) {
 	var err error
 	assertions := assert.New(t)
 
@@ -79,7 +109,7 @@ func TestEnvironmentAliasesServiceUpdate(t *testing.T) {
 		assertions.Equal("staging", payload.Alias.Sys.ID)
 
 		w.WriteHeader(200)
-		_, _ = fmt.Fprintln(w, string(readTestData("environment-alias_1.json")))
+		_, _ = fmt.Fprintln(w, readTestData("environment_alias_1.json"))
 	})
 
 	// test server
@@ -90,7 +120,7 @@ func TestEnvironmentAliasesServiceUpdate(t *testing.T) {
 	cma = NewCMA(CMAToken)
 	cma.BaseURL = server.URL
 
-	environmentAlias, err := environmentAliasFromTestData("environment-alias_1.json")
+	environmentAlias, err := environmentAliasFromTestData("environment_alias_1.json")
 	assertions.Nil(err)
 
 	environmentAlias.Alias.Sys.ID = "staging"

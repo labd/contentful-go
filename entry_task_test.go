@@ -66,6 +66,32 @@ func TestEntryTasksService_Get(t *testing.T) {
 	assertions.Equal("RHfHVRz3QkAgcMq4CGg2m5", entryTask.Sys.ID)
 }
 
+func TestEntryTasksService_Get_2(t *testing.T) {
+	var err error
+	assertions := assert.New(t)
+
+	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		assertions.Equal(r.Method, "GET")
+		assertions.Equal(r.URL.Path, "/spaces/"+spaceID+"/environments/master/entries/5KsDBWseXY6QegucYAoacS/tasks/RHfHVRz3QkAgcMq4CGg2m5")
+
+		checkHeaders(r, assertions)
+
+		w.WriteHeader(400)
+		_, _ = fmt.Fprintln(w, readTestData("entry_task_1.json"))
+	})
+
+	// test server
+	server := httptest.NewServer(handler)
+	defer server.Close()
+
+	// cma client
+	cma = NewCMA(CMAToken)
+	cma.BaseURL = server.URL
+
+	_, err = cma.EntryTasks.Get(spaceID, "5KsDBWseXY6QegucYAoacS", "RHfHVRz3QkAgcMq4CGg2m5")
+	assertions.Nil(err)
+}
+
 func TestEntryTasksService_Delete(t *testing.T) {
 	var err error
 	assertions := assert.New(t)
@@ -108,7 +134,7 @@ func TestEntryTasksService_Upsert_Create(t *testing.T) {
 		assertions.Equal("active", payload["status"])
 
 		w.WriteHeader(201)
-		_, _ = fmt.Fprintln(w, string(readTestData("entry_task_new.json")))
+		_, _ = fmt.Fprintln(w, readTestData("entry_task_new.json"))
 	})
 
 	// test server
@@ -154,7 +180,7 @@ func TestEntryTasksService_Upsert_Update(t *testing.T) {
 		assertions.Equal("active", payload["status"])
 
 		w.WriteHeader(200)
-		_, _ = fmt.Fprintln(w, string(readTestData("entry_task_1.json")))
+		_, _ = fmt.Fprintln(w, readTestData("entry_task_1.json"))
 	})
 
 	// test server

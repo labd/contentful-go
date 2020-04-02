@@ -192,6 +192,32 @@ func TestSpacesServiceGet(t *testing.T) {
 	assertions.Equal("id1", space.Sys.ID)
 }
 
+func TestSpacesService_Get_2(t *testing.T) {
+	var err error
+	assertions := assert.New(t)
+
+	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		assertions.Equal(r.Method, "GET")
+		assertions.Equal(r.URL.Path, "/spaces/"+spaceID)
+
+		checkHeaders(r, assertions)
+
+		w.WriteHeader(400)
+		_, _ = fmt.Fprintln(w, readTestData("space-1.json"))
+	})
+
+	// test server
+	server := httptest.NewServer(handler)
+	defer server.Close()
+
+	// cma client
+	cma = NewCMA(CMAToken)
+	cma.BaseURL = server.URL
+
+	_, err = cma.Spaces.Get(spaceID)
+	assertions.NotNil(err)
+}
+
 func TestSpaceSaveForCreate(t *testing.T) {
 	assertions := assert.New(t)
 
@@ -207,7 +233,7 @@ func TestSpaceSaveForCreate(t *testing.T) {
 		assertions.Equal("en", payload["defaultLocale"])
 
 		w.WriteHeader(201)
-		_, _ = fmt.Fprintln(w, string(readTestData("spaces-newspace.json")))
+		_, _ = fmt.Fprintln(w, readTestData("spaces-newspace.json"))
 	})
 
 	// test server
@@ -246,7 +272,7 @@ func TestSpaceSaveForUpdate(t *testing.T) {
 		assertions.Equal("de", payload["defaultLocale"])
 
 		w.WriteHeader(200)
-		_, _ = fmt.Fprintln(w, string(readTestData("spaces-newspace-updated.json")))
+		_, _ = fmt.Fprintln(w, readTestData("spaces-newspace-updated.json"))
 	})
 
 	// test server

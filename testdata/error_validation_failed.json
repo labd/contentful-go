@@ -1,0 +1,8 @@
+{
+  "sys": {
+    "type": "Error",
+    "id": "BadRequest"
+  },
+  "message": "Invalid JSON in request body: .classname {\n    background-color: red;\n}\n",
+  "requestId": "374987sdvHGJ87bc06000dfa78265"
+}

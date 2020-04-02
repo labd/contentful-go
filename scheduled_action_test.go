@@ -81,7 +81,7 @@ func TestScheduledActionsService_Create(t *testing.T) {
 		assertions.Equal("publish", payload["action"])
 
 		w.WriteHeader(201)
-		_, _ = fmt.Fprintln(w, string(readTestData("scheduled_action_created.json")))
+		_, _ = fmt.Fprintln(w, readTestData("scheduled_action_created.json"))
 	})
 
 	// test server
@@ -93,6 +93,9 @@ func TestScheduledActionsService_Create(t *testing.T) {
 	cma.BaseURL = server.URL
 
 	scheduledAction := &ScheduledAction{
+		Sys: &Sys{
+			Version: 2,
+		},
 		Entity: Entity{
 			Sys: Sys{
 				Type:     "Link",
@@ -117,4 +120,5 @@ func TestScheduledActionsService_Create(t *testing.T) {
 	assertions.Nil(err)
 
 	assertions.Equal("publish", scheduledAction.Action)
+	assertions.Equal(2, scheduledAction.GetVersion())
 }

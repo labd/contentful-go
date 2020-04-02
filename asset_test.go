@@ -32,8 +32,11 @@ func TestAssetsService_List(t *testing.T) {
 	cma = NewCMA(CMAToken)
 	cma.BaseURL = server.URL
 
-	_, err = cma.Assets.List(spaceID).Next()
+	collection, err := cma.Assets.List(spaceID).Next()
 	assertions.Nil(err)
+	asset := collection.ToAsset()
+	assertions.Equal(3, len(asset))
+	assertions.Equal("hehehe", asset[0].Fields.Title["en-US"])
 }
 
 func TestAssetsService_ListPublished(t *testing.T) {
@@ -58,8 +61,11 @@ func TestAssetsService_ListPublished(t *testing.T) {
 	cma = NewCMA(CMAToken)
 	cma.BaseURL = server.URL
 
-	_, err = cma.Assets.ListPublished(spaceID).Next()
+	collection, err := cma.Assets.ListPublished(spaceID).Next()
 	assertions.Nil(err)
+	asset := collection.ToAsset()
+	assertions.Equal(3, len(asset))
+	assertions.Equal("hehehe", asset[0].Fields.Title["en-US"])
 }
 
 func TestAssetsService_Get(t *testing.T) {
@@ -84,8 +90,35 @@ func TestAssetsService_Get(t *testing.T) {
 	cma = NewCMA(CMAToken)
 	cma.BaseURL = server.URL
 
-	_, err = cma.Assets.Get(spaceID, "1x0xpXu4pSGS4OukSyWGUK")
+	asset, err := cma.Assets.Get(spaceID, "1x0xpXu4pSGS4OukSyWGUK")
 	assertions.Nil(err)
+	assertions.Equal("hehehe", asset.Fields.Title["en-US"])
+}
+
+func TestAssetsService_Get_2(t *testing.T) {
+	var err error
+	assertions := assert.New(t)
+
+	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		assertions.Equal(r.Method, "GET")
+		assertions.Equal(r.URL.Path, "/spaces/"+spaceID+"/assets/1x0xpXu4pSGS4OukSyWGUK")
+
+		checkHeaders(r, assertions)
+
+		w.WriteHeader(400)
+		_, _ = fmt.Fprintln(w, readTestData("asset_1.json"))
+	})
+
+	// test server
+	server := httptest.NewServer(handler)
+	defer server.Close()
+
+	// cma client
+	cma = NewCMA(CMAToken)
+	cma.BaseURL = server.URL
+
+	_, err = cma.Assets.Get(spaceID, "1x0xpXu4pSGS4OukSyWGUK")
+	assertions.NotNil(err)
 }
 
 func TestAssetsService_Upsert_Create(t *testing.T) {
@@ -101,7 +134,7 @@ func TestAssetsService_Upsert_Create(t *testing.T) {
 		assertions.Nil(err)
 		fields := payload["fields"].(map[string]interface{})
 		title := fields["title"].(map[string]interface{})
-		assertions.Equal("Doge", title["en-US"])
+		assertions.Equal("hehehe", title["en-US"])
 
 		w.WriteHeader(201)
 		_, _ = fmt.Fprintln(w, readTestData("asset_1.json"))
@@ -117,19 +150,27 @@ func TestAssetsService_Upsert_Create(t *testing.T) {
 
 	asset := &Asset{
 		locale: "en-US",
-		Fields: &FileFields{
-			Title:       "Doge",
-			Description: "nice picture",
-			File: &File{
-				Name:        "doge.jpg",
-				ContentType: "image/jpeg",
-				URL:         "//images.contentful.com/cfexampleapi/1x0xpXu4pSGS4OukSyWGUK/cc1239c6385428ef26f4180190532818/doge.jpg",
-				UploadURL:   "",
-				Detail: &FileDetail{
-					Size: 522943,
-					Image: &FileImage{
-						Width:  5800,
-						Height: 4350,
+		Fields: &AssetFields{
+			Title: map[string]string{
+				"en-US": "hehehe",
+				"de":    "hehehe-de",
+			},
+			Description: map[string]string{
+				"en-US": "asdfasf",
+				"de":    "asdfasf-de",
+			},
+			File: map[string]*File{
+				"en-US": {
+					FileName:    "doge.jpg",
+					ContentType: "image/jpeg",
+					URL:         "//images.contentful.com/cfexampleapi/1x0xpXu4pSGS4OukSyWGUK/cc1239c6385428ef26f4180190532818/doge.jpg",
+					UploadURL:   "",
+					Details: &FileDetails{
+						Size: 522943,
+						Image: &ImageFields{
+							Width:  5800,
+							Height: 4350,
+						},
 					},
 				},
 			},
@@ -138,8 +179,8 @@ func TestAssetsService_Upsert_Create(t *testing.T) {
 
 	err := cma.Assets.Upsert(spaceID, asset)
 	assertions.Nil(err)
-	assertions.Equal("Doge", asset.Fields.Title)
-	assertions.Equal("doge.jpg", asset.Fields.File.Name)
+	assertions.Equal("hehehe", asset.Fields.Title["en-US"])
+	assertions.Equal("d3b8dad44e5066cfb805e2357469ee64.png", asset.Fields.File["en-US"].FileName)
 }
 
 func TestAssetsService_Upsert_Update(t *testing.T) {
@@ -148,7 +189,7 @@ func TestAssetsService_Upsert_Update(t *testing.T) {
 
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		assertions.Equal(r.Method, "PUT")
-		assertions.Equal(r.RequestURI, "/spaces/"+spaceID+"/assets/1x0xpXu4pSGS4OukSyWGUK")
+		assertions.Equal(r.RequestURI, "/spaces/"+spaceID+"/assets/3HNzx9gvJScKku4UmcekYw")
 		checkHeaders(r, assertions)
 
 		var payload map[string]interface{}
@@ -157,8 +198,8 @@ func TestAssetsService_Upsert_Update(t *testing.T) {
 		fields := payload["fields"].(map[string]interface{})
 		title := fields["title"].(map[string]interface{})
 		description := fields["description"].(map[string]interface{})
-		assertions.Equal("Updated", title["en-US"])
-		assertions.Equal("Lorum Ipsum", description["en-US"])
+		assertions.Equal("updated", title["en-US"])
+		assertions.Equal("also updated", description["en-US"])
 
 		w.WriteHeader(200)
 		_, _ = fmt.Fprintln(w, readTestData("asset_updated.json"))
@@ -175,14 +216,13 @@ func TestAssetsService_Upsert_Update(t *testing.T) {
 	asset, err := assetFromTestData("asset_1.json")
 	assertions.Nil(err)
 
-	asset.Fields.Title = "Updated"
-	asset.Fields.Description = "Lorum Ipsum"
-	asset.locale = "en-US"
+	asset.Fields.Title["en-US"] = "updated"
+	asset.Fields.Description["en-US"] = "also updated"
 
 	err = cma.Assets.Upsert(spaceID, asset)
 	assertions.Nil(err)
-	assertions.Equal("Updated", asset.Fields.Title)
-	assertions.Equal("Lorum Ipsum", asset.Fields.Description)
+	assertions.Equal("updated", asset.Fields.Title["en-US"])
+	assertions.Equal("also updated", asset.Fields.Description["en-US"])
 }
 
 func TestAssetsService_Delete(t *testing.T) {
@@ -191,7 +231,7 @@ func TestAssetsService_Delete(t *testing.T) {
 
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		assertions.Equal(r.Method, "DELETE")
-		assertions.Equal(r.RequestURI, "/spaces/"+spaceID+"/assets/1x0xpXu4pSGS4OukSyWGUK")
+		assertions.Equal(r.RequestURI, "/spaces/"+spaceID+"/assets/3HNzx9gvJScKku4UmcekYw")
 		checkHeaders(r, assertions)
 
 		w.WriteHeader(200)
@@ -220,7 +260,7 @@ func TestAssetsService_Process(t *testing.T) {
 
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		assertions.Equal(r.Method, "PUT")
-		assertions.Equal(r.URL.Path, "/spaces/"+spaceID+"/assets/1x0xpXu4pSGS4OukSyWGUK/files//process")
+		assertions.Equal(r.URL.Path, "/spaces/"+spaceID+"/assets/3HNzx9gvJScKku4UmcekYw/files//process")
 
 		checkHeaders(r, assertions)
 
@@ -250,7 +290,7 @@ func TestAssetsService_Publish(t *testing.T) {
 
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		assertions.Equal(r.Method, "PUT")
-		assertions.Equal(r.URL.Path, "/spaces/"+spaceID+"/assets/1x0xpXu4pSGS4OukSyWGUK/published")
+		assertions.Equal(r.URL.Path, "/spaces/"+spaceID+"/assets/3HNzx9gvJScKku4UmcekYw/published")
 
 		checkHeaders(r, assertions)
 
@@ -280,7 +320,7 @@ func TestContentTypesService_Unpublish(t *testing.T) {
 
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		assertions.Equal(r.Method, "DELETE")
-		assertions.Equal(r.URL.Path, "/spaces/"+spaceID+"/assets/1x0xpXu4pSGS4OukSyWGUK/published")
+		assertions.Equal(r.URL.Path, "/spaces/"+spaceID+"/assets/3HNzx9gvJScKku4UmcekYw/published")
 
 		checkHeaders(r, assertions)
 
@@ -310,7 +350,7 @@ func TestAssetsService_Archive(t *testing.T) {
 
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		assertions.Equal(r.Method, "PUT")
-		assertions.Equal(r.URL.Path, "/spaces/"+spaceID+"/assets/1x0xpXu4pSGS4OukSyWGUK/archived")
+		assertions.Equal(r.URL.Path, "/spaces/"+spaceID+"/assets/3HNzx9gvJScKku4UmcekYw/archived")
 
 		checkHeaders(r, assertions)
 
@@ -340,7 +380,7 @@ func TestContentTypesService_Unarchive(t *testing.T) {
 
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		assertions.Equal(r.Method, "DELETE")
-		assertions.Equal(r.URL.Path, "/spaces/"+spaceID+"/assets/1x0xpXu4pSGS4OukSyWGUK/archived")
+		assertions.Equal(r.URL.Path, "/spaces/"+spaceID+"/assets/3HNzx9gvJScKku4UmcekYw/archived")
 
 		checkHeaders(r, assertions)
 

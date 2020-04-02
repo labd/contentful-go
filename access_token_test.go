@@ -32,8 +32,11 @@ func TestAccessTokensServiceList(t *testing.T) {
 	cma = NewCMA(CMAToken)
 	cma.BaseURL = server.URL
 
-	_, err = cma.AccessTokens.List().Next()
+	collection, err := cma.AccessTokens.List().Next()
 	assertions.Nil(err)
+	keys := collection.ToAccessToken()
+	assertions.Equal(2, len(keys))
+	assertions.Equal("hioj6879UYGIfyt654tyfFHG", keys[0].Sys.ID)
 }
 
 func TestAccessTokensServiceGet(t *testing.T) {
@@ -47,6 +50,33 @@ func TestAccessTokensServiceGet(t *testing.T) {
 		checkHeaders(r, assertions)
 
 		w.WriteHeader(200)
+		_, _ = fmt.Fprintln(w, readTestData("access_token_1.json"))
+	})
+
+	// test server
+	server := httptest.NewServer(handler)
+	defer server.Close()
+
+	// cma client
+	cma = NewCMA(CMAToken)
+	cma.BaseURL = server.URL
+
+	key, err := cma.AccessTokens.Get("hioj6879UYGIfyt654tyfFHG")
+	assertions.Nil(err)
+	assertions.Equal("hioj6879UYGIfyt654tyfFHG", key.Sys.ID)
+}
+
+func TestAccessTokensServiceGet_2(t *testing.T) {
+	var err error
+	assertions := assert.New(t)
+
+	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		assertions.Equal(r.Method, "GET")
+		assertions.Equal(r.URL.Path, "/users/me/access_tokens/hioj6879UYGIfyt654tyfFHG")
+
+		checkHeaders(r, assertions)
+
+		w.WriteHeader(400)
 		_, _ = fmt.Fprintln(w, readTestData("access_token_1.json"))
 	})
 
@@ -140,4 +170,6 @@ func TestAccessTokensService_Revoke(t *testing.T) {
 
 	err = cma.AccessTokens.Revoke(accessToken)
 	assertions.Nil(err)
+	assertions.Equal(2, accessToken.Sys.Version)
+	assertions.Equal(2, accessToken.GetVersion())
 }

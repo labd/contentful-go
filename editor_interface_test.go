@@ -69,6 +69,32 @@ func TestEditorInterfacesService_Get(t *testing.T) {
 	assertions.Equal("extension", editorInterface.SideBar[0].WidgetNameSpace)
 }
 
+func TestEditorInterfacesService_Get_2(t *testing.T) {
+	var err error
+	assertions := assert.New(t)
+
+	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		assertions.Equal(r.Method, "GET")
+		assertions.Equal(r.URL.Path, "/spaces/"+spaceID+"/environments/master/content_types/hfM9RCJIk0wIm06WkEOQY/editor_interface")
+
+		checkHeaders(r, assertions)
+
+		w.WriteHeader(400)
+		_, _ = fmt.Fprintln(w, readTestData("editor_interface_1.json"))
+	})
+
+	// test server
+	server := httptest.NewServer(handler)
+	defer server.Close()
+
+	// cma client
+	cma = NewCMA(CMAToken)
+	cma.BaseURL = server.URL
+
+	_, err = cma.EditorInterfaces.Get(spaceID, "hfM9RCJIk0wIm06WkEOQY")
+	assertions.Nil(err)
+}
+
 func TestEditorInterfacesService_Update(t *testing.T) {
 	var err error
 	assertions := assert.New(t)
@@ -88,7 +114,7 @@ func TestEditorInterfacesService_Update(t *testing.T) {
 		assertions.Equal("someuiextension", sidebar[0].(map[string]interface{})["widgetId"].(string))
 
 		w.WriteHeader(200)
-		_, _ = fmt.Fprintln(w, string(readTestData("editor_interface_updated.json")))
+		_, _ = fmt.Fprintln(w, readTestData("editor_interface_updated.json"))
 	})
 
 	// test server

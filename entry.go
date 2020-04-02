@@ -29,34 +29,6 @@ func (entry *Entry) GetVersion() int {
 	return version
 }
 
-// GetEntryKey returns the entry's keys
-func (service *EntriesService) GetEntryKey(entry *Entry, key string) (*EntryField, error) {
-	ef := EntryField{
-		value: entry.Fields[key],
-	}
-
-	col, err := service.c.ContentTypes.List(entry.Sys.Space.Sys.ID).Next()
-	if err != nil {
-		return nil, err
-	}
-
-	for _, ct := range col.ToContentType() {
-		if ct.Sys.ID != entry.Sys.ContentType.Sys.ID {
-			continue
-		}
-
-		for _, field := range ct.Fields {
-			if field.ID != key {
-				continue
-			}
-
-			ef.dataType = field.Type
-		}
-	}
-
-	return &ef, nil
-}
-
 // List returns entries collection
 func (service *EntriesService) List(spaceID string) *Collection {
 	path := fmt.Sprintf("/spaces/%s/environments/%s/entries", spaceID, service.c.Environment)

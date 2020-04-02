@@ -68,6 +68,32 @@ func TestAppDefinitionsService_Get(t *testing.T) {
 	assertions.Equal("Hello world!", definition.Name)
 }
 
+func TestAppDefinitionsService_Get_2(t *testing.T) {
+	var err error
+	assertions := assert.New(t)
+
+	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		assertions.Equal(r.Method, "GET")
+		assertions.Equal(r.URL.Path, "/organizations/organization_id/app_definitions/app_definition_id")
+
+		checkHeaders(r, assertions)
+
+		w.WriteHeader(400)
+		_, _ = fmt.Fprintln(w, readTestData("app_definition_1.json"))
+	})
+
+	// test server
+	server := httptest.NewServer(handler)
+	defer server.Close()
+
+	// cma client
+	cma = NewCMA(CMAToken)
+	cma.BaseURL = server.URL
+
+	_, err = cma.AppDefinitions.Get("organization_id", "app_definition_id")
+	assertions.Nil(err)
+}
+
 func TestAppDefinitionsService_Upsert_Create(t *testing.T) {
 	assertions := assert.New(t)
 

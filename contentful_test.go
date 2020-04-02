@@ -459,7 +459,7 @@ func TestBackoffForPerSecondLimiting(t *testing.T) {
 			w.Header().Set("X-Contentful-Ratelimit-Second-Remaining", "0")
 			w.WriteHeader(429)
 
-			_, _ = w.Write([]byte(readTestData("error-ratelimit.json")))
+			_, _ = w.Write([]byte(readTestData("error_ratelimit.json")))
 		} else {
 			_, _ = w.Write([]byte(readTestData("space-1.json")))
 		}

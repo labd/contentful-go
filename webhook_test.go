@@ -10,7 +10,89 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestWebhookSaveForCreate(t *testing.T) {
+func TestWebhooksService_List(t *testing.T) {
+	var err error
+	assertions := assert.New(t)
+
+	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		assertions.Equal(r.Method, "GET")
+		assertions.Equal(r.URL.Path, "/spaces/"+spaceID+"/webhook_definitions")
+
+		checkHeaders(r, assertions)
+
+		w.WriteHeader(200)
+		_, _ = fmt.Fprintln(w, readTestData("webhook.json"))
+	})
+
+	// test server
+	server := httptest.NewServer(handler)
+	defer server.Close()
+
+	// cma client
+	cma = NewCMA(CMAToken)
+	cma.BaseURL = server.URL
+
+	collection, err := cma.Webhooks.List(spaceID).Next()
+	assertions.Nil(err)
+	webhook := collection.ToWebhook()
+	assertions.Equal(1, len(webhook))
+	assertions.Equal("webhook-name", webhook[0].Name)
+}
+
+func TestWebhooksService_Get(t *testing.T) {
+	var err error
+	assertions := assert.New(t)
+
+	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		assertions.Equal(r.Method, "GET")
+		assertions.Equal(r.URL.Path, "/spaces/"+spaceID+"/webhook_definitions/7fstd9fZ9T2p3kwD49FxhI")
+
+		checkHeaders(r, assertions)
+
+		w.WriteHeader(200)
+		_, _ = fmt.Fprintln(w, readTestData("webhook_1.json"))
+	})
+
+	// test server
+	server := httptest.NewServer(handler)
+	defer server.Close()
+
+	// cma client
+	cma = NewCMA(CMAToken)
+	cma.BaseURL = server.URL
+
+	webhook, err := cma.Webhooks.Get(spaceID, "7fstd9fZ9T2p3kwD49FxhI")
+	assertions.Nil(err)
+	assertions.Equal("webhook-name", webhook.Name)
+}
+
+func TestWebhooksService_Get_2(t *testing.T) {
+	var err error
+	assertions := assert.New(t)
+
+	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		assertions.Equal(r.Method, "GET")
+		assertions.Equal(r.URL.Path, "/spaces/"+spaceID+"/webhook_definitions/7fstd9fZ9T2p3kwD49FxhI")
+
+		checkHeaders(r, assertions)
+
+		w.WriteHeader(400)
+		_, _ = fmt.Fprintln(w, readTestData("webhook_1.json"))
+	})
+
+	// test server
+	server := httptest.NewServer(handler)
+	defer server.Close()
+
+	// cma client
+	cma = NewCMA(CMAToken)
+	cma.BaseURL = server.URL
+
+	_, err = cma.Webhooks.Get(spaceID, "7fstd9fZ9T2p3kwD49FxhI")
+	assertions.NotNil(err)
+}
+
+func TestWebhooksService_Upsert_Create(t *testing.T) {
 	var err error
 	assertions := assert.New(t)
 
@@ -44,7 +126,7 @@ func TestWebhookSaveForCreate(t *testing.T) {
 		assertions.Equal("header2-value", header2["value"].(string))
 
 		w.WriteHeader(201)
-		_, _ = fmt.Fprintln(w, string(readTestData("webhook.json")))
+		_, _ = fmt.Fprintln(w, readTestData("webhook_1.json"))
 	})
 
 	// test server
@@ -83,7 +165,7 @@ func TestWebhookSaveForCreate(t *testing.T) {
 	assertions.Equal("username", webhook.HTTPBasicUsername)
 }
 
-func TestWebhookSaveForUpdate(t *testing.T) {
+func TestWebhooksService_Upsert_Update(t *testing.T) {
 	var err error
 	assertions := assert.New(t)
 
@@ -118,7 +200,7 @@ func TestWebhookSaveForUpdate(t *testing.T) {
 		assertions.Equal("updated-header2-value", header2["value"].(string))
 
 		w.WriteHeader(200)
-		_, _ = fmt.Fprintln(w, string(readTestData("webhook-updated.json")))
+		_, _ = fmt.Fprintln(w, readTestData("webhook_updated.json"))
 	})
 
 	// test server
@@ -130,7 +212,7 @@ func TestWebhookSaveForUpdate(t *testing.T) {
 	cma.BaseURL = server.URL
 
 	// test webhook
-	webhook, err := webhookFromTestData("webhook.json")
+	webhook, err := webhookFromTestData("webhook_1.json")
 	assertions.Nil(err)
 
 	webhook.Name = "updated-webhook-name"
@@ -161,7 +243,7 @@ func TestWebhookSaveForUpdate(t *testing.T) {
 	assertions.Equal("updated-username", webhook.HTTPBasicUsername)
 }
 
-func TestWebhookDelete(t *testing.T) {
+func TestWebhooksService_Delete(t *testing.T) {
 	var err error
 	assertions := assert.New(t)
 
@@ -182,7 +264,7 @@ func TestWebhookDelete(t *testing.T) {
 	cma.BaseURL = server.URL
 
 	// test webhook
-	webhook, err := webhookFromTestData("webhook.json")
+	webhook, err := webhookFromTestData("webhook_1.json")
 	assertions.Nil(err)
 
 	err = cma.Webhooks.Delete(spaceID, webhook)
