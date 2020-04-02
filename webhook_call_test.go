@@ -67,6 +67,32 @@ func TestWebhookCallsService_Get(t *testing.T) {
 	assertions.Equal("https://webhooks.example.com/endpoint", callDetails.Request.URL)
 }
 
+func TestWebhookCallsService_Get_2(t *testing.T) {
+	var err error
+	assertions := assert.New(t)
+
+	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		assertions.Equal(r.Method, "GET")
+		assertions.Equal(r.URL.Path, "/spaces/"+spaceID+"/webhooks/0KzM2HxYr5O1pZ4SaUzK8h/calls/bar")
+
+		checkHeaders(r, assertions)
+
+		w.WriteHeader(400)
+		_, _ = fmt.Fprintln(w, readTestData("webhook_call_detail.json"))
+	})
+
+	// test server
+	server := httptest.NewServer(handler)
+	defer server.Close()
+
+	// cma client
+	cma = NewCMA(CMAToken)
+	cma.BaseURL = server.URL
+
+	_, err = cma.WebhookCalls.Get(spaceID, "0KzM2HxYr5O1pZ4SaUzK8h", "bar")
+	assertions.Empty(err)
+}
+
 func TestWebhookCallsService_Health(t *testing.T) {
 	var err error
 	assertions := assert.New(t)
@@ -93,4 +119,30 @@ func TestWebhookCallsService_Health(t *testing.T) {
 	assertions.Nil(err)
 	assertions.Equal("bar", health.Sys.ID)
 	assertions.Equal(233, health.Calls.Total)
+}
+
+func TestWebhookCallsService_Health_2(t *testing.T) {
+	var err error
+	assertions := assert.New(t)
+
+	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		assertions.Equal(r.Method, "GET")
+		assertions.Equal(r.URL.Path, "/spaces/"+spaceID+"/webhooks/0KzM2HxYr5O1pZ4SaUzK8h/health")
+
+		checkHeaders(r, assertions)
+
+		w.WriteHeader(400)
+		_, _ = fmt.Fprintln(w, readTestData("webhook_health.json"))
+	})
+
+	// test server
+	server := httptest.NewServer(handler)
+	defer server.Close()
+
+	// cma client
+	cma = NewCMA(CMAToken)
+	cma.BaseURL = server.URL
+
+	_, err = cma.WebhookCalls.Health(spaceID, "0KzM2HxYr5O1pZ4SaUzK8h")
+	assertions.Nil(err)
 }
