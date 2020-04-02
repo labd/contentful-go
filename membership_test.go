@@ -10,7 +10,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestMembershipsServiceList(t *testing.T) {
+func TestMembershipsService_List(t *testing.T) {
 	var err error
 	assertions := assert.New(t)
 
@@ -36,7 +36,7 @@ func TestMembershipsServiceList(t *testing.T) {
 	assertions.Nil(err)
 }
 
-func TestMembershipsServiceGet(t *testing.T) {
+func TestMembershipsService_Get(t *testing.T) {
 	var err error
 	assertions := assert.New(t)
 
@@ -62,7 +62,33 @@ func TestMembershipsServiceGet(t *testing.T) {
 	assertions.Nil(err)
 }
 
-func TestMembershipsServiceUpsertCreate(t *testing.T) {
+func TestMembershipsService_Get_2(t *testing.T) {
+	var err error
+	assertions := assert.New(t)
+
+	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		assertions.Equal(r.Method, "GET")
+		assertions.Equal(r.URL.Path, "/spaces/"+spaceID+"/space_memberships/0xWanD4AZI2AR35wW9q51n")
+
+		checkHeaders(r, assertions)
+
+		w.WriteHeader(400)
+		_, _ = fmt.Fprintln(w, readTestData("membership_1.json"))
+	})
+
+	// test server
+	server := httptest.NewServer(handler)
+	defer server.Close()
+
+	// cma client
+	cma = NewCMA(CMAToken)
+	cma.BaseURL = server.URL
+
+	_, err = cma.Memberships.Get(spaceID, "0xWanD4AZI2AR35wW9q51n")
+	assertions.Nil(err)
+}
+
+func TestMembershipsService_Upsert_Create(t *testing.T) {
 	var err error
 	assertions := assert.New(t)
 
@@ -111,7 +137,7 @@ func TestMembershipsServiceUpsertCreate(t *testing.T) {
 	assertions.Nil(err)
 }
 
-func TestMembershipsServiceUpsertUpdate(t *testing.T) {
+func TestMembershipsService_Upsert_Update(t *testing.T) {
 	var err error
 	assertions := assert.New(t)
 
@@ -149,7 +175,7 @@ func TestMembershipsServiceUpsertUpdate(t *testing.T) {
 	assertions.Nil(err)
 }
 
-func TestMembershipsServiceDelete(t *testing.T) {
+func TestMembershipsService_Delete(t *testing.T) {
 	var err error
 	assertions := assert.New(t)
 

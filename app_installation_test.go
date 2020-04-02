@@ -66,6 +66,32 @@ func TestAppInstallationsService_Get(t *testing.T) {
 	assertions.Equal("world", installation.Parameters["hello"])
 }
 
+func TestAppInstallationsService_Get_2(t *testing.T) {
+	var err error
+	assertions := assert.New(t)
+
+	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		assertions.Equal(r.Method, "GET")
+		assertions.Equal(r.URL.Path, "/spaces/"+spaceID+"/environments/master/app_installations/app_definition_id")
+
+		checkHeaders(r, assertions)
+
+		w.WriteHeader(400)
+		_, _ = fmt.Fprintln(w, readTestData("app_installation_1.json"))
+	})
+
+	// test server
+	server := httptest.NewServer(handler)
+	defer server.Close()
+
+	// cma client
+	cma = NewCMA(CMAToken)
+	cma.BaseURL = server.URL
+
+	_, err = cma.AppInstallations.Get(spaceID, "app_definition_id")
+	assertions.Nil(err)
+}
+
 func TestAppInstallationsService_Upsert_Create(t *testing.T) {
 	assertions := assert.New(t)
 

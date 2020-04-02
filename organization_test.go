@@ -9,7 +9,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestOrganizationsServiceList(t *testing.T) {
+func TestOrganizationsService_List(t *testing.T) {
 	var err error
 	assertions := assert.New(t)
 

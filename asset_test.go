@@ -95,6 +95,32 @@ func TestAssetsService_Get(t *testing.T) {
 	assertions.Equal("hehehe", asset.Fields.Title["en-US"])
 }
 
+func TestAssetsService_Get_2(t *testing.T) {
+	var err error
+	assertions := assert.New(t)
+
+	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		assertions.Equal(r.Method, "GET")
+		assertions.Equal(r.URL.Path, "/spaces/"+spaceID+"/assets/1x0xpXu4pSGS4OukSyWGUK")
+
+		checkHeaders(r, assertions)
+
+		w.WriteHeader(400)
+		_, _ = fmt.Fprintln(w, readTestData("asset_1.json"))
+	})
+
+	// test server
+	server := httptest.NewServer(handler)
+	defer server.Close()
+
+	// cma client
+	cma = NewCMA(CMAToken)
+	cma.BaseURL = server.URL
+
+	_, err = cma.Assets.Get(spaceID, "1x0xpXu4pSGS4OukSyWGUK")
+	assertions.NotNil(err)
+}
+
 func TestAssetsService_Upsert_Create(t *testing.T) {
 	assertions := assert.New(t)
 

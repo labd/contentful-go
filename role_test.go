@@ -10,7 +10,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestRolesServiceList(t *testing.T) {
+func TestRolesService_List(t *testing.T) {
 	var err error
 	assertions := assert.New(t)
 
@@ -36,7 +36,7 @@ func TestRolesServiceList(t *testing.T) {
 	assertions.Nil(err)
 }
 
-func TestRolesServiceGet(t *testing.T) {
+func TestRolesService_Get(t *testing.T) {
 	var err error
 	assertions := assert.New(t)
 
@@ -62,7 +62,33 @@ func TestRolesServiceGet(t *testing.T) {
 	assertions.Nil(err)
 }
 
-func TestRolesServiceUpsertCreate(t *testing.T) {
+func TestRolesService_Get_2(t *testing.T) {
+	var err error
+	assertions := assert.New(t)
+
+	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		assertions.Equal(r.Method, "GET")
+		assertions.Equal(r.URL.Path, "/spaces/"+spaceID+"/roles/0xvkNW6WdQ8JkWlWZ8BC4x")
+
+		checkHeaders(r, assertions)
+
+		w.WriteHeader(400)
+		_, _ = fmt.Fprintln(w, readTestData("role_1.json"))
+	})
+
+	// test server
+	server := httptest.NewServer(handler)
+	defer server.Close()
+
+	// cma client
+	cma = NewCMA(CMAToken)
+	cma.BaseURL = server.URL
+
+	_, err = cma.Roles.Get(spaceID, "0xvkNW6WdQ8JkWlWZ8BC4x")
+	assertions.Nil(err)
+}
+
+func TestRolesService_Upsert_Create(t *testing.T) {
 	var err error
 	assertions := assert.New(t)
 
@@ -131,7 +157,7 @@ func TestRolesServiceUpsertCreate(t *testing.T) {
 	assertions.Nil(err)
 }
 
-func TestRolesServiceUpsertUpdate(t *testing.T) {
+func TestRolesService_Upsert_Update(t *testing.T) {
 	var err error
 	assertions := assert.New(t)
 

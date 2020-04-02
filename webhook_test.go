@@ -66,6 +66,32 @@ func TestWebhooksService_Get(t *testing.T) {
 	assertions.Equal("webhook-name", webhook.Name)
 }
 
+func TestWebhooksService_Get_2(t *testing.T) {
+	var err error
+	assertions := assert.New(t)
+
+	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		assertions.Equal(r.Method, "GET")
+		assertions.Equal(r.URL.Path, "/spaces/"+spaceID+"/webhook_definitions/7fstd9fZ9T2p3kwD49FxhI")
+
+		checkHeaders(r, assertions)
+
+		w.WriteHeader(400)
+		_, _ = fmt.Fprintln(w, readTestData("webhook_1.json"))
+	})
+
+	// test server
+	server := httptest.NewServer(handler)
+	defer server.Close()
+
+	// cma client
+	cma = NewCMA(CMAToken)
+	cma.BaseURL = server.URL
+
+	_, err = cma.Webhooks.Get(spaceID, "7fstd9fZ9T2p3kwD49FxhI")
+	assertions.NotNil(err)
+}
+
 func TestWebhooksService_Upsert_Create(t *testing.T) {
 	var err error
 	assertions := assert.New(t)
@@ -217,7 +243,7 @@ func TestWebhooksService_Upsert_Update(t *testing.T) {
 	assertions.Equal("updated-username", webhook.HTTPBasicUsername)
 }
 
-func TestWebhookDelete(t *testing.T) {
+func TestWebhooksService_Delete(t *testing.T) {
 	var err error
 	assertions := assert.New(t)
 

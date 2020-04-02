@@ -10,7 +10,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestLocalesServiceList(t *testing.T) {
+func TestLocalesService_List(t *testing.T) {
 	var err error
 	assertions := assert.New(t)
 
@@ -38,7 +38,7 @@ func TestLocalesServiceList(t *testing.T) {
 	assertions.Equal("34N35DoyUQAtaKwWTgZs34", locale[0].Sys.ID)
 }
 
-func TestLocalesServiceGet(t *testing.T) {
+func TestLocalesService_Get(t *testing.T) {
 	var err error
 	assertions := assert.New(t)
 
@@ -66,7 +66,33 @@ func TestLocalesServiceGet(t *testing.T) {
 	assertions.Equal("en-US", locale.Code)
 }
 
-func TestLocalesServiceUpsertCreate(t *testing.T) {
+func TestLocalesService_Get_2(t *testing.T) {
+	var err error
+	assertions := assert.New(t)
+
+	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		assertions.Equal(r.Method, "GET")
+		assertions.Equal(r.URL.Path, "/spaces/"+spaceID+"/locales/4aGeQYgByqQFJtToAOh2JJ")
+
+		checkHeaders(r, assertions)
+
+		w.WriteHeader(400)
+		_, _ = fmt.Fprintln(w, readTestData("locale_1.json"))
+	})
+
+	// test server
+	server := httptest.NewServer(handler)
+	defer server.Close()
+
+	// cma client
+	cma = NewCMA(CMAToken)
+	cma.BaseURL = server.URL
+
+	_, err = cma.Locales.Get(spaceID, "4aGeQYgByqQFJtToAOh2JJ")
+	assertions.NotNil(err)
+}
+
+func TestLocalesService_Upsert_Create(t *testing.T) {
 	var err error
 	assertions := assert.New(t)
 
@@ -103,7 +129,7 @@ func TestLocalesServiceUpsertCreate(t *testing.T) {
 	assertions.Nil(err)
 }
 
-func TestLocalesServiceUpsertUpdate(t *testing.T) {
+func TestLocalesService_Upsert_Update(t *testing.T) {
 	var err error
 	assertions := assert.New(t)
 
@@ -141,7 +167,7 @@ func TestLocalesServiceUpsertUpdate(t *testing.T) {
 	assertions.Nil(err)
 }
 
-func TestLocalesServiceDelete(t *testing.T) {
+func TestLocalesService_Delete(t *testing.T) {
 	var err error
 	assertions := assert.New(t)
 

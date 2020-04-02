@@ -10,7 +10,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestEntriesServiceList(t *testing.T) {
+func TestEntriesService_List(t *testing.T) {
 	var err error
 	assertions := assert.New(t)
 
@@ -38,7 +38,7 @@ func TestEntriesServiceList(t *testing.T) {
 	assertions.Equal("5KsDBWseXY6QegucYAoacS", entry[0].Sys.ID)
 }
 
-func TestEntriesServiceGet(t *testing.T) {
+func TestEntriesService_Get(t *testing.T) {
 	var err error
 	assertions := assert.New(t)
 
@@ -64,7 +64,33 @@ func TestEntriesServiceGet(t *testing.T) {
 	assertions.Nil(err)
 }
 
-func TestEntriesServiceDelete(t *testing.T) {
+func TestEntriesService_Get_2(t *testing.T) {
+	var err error
+	assertions := assert.New(t)
+
+	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		assertions.Equal(r.Method, "GET")
+		assertions.Equal(r.URL.Path, "/spaces/"+spaceID+"/entries/5KsDBWseXY6QegucYAoacS")
+
+		checkHeaders(r, assertions)
+
+		w.WriteHeader(400)
+		_, _ = fmt.Fprintln(w, readTestData("entry_1.json"))
+	})
+
+	// test server
+	server := httptest.NewServer(handler)
+	defer server.Close()
+
+	// cma client
+	cma = NewCMA(CMAToken)
+	cma.BaseURL = server.URL
+
+	_, err = cma.Entries.Get(spaceID, "5KsDBWseXY6QegucYAoacS")
+	assertions.Nil(err)
+}
+
+func TestEntriesService_Delete(t *testing.T) {
 	var err error
 	assertions := assert.New(t)
 
@@ -93,7 +119,7 @@ func TestEntriesServiceDelete(t *testing.T) {
 	assertions.Nil(err)
 }
 
-func TestEntriesServiceUpsertCreate(t *testing.T) {
+func TestEntriesService_Upsert_Create(t *testing.T) {
 	var err error
 	assertions := assert.New(t)
 
@@ -141,7 +167,7 @@ func TestEntriesServiceUpsertCreate(t *testing.T) {
 	assertions.Nil(err)
 }
 
-func TestEntriessServiceUpsertUpdate(t *testing.T) {
+func TestEntriesService_Upsert_Update(t *testing.T) {
 	var err error
 	assertions := assert.New(t)
 
@@ -183,7 +209,7 @@ func TestEntriessServiceUpsertUpdate(t *testing.T) {
 	assertions.Nil(err)
 }
 
-func TestEntriesServicePublish(t *testing.T) {
+func TestEntriesService_Publish(t *testing.T) {
 	var err error
 	assertions := assert.New(t)
 
@@ -213,7 +239,7 @@ func TestEntriesServicePublish(t *testing.T) {
 	assertions.Nil(err)
 }
 
-func TestEntriesServiceUnpublish(t *testing.T) {
+func TestEntriesService_Unpublish(t *testing.T) {
 	var err error
 	assertions := assert.New(t)
 
@@ -243,7 +269,7 @@ func TestEntriesServiceUnpublish(t *testing.T) {
 	assertions.Nil(err)
 }
 
-func TestEntriesServiceArchive(t *testing.T) {
+func TestEntriesService_Archive(t *testing.T) {
 	var err error
 	assertions := assert.New(t)
 
@@ -273,7 +299,7 @@ func TestEntriesServiceArchive(t *testing.T) {
 	assertions.Nil(err)
 }
 
-func TestEntriesServiceUnarchive(t *testing.T) {
+func TestEntriesService_Unarchive(t *testing.T) {
 	var err error
 	assertions := assert.New(t)
 
