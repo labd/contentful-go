@@ -144,4 +144,5 @@ func TestAccessTokensService_Revoke(t *testing.T) {
 
 	err = cma.AccessTokens.Revoke(accessToken)
 	assertions.Nil(err)
+	assertions.Equal(2, accessToken.Sys.Version)
 }

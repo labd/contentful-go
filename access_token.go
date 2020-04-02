@@ -58,6 +58,7 @@ func (service *AccessTokensService) Get(accessTokenID string) (*AccessToken, err
 	}
 
 	var accessToken AccessToken
+	req.Header.Set("X-Contentful-Version", strconv.Itoa(accessToken.GetVersion()))
 	if ok := service.c.do(req, &accessToken); ok != nil {
 		return nil, err
 	}
