@@ -134,7 +134,7 @@ func TestEntryTasksService_Upsert_Create(t *testing.T) {
 		assertions.Equal("active", payload["status"])
 
 		w.WriteHeader(201)
-		_, _ = fmt.Fprintln(w, string(readTestData("entry_task_new.json")))
+		_, _ = fmt.Fprintln(w, readTestData("entry_task_new.json"))
 	})
 
 	// test server
@@ -180,7 +180,7 @@ func TestEntryTasksService_Upsert_Update(t *testing.T) {
 		assertions.Equal("active", payload["status"])
 
 		w.WriteHeader(200)
-		_, _ = fmt.Fprintln(w, string(readTestData("entry_task_1.json")))
+		_, _ = fmt.Fprintln(w, readTestData("entry_task_1.json"))
 	})
 
 	// test server

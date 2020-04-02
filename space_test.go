@@ -233,7 +233,7 @@ func TestSpaceSaveForCreate(t *testing.T) {
 		assertions.Equal("en", payload["defaultLocale"])
 
 		w.WriteHeader(201)
-		_, _ = fmt.Fprintln(w, string(readTestData("spaces-newspace.json")))
+		_, _ = fmt.Fprintln(w, readTestData("spaces-newspace.json"))
 	})
 
 	// test server
@@ -272,7 +272,7 @@ func TestSpaceSaveForUpdate(t *testing.T) {
 		assertions.Equal("de", payload["defaultLocale"])
 
 		w.WriteHeader(200)
-		_, _ = fmt.Fprintln(w, string(readTestData("spaces-newspace-updated.json")))
+		_, _ = fmt.Fprintln(w, readTestData("spaces-newspace-updated.json"))
 	})
 
 	// test server

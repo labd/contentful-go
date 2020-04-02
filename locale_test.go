@@ -146,7 +146,7 @@ func TestLocalesService_Upsert_Update(t *testing.T) {
 		assertions.Equal("modified-code", payload["code"])
 
 		w.WriteHeader(200)
-		_, _ = fmt.Fprintln(w, string(readTestData("locale_1.json")))
+		_, _ = fmt.Fprintln(w, readTestData("locale_1.json"))
 	})
 
 	// test server

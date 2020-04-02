@@ -114,7 +114,7 @@ func TestEditorInterfacesService_Update(t *testing.T) {
 		assertions.Equal("someuiextension", sidebar[0].(map[string]interface{})["widgetId"].(string))
 
 		w.WriteHeader(200)
-		_, _ = fmt.Fprintln(w, string(readTestData("editor_interface_updated.json")))
+		_, _ = fmt.Fprintln(w, readTestData("editor_interface_updated.json"))
 	})
 
 	// test server

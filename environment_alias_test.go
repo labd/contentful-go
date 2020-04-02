@@ -109,7 +109,7 @@ func TestEnvironmentAliasesService_Update(t *testing.T) {
 		assertions.Equal("staging", payload.Alias.Sys.ID)
 
 		w.WriteHeader(200)
-		_, _ = fmt.Fprintln(w, string(readTestData("environment-alias_1.json")))
+		_, _ = fmt.Fprintln(w, readTestData("environment-alias_1.json"))
 	})
 
 	// test server

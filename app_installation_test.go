@@ -107,7 +107,7 @@ func TestAppInstallationsService_Upsert_Create(t *testing.T) {
 		assertions.Equal("world", parameters["hello"])
 
 		w.WriteHeader(201)
-		_, _ = fmt.Fprintln(w, string(readTestData("app_installation_1.json")))
+		_, _ = fmt.Fprintln(w, readTestData("app_installation_1.json"))
 	})
 
 	// test server
@@ -145,7 +145,7 @@ func TestAppInstallationsService_Upsert_Update(t *testing.T) {
 		assertions.Equal("ipsum", parameters["lorum"])
 
 		w.WriteHeader(200)
-		_, _ = fmt.Fprintln(w, string(readTestData("app_installation_updated.json")))
+		_, _ = fmt.Fprintln(w, readTestData("app_installation_updated.json"))
 	})
 
 	// test server

@@ -35,7 +35,7 @@ type Query struct {
 	locale      string
 }
 
-//NewQuery initilazies a new query
+//NewQuery initializes a new query
 func NewQuery() *Query {
 	return &Query{
 		include:     0,

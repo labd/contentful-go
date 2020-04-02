@@ -110,7 +110,7 @@ func TestExtensionsService_Upsert_Create(t *testing.T) {
 		assertions.Equal("My awesome extension", extension["name"])
 
 		w.WriteHeader(201)
-		_, _ = fmt.Fprintln(w, string(readTestData("extension_1.json")))
+		_, _ = fmt.Fprintln(w, readTestData("extension_1.json"))
 	})
 
 	// test server
@@ -160,7 +160,7 @@ func TestExtensionsService_Upsert_Update(t *testing.T) {
 		assertions.Equal("The updated extension", extension["name"])
 
 		w.WriteHeader(200)
-		_, _ = fmt.Fprintln(w, string(readTestData("extension_updated.json")))
+		_, _ = fmt.Fprintln(w, readTestData("extension_updated.json"))
 	})
 
 	// test server

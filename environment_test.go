@@ -144,7 +144,7 @@ func TestEnvironmentsService_Upsert_Update(t *testing.T) {
 		assertions.Equal("modified-name", payload["name"])
 
 		w.WriteHeader(200)
-		_, _ = fmt.Fprintln(w, string(readTestData("environment_1.json")))
+		_, _ = fmt.Fprintln(w, readTestData("environment_1.json"))
 	})
 
 	// test server
