@@ -1,38 +1,48 @@
 {
-  "name": "master",
+  "total": 1,
+  "limit": 25,
+  "skip": 0,
   "sys": {
-    "type": "Environment",
-    "id": "master",
-    "version": 1,
-    "space": {
+    "type": "Array"
+  },
+  "items": [
+    {
+      "name": "master",
       "sys": {
-        "type": "Link",
-        "linkType": "Space",
-        "id": "id1"
+        "type": "Environment",
+        "id": "master",
+        "version": 1,
+        "space": {
+          "sys": {
+            "type": "Link",
+            "linkType": "Space",
+            "id": "id1"
+          }
+        },
+        "status": {
+          "sys": {
+            "type": "Link",
+            "linkType": "Status",
+            "id": "ready"
+          }
+        },
+        "createdBy": {
+          "sys": {
+            "type": "Link",
+            "linkType": "User",
+            "id": "0ITUT46hj45h6777e7YhF"
+          }
+        },
+        "createdAt": "2020-03-10T13:03:40Z",
+        "updatedBy": {
+          "sys": {
+            "type": "Link",
+            "linkType": "User",
+            "id": "0ITUT46hj45h6777e7YhF"
+          }
+        },
+        "updatedAt": "2020-03-10T13:03:40Z"
       }
-    },
-    "status": {
-      "sys": {
-        "type": "Link",
-        "linkType": "Status",
-        "id": "ready"
-      }
-    },
-    "createdBy": {
-      "sys": {
-        "type": "Link",
-        "linkType": "User",
-        "id": "7980yiuHN8r97jyyB90y8hn"
-      }
-    },
-    "createdAt": "2020-03-10T13:03:40Z",
-    "updatedBy": {
-      "sys": {
-        "type": "Link",
-        "linkType": "User",
-        "id": "7980yiuHN8r97jyyB90y8hn"
-      }
-    },
-    "updatedAt": "2020-03-10T13:03:40Z"
-  }
+    }
+  ]
 }

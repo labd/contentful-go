@@ -21,7 +21,7 @@ func TestEnvironmentAliasesServices_List(t *testing.T) {
 		checkHeaders(r, assertions)
 
 		w.WriteHeader(200)
-		_, _ = fmt.Fprintln(w, readTestData("environment-alias.json"))
+		_, _ = fmt.Fprintln(w, readTestData("environment_alias.json"))
 	})
 
 	// test server
@@ -51,7 +51,7 @@ func TestEnvironmentAliasesServices_Get(t *testing.T) {
 		checkHeaders(r, assertions)
 
 		w.WriteHeader(200)
-		_, _ = fmt.Fprintln(w, readTestData("environment-alias_1.json"))
+		_, _ = fmt.Fprintln(w, readTestData("environment_alias_1.json"))
 	})
 
 	// test server
@@ -78,7 +78,7 @@ func TestEnvironmentAliasesServices_Get_2(t *testing.T) {
 		checkHeaders(r, assertions)
 
 		w.WriteHeader(400)
-		_, _ = fmt.Fprintln(w, readTestData("environment-alias_1.json"))
+		_, _ = fmt.Fprintln(w, readTestData("environment_alias_1.json"))
 	})
 
 	// test server
@@ -109,7 +109,7 @@ func TestEnvironmentAliasesService_Update(t *testing.T) {
 		assertions.Equal("staging", payload.Alias.Sys.ID)
 
 		w.WriteHeader(200)
-		_, _ = fmt.Fprintln(w, readTestData("environment-alias_1.json"))
+		_, _ = fmt.Fprintln(w, readTestData("environment_alias_1.json"))
 	})
 
 	// test server
@@ -120,7 +120,7 @@ func TestEnvironmentAliasesService_Update(t *testing.T) {
 	cma = NewCMA(CMAToken)
 	cma.BaseURL = server.URL
 
-	environmentAlias, err := environmentAliasFromTestData("environment-alias_1.json")
+	environmentAlias, err := environmentAliasFromTestData("environment_alias_1.json")
 	assertions.Nil(err)
 
 	environmentAlias.Alias.Sys.ID = "staging"

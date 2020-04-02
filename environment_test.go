@@ -21,7 +21,7 @@ func TestEnvironmentsService_List(t *testing.T) {
 		checkHeaders(r, assertions)
 
 		w.WriteHeader(200)
-		_, _ = fmt.Fprintln(w, readTestData("environments.json"))
+		_, _ = fmt.Fprintln(w, readTestData("environment.json"))
 	})
 
 	// test server

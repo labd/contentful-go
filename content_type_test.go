@@ -68,7 +68,7 @@ func ExampleContentTypesService_Upsert_create() {
 	}
 }
 
-func ExampleContentTypesService_Upsert_update() {
+func ExampleContentTypesService_Upsert_Update() {
 	cma := NewCMA("cma-token")
 
 	contentType, err := cma.ContentTypes.Get("space-id", "content-type-id")
@@ -199,6 +199,59 @@ func TestContentTypesServiceListActivated(t *testing.T) {
 
 	_, err = cma.ContentTypes.ListActivated(spaceID).Next()
 	assertions.Nil(err)
+}
+
+func TestContentTypesService_Get(t *testing.T) {
+	var err error
+	assertions := assert.New(t)
+
+	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		assertions.Equal(r.Method, "GET")
+		assertions.Equal(r.URL.Path, "/spaces/"+spaceID+"/content_types/63Vgs0BFK0USe4i2mQUGK6")
+
+		checkHeaders(r, assertions)
+
+		w.WriteHeader(200)
+		_, _ = fmt.Fprintln(w, readTestData("content_type.json"))
+	})
+
+	// test server
+	server := httptest.NewServer(handler)
+	defer server.Close()
+
+	// cma client
+	cma = NewCMA(CMAToken)
+	cma.BaseURL = server.URL
+
+	contentType, err := cma.ContentTypes.Get(spaceID, "63Vgs0BFK0USe4i2mQUGK6")
+	assertions.Nil(err)
+	assertions.Equal("63Vgs0BFK0USe4i2mQUGK6", contentType.Sys.ID)
+}
+
+func TestContentTypesService_Get_2(t *testing.T) {
+	var err error
+	assertions := assert.New(t)
+
+	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		assertions.Equal(r.Method, "GET")
+		assertions.Equal(r.URL.Path, "/spaces/"+spaceID+"/content_types/63Vgs0BFK0USe4i2mQUGK6")
+
+		checkHeaders(r, assertions)
+
+		w.WriteHeader(400)
+		_, _ = fmt.Fprintln(w, readTestData("content_type.json"))
+	})
+
+	// test server
+	server := httptest.NewServer(handler)
+	defer server.Close()
+
+	// cma client
+	cma = NewCMA(CMAToken)
+	cma.BaseURL = server.URL
+
+	_, err = cma.ContentTypes.Get(spaceID, "63Vgs0BFK0USe4i2mQUGK6")
+	assertions.NotNil(err)
 }
 
 func TestContentTypesServiceActivate(t *testing.T) {
