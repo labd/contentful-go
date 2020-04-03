@@ -267,18 +267,18 @@ func setup() {
 		var path string
 
 		if e := r.URL.Query().Get("error"); e != "" {
-			path = "testdata/error-" + e + ".json"
+			path = "testdata/error_" + e + ".json"
 		} else {
 			if r.Method == "GET" {
 				path = "testdata/" + fixture + ".json"
 			}
 
 			if r.Method == "POST" {
-				path = "testdata/" + fixture + "-new.json"
+				path = "testdata/" + fixture + "_new.json"
 			}
 
 			if r.Method == "PUT" {
-				path = "testdata/" + fixture + "-updated.json"
+				path = "testdata/" + fixture + "_updated.json"
 			}
 		}
 

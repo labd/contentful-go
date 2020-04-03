@@ -8,6 +8,7 @@
   "items": [
     {
       "admin": true,
+      "email": "test@contentfulsdk.go",
       "sys": {
         "type": "SpaceMembership",
         "id": "8960YTIOjg6jknUYIjhg",
