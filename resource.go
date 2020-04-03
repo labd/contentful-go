@@ -1,7 +1,9 @@
 package contentful
 
 import (
+	"bytes"
 	"fmt"
+	"io/ioutil"
 	"net/url"
 )
 
@@ -30,4 +32,24 @@ func (service *ResourcesService) Get(spaceID, resourceID string) (*Resource, err
 	}
 
 	return &resource, err
+}
+
+// Create creates an upload resource
+func (service *ResourcesService) Create(spaceID, filePath string) error {
+	bytesArray, err := ioutil.ReadFile(filePath)
+	if err != nil {
+		return err
+	}
+
+	path := fmt.Sprintf("/spaces/%s/uploads", spaceID)
+	method := "POST"
+
+	req, err := service.c.newRequest(method, path, nil, bytes.NewReader(bytesArray))
+	if err != nil {
+		return err
+	}
+
+	req.Header.Set("Content-Type", "application/octet-stream")
+
+	return service.c.do(req, bytesArray)
 }

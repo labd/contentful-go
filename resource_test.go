@@ -5,6 +5,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"net/http"
 	"net/http/httptest"
+	"path/filepath"
 	"testing"
 )
 
@@ -55,5 +56,29 @@ func TestResourcesService_Get_2(t *testing.T) {
 	urc.BaseURL = server.URL
 
 	_, err = urc.Resources.Get(spaceID, "0xvkNW6WdQ8JkWlWZ8BC4x")
+	assertions.Nil(err)
+}
+
+func TestResourcesService_Create(t *testing.T) {
+	var err error
+	assertions := assert.New(t)
+
+	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		assertions.Equal(r.Method, "POST")
+		assertions.Equal(r.RequestURI, "/spaces/"+spaceID+"/uploads")
+	})
+
+	// test server
+	server := httptest.NewServer(handler)
+	defer server.Close()
+
+	// cma client
+	urc = NewResourceClient(CMAToken)
+	urc.BaseURL = server.URL
+
+	curPath, _ := filepath.Abs("./resource_test.go")
+	absolutePath := curPath[:len(curPath)-16]
+
+	err = urc.Resources.Create(spaceID, absolutePath+"testdata/resource_uploaded.png")
 	assertions.Nil(err)
 }
