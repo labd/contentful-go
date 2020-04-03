@@ -49,6 +49,7 @@ type Client struct {
 	AppDefinitions     *AppDefinitionsService
 	AppInstallations   *AppInstallationsService
 	Usages             *UsagesService
+	Resources          *ResourcesService
 }
 
 type service struct {
@@ -146,6 +147,25 @@ func NewCPA(token string) *Client {
 	c.Entries = &EntriesService{c: c}
 	c.Locales = &LocalesService{c: c}
 	c.Webhooks = &WebhooksService{c: c}
+
+	return c
+}
+
+// NewResourceClient returns a client for the resource/uploads endpoints
+func NewResourceClient(token string) *Client {
+	c := &Client{
+		client: http.DefaultClient,
+		api:    "URC",
+		Debug:  false,
+		token:  token,
+		Headers: map[string]string{
+			"Authorization": "Bearer " + token,
+		},
+		BaseURL: "https://upload.contentful.com",
+	}
+	c.commonService.c = c
+
+	c.Resources = (*ResourcesService)(&c.commonService)
 
 	return c
 }

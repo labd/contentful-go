@@ -20,6 +20,7 @@ import (
 var (
 	server         *httptest.Server
 	cma            *Client
+	urc            *Client
 	c              *Client
 	CMAToken       = "b4c0n73n7fu1"
 	CDAToken       = "cda-token"
@@ -337,6 +338,17 @@ func TestContentfulNewCPA(t *testing.T) {
 	assertions.Equal("https://preview.contentful.com", cpa.BaseURL)
 	assertions.Equal("CPA", cpa.api)
 	assertions.Equal(CPAToken, cpa.token)
+}
+
+func TestNewResourceClient(t *testing.T) {
+	assertions := assert.New(t)
+
+	urc := NewResourceClient(CMAToken)
+	assertions.IsType(Client{}, *urc)
+	assertions.Equal("https://upload.contentful.com", urc.BaseURL)
+	assertions.Equal("URC", urc.api)
+	assertions.Equal(CMAToken, urc.token)
+	assertions.Equal(fmt.Sprintf("Bearer %s", CMAToken), urc.Headers["Authorization"])
 }
 
 func TestContentfulSetOrganization(t *testing.T) {
