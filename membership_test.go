@@ -32,8 +32,11 @@ func TestMembershipsService_List(t *testing.T) {
 	cma = NewCMA(CMAToken)
 	cma.BaseURL = server.URL
 
-	_, err = cma.Memberships.List(spaceID).Next()
+	collection, err := cma.Memberships.List(spaceID).Next()
 	assertions.Nil(err)
+	membership := collection.ToMembership()
+	assertions.Equal(2, len(membership))
+	assertions.Equal("test@contentfulsdk.go", membership[0].Email)
 }
 
 func TestMembershipsService_Get(t *testing.T) {
@@ -58,8 +61,9 @@ func TestMembershipsService_Get(t *testing.T) {
 	cma = NewCMA(CMAToken)
 	cma.BaseURL = server.URL
 
-	_, err = cma.Memberships.Get(spaceID, "0xWanD4AZI2AR35wW9q51n")
+	membership, err := cma.Memberships.Get(spaceID, "0xWanD4AZI2AR35wW9q51n")
 	assertions.Nil(err)
+	assertions.Equal("0xWanD4AZI2AR35wW9q51n", membership.Sys.ID)
 }
 
 func TestMembershipsService_Get_2(t *testing.T) {

@@ -31,8 +31,9 @@ func TestUsersService_Me(t *testing.T) {
 	cma = NewCMA(CMAToken)
 	cma.BaseURL = server.URL
 
-	_, err = cma.Users.Me()
+	user, err := cma.Users.Me()
 	assertions.Nil(err)
+	assertions.Equal("j.doe@labdigital.nl", user.Email)
 }
 
 func TestUsersService_Me_2(t *testing.T) {

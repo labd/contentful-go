@@ -269,3 +269,23 @@ func (col *Collection) ToUsage() []*Usage {
 
 	return usage
 }
+
+// ToMembership cast Items to Membership model
+func (col *Collection) ToMembership() []*Membership {
+	var membership []*Membership
+
+	byteArray, _ := json.Marshal(col.Items)
+	_ = json.NewDecoder(bytes.NewReader(byteArray)).Decode(&membership)
+
+	return membership
+}
+
+// ToRole cast Items to Role model
+func (col *Collection) ToRole() []*Role {
+	var role []*Role
+
+	byteArray, _ := json.Marshal(col.Items)
+	_ = json.NewDecoder(bytes.NewReader(byteArray)).Decode(&role)
+
+	return role
+}

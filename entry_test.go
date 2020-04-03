@@ -60,8 +60,9 @@ func TestEntriesService_Get(t *testing.T) {
 	cma = NewCMA(CMAToken)
 	cma.BaseURL = server.URL
 
-	_, err = cma.Entries.Get(spaceID, "5KsDBWseXY6QegucYAoacS")
+	entry, err := cma.Entries.Get(spaceID, "5KsDBWseXY6QegucYAoacS")
 	assertions.Nil(err)
+	assertions.Equal("5KsDBWseXY6QegucYAoacS", entry.Sys.ID)
 }
 
 func TestEntriesService_Get_2(t *testing.T) {

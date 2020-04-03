@@ -43,15 +43,14 @@ func TestEnvironmentsService_Get(t *testing.T) {
 	var err error
 	assertions := assert.New(t)
 
-	// Only tests master environment, as this is the only environment that always exists.
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		assertions.Equal(r.Method, "GET")
-		assertions.Equal(r.URL.Path, "/spaces/"+spaceID+"/environments/master")
+		assertions.Equal(r.URL.Path, "/spaces/"+spaceID+"/environments/staging")
 
 		checkHeaders(r, assertions)
 
 		w.WriteHeader(200)
-		_, _ = fmt.Fprintln(w, readTestData("environment.json"))
+		_, _ = fmt.Fprintln(w, readTestData("environment_1.json"))
 	})
 
 	// test server
@@ -62,8 +61,9 @@ func TestEnvironmentsService_Get(t *testing.T) {
 	cma = NewCMA(CMAToken)
 	cma.BaseURL = server.URL
 
-	_, err = cma.Environments.Get(spaceID, "master")
+	environment, err := cma.Environments.Get(spaceID, "staging")
 	assertions.Nil(err)
+	assertions.Equal("staging", environment.Name)
 }
 
 func TestEnvironmentsService_Get_2(t *testing.T) {

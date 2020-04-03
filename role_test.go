@@ -32,8 +32,11 @@ func TestRolesService_List(t *testing.T) {
 	cma = NewCMA(CMAToken)
 	cma.BaseURL = server.URL
 
-	_, err = cma.Roles.List(spaceID).Next()
+	collection, err := cma.Roles.List(spaceID).Next()
 	assertions.Nil(err)
+	role := collection.ToRole()
+	assertions.Equal(2, len(role))
+	assertions.Equal("Author", role[0].Name)
 }
 
 func TestRolesService_Get(t *testing.T) {
@@ -58,8 +61,9 @@ func TestRolesService_Get(t *testing.T) {
 	cma = NewCMA(CMAToken)
 	cma.BaseURL = server.URL
 
-	_, err = cma.Roles.Get(spaceID, "0xvkNW6WdQ8JkWlWZ8BC4x")
+	role, err := cma.Roles.Get(spaceID, "0xvkNW6WdQ8JkWlWZ8BC4x")
 	assertions.Nil(err)
+	assertions.Equal("Some role", role.Name)
 }
 
 func TestRolesService_Get_2(t *testing.T) {
