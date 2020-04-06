@@ -261,6 +261,18 @@ func appInstallationFromTestFile(fileName string) (*AppInstallation, error) {
 	return &appInstallation, nil
 }
 
+func resourceFromTestFile(fileName string) (*Resource, error) {
+	content := readTestData(fileName)
+
+	var resource Resource
+	err := json.NewDecoder(strings.NewReader(content)).Decode(&resource)
+	if err != nil {
+		return nil, err
+	}
+
+	return &resource, nil
+}
+
 func setup() {
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		fixture := strings.Replace(r.URL.Path, "/", "-", -1)

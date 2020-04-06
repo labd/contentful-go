@@ -53,3 +53,16 @@ func (service *ResourcesService) Create(spaceID, filePath string) error {
 
 	return service.c.do(req, bytesArray)
 }
+
+// Delete the resource
+func (service *ResourcesService) Delete(spaceID, resourceID string) error {
+	path := fmt.Sprintf("/spaces/%s/uploads/%s", spaceID, resourceID)
+	method := "DELETE"
+
+	req, err := service.c.newRequest(method, path, nil, nil)
+	if err != nil {
+		return err
+	}
+
+	return service.c.do(req, nil)
+}
