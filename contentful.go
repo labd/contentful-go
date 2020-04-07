@@ -49,6 +49,7 @@ type Client struct {
 	AppDefinitions     *AppDefinitionsService
 	AppInstallations   *AppInstallationsService
 	Usages             *UsagesService
+	Resources          *ResourcesService
 }
 
 type service struct {
@@ -150,6 +151,25 @@ func NewCPA(token string) *Client {
 	return c
 }
 
+// NewResourceClient returns a client for the resource/uploads endpoints
+func NewResourceClient(token string) *Client {
+	c := &Client{
+		client: http.DefaultClient,
+		api:    "URC",
+		Debug:  false,
+		token:  token,
+		Headers: map[string]string{
+			"Authorization": "Bearer " + token,
+		},
+		BaseURL: "https://upload.contentful.com",
+	}
+	c.commonService.c = c
+
+	c.Resources = (*ResourcesService)(&c.commonService)
+
+	return c
+}
+
 // SetOrganization sets the given organization id
 func (c *Client) SetOrganization(organizationID string) *Client {
 	c.Headers["X-Contentful-Organization"] = organizationID
@@ -208,11 +228,16 @@ func (c *Client) do(req *http.Request, v interface{}) error {
 	}
 
 	if res.StatusCode >= 200 && res.StatusCode < 400 {
-		if v != nil {
+		// Upload/Create Resource response cannot be decoded
+		if c.api == "URC" && req.Method == "POST" {
 			defer res.Body.Close()
-			err = json.NewDecoder(res.Body).Decode(v)
-			if err != nil {
-				return err
+		} else {
+			if v != nil {
+				defer res.Body.Close()
+				err = json.NewDecoder(res.Body).Decode(v)
+				if err != nil {
+					return err
+				}
 			}
 		}
 
