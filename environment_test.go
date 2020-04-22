@@ -98,8 +98,8 @@ func TestEnvironmentsService_Upsert_Create(t *testing.T) {
 	assertions := assert.New(t)
 
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		assertions.Equal(r.Method, "POST")
-		assertions.Equal(r.RequestURI, "/spaces/"+spaceID+"/environments")
+		assertions.Equal(r.Method, "PUT")
+		assertions.Equal(r.RequestURI, "/spaces/"+spaceID+"/environments/staging")
 
 		checkHeaders(r, assertions)
 

@@ -75,8 +75,8 @@ func (service *EnvironmentsService) Upsert(spaceID string, e *Environment) error
 		path = fmt.Sprintf("/spaces/%s/environments/%s", spaceID, e.Sys.ID)
 		method = "PUT"
 	} else {
-		path = fmt.Sprintf("/spaces/%s/environments", spaceID)
-		method = "POST"
+		path = fmt.Sprintf("/spaces/%s/environments/%s", spaceID, e.Name)
+		method = "PUT"
 	}
 
 	req, err := service.c.newRequest(method, path, nil, bytes.NewReader(bytesArray))
