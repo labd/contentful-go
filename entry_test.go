@@ -164,7 +164,7 @@ func TestEntriesService_Upsert_Create(t *testing.T) {
 		},
 	}
 
-	err = cma.Entries.Upsert(spaceID, entry)
+	err = cma.Entries.Upsert(spaceID, "hfM9RCJIk0wIm06WkEOQY", entry)
 	assertions.Nil(err)
 }
 
@@ -206,7 +206,7 @@ func TestEntriesService_Upsert_Update(t *testing.T) {
 	body := entry.Fields["body"].(map[string]interface{})
 	body["en-US"] = "Edited text"
 
-	err = cma.Entries.Upsert(spaceID, entry)
+	err = cma.Entries.Upsert(spaceID, "hfM9RCJIk0wIm06WkEOQY", entry)
 	assertions.Nil(err)
 }
 

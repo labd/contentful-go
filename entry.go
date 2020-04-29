@@ -110,7 +110,7 @@ func (service *EntriesService) Unpublish(spaceID string, entry *Entry) error {
 }
 
 // Upsert updates or creates a new entry
-func (service *EntriesService) Upsert(spaceID string, e *Entry) error {
+func (service *EntriesService) Upsert(spaceID, contentTypeID string, e *Entry) error {
 	bytesArray, err := json.Marshal(e)
 	if err != nil {
 		return err
@@ -132,6 +132,7 @@ func (service *EntriesService) Upsert(spaceID string, e *Entry) error {
 		return err
 	}
 
+	req.Header.Set("X-Contentful-Content-Type", contentTypeID)
 	req.Header.Set("X-Contentful-Version", strconv.Itoa(e.GetVersion()))
 
 	return service.c.do(req, e)
