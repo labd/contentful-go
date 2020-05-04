@@ -153,7 +153,7 @@ func TestEntriesService_Upsert_Create(t *testing.T) {
 	cma.BaseURL = server.URL
 
 	entry := &Entry{
-		locale: "en-US",
+		Locale: "en-US",
 		Fields: map[string]interface{}{
 			"title": map[string]interface{}{
 				"en-US": "Hello, World!",
