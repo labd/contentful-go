@@ -355,8 +355,8 @@ func (service *ContentTypesService) Upsert(spaceID string, ct *ContentType) erro
 		path = fmt.Sprintf("/spaces/%s/content_types/%s", spaceID, ct.Sys.ID)
 		method = "PUT"
 	} else {
-		path = fmt.Sprintf("/spaces/%s/content_types", spaceID)
-		method = "POST"
+		path = fmt.Sprintf("/spaces/%s/content_types/%s", spaceID, ct.Name)
+		method = "PUT"
 	}
 
 	req, err := service.c.newRequest(method, path, nil, bytes.NewReader(bytesArray))
