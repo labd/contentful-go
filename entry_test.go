@@ -134,13 +134,13 @@ func TestEntriesService_Upsert_Create(t *testing.T) {
 		err := json.NewDecoder(r.Body).Decode(&payload)
 		assertions.Nil(err)
 
-		fields := payload["Fields"].(map[string]interface{})
+		fields := payload["fields"].(map[string]interface{})
 		title := fields["title"].(map[string]interface{})
 		body := fields["body"].(map[string]interface{})
 		assertions.Equal("Hello, World!", title["en-US"].(string))
 		assertions.Equal("Bacon is healthy!", body["en-US"].(string))
 
-		w.WriteHeader(200)
+		w.WriteHeader(201)
 		_, _ = fmt.Fprintln(w, readTestData("entry_1.json"))
 	})
 
@@ -153,7 +153,7 @@ func TestEntriesService_Upsert_Create(t *testing.T) {
 	cma.BaseURL = server.URL
 
 	entry := &Entry{
-		locale: "en-US",
+		Locale: "en-US",
 		Fields: map[string]interface{}{
 			"title": map[string]interface{}{
 				"en-US": "Hello, World!",
@@ -182,7 +182,7 @@ func TestEntriesService_Upsert_Update(t *testing.T) {
 		err := json.NewDecoder(r.Body).Decode(&payload)
 		assertions.Nil(err)
 
-		fields := payload["Fields"].(map[string]interface{})
+		fields := payload["fields"].(map[string]interface{})
 		title := fields["title"].(map[string]interface{})
 		body := fields["body"].(map[string]interface{})
 		assertions.Equal("Hello, World!", title["en-US"].(string))

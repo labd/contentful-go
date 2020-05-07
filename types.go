@@ -17,4 +17,7 @@ type Sys struct {
 	PublishedAt      string       `json:"publishedAt,omitempty"`
 	PublishedBy      *Sys         `json:"publishedBy,omitempty"`
 	PublishedVersion int          `json:"publishedVersion,omitempty"`
+	ArchivedAt       string       `json:"archivedAt,omitempty"`
+	ArchivedBy       *Sys         `json:"archivedBy,omitempty"`
+	ArchivedVersion  int          `json:"archivedVersion,omitempty"`
 }
