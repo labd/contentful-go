@@ -12,7 +12,7 @@ type AssetsService service
 
 // Asset represents a Contentful asset
 type Asset struct {
-	locale string
+	Locale string
 	Sys    *Sys         `json:"sys,omitempty"`
 	Fields *AssetFields `json:"fields,omitempty"`
 }
@@ -153,7 +153,7 @@ func (service *AssetsService) Delete(spaceID string, asset *Asset) error {
 
 // Process the asset
 func (service *AssetsService) Process(spaceID string, asset *Asset) error {
-	path := fmt.Sprintf("/spaces/%s/assets/%s/files/%s/process", spaceID, asset.Sys.ID, asset.locale)
+	path := fmt.Sprintf("/spaces/%s/assets/%s/files/%s/process", spaceID, asset.Sys.ID, asset.Locale)
 	method := "PUT"
 
 	req, err := service.c.newRequest(method, path, nil, nil)
