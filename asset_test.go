@@ -149,7 +149,7 @@ func TestAssetsService_Upsert_Create(t *testing.T) {
 	cma.BaseURL = server.URL
 
 	asset := &Asset{
-		locale: "en-US",
+		Locale: "en-US",
 		Fields: &AssetFields{
 			Title: map[string]string{
 				"en-US": "hehehe",
