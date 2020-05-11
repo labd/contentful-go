@@ -1,0 +1,23 @@
+version: 2.1
+jobs:
+  build:
+    docker:
+      - image: 'circleci/golang:latest'
+    steps:
+      - checkout
+      - restore_cache: # restores saved cache if no changes are detected since last run
+          keys:
+            - v1-pkg-cache
+      - run: go mod download
+      - save_cache:
+          key: v1-pkg-cache
+          paths:
+            - "/go/pkg"
+      - unmock/start
+      - unmock/set:
+          code: 200
+      - run:
+          command: make test
+      - run:
+          command: bash <(curl -s https://codecov.io/bash) -t $CODECOV_TOKEN
+      - unmock/stop
