@@ -28,6 +28,7 @@ type AssetFields struct {
 type File struct {
 	URL         string       `json:"url,omitempty"`
 	UploadURL   string       `json:"upload,omitempty"`
+	UploadFrom  *Sys         `json:"uploadFrom,omitempty"`
 	Details     *FileDetails `json:"details,omitempty"`
 	FileName    string       `json:"fileName,omitempty"`
 	ContentType string       `json:"contentType,omitempty"`
