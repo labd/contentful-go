@@ -34,7 +34,7 @@ type File struct {
 	ContentType string       `json:"contentType,omitempty"`
 }
 
-// FileDetails model
+// UploadFrom model
 type UploadFrom struct {
 	Sys *Sys `json:"sys,omitempty"`
 }
