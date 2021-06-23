@@ -160,3 +160,53 @@ func TestFieldValidationDate(t *testing.T) {
 	assertions.Equal(maxStr, validationCheck.Range.Max.Format(layout))
 	assertions.Equal("error message", validationCheck.ErrorMessage)
 }
+
+func TestFieldValidationEnabledNodeType(t *testing.T) {
+	var err error
+	assertions := assert.New(t)
+
+	validation := &FieldValidationEnabledNodeTypes{
+		EnabledNodeTypes: []string{
+			FieldValidationNodeTypeHeading1,
+			FieldValidationNodeTypeHeading2,
+			FieldValidationNodeTypeHeading3,
+			FieldValidationNodeTypeHeading4,
+			FieldValidationNodeTypeHeading5,
+			FieldValidationNodeTypeHeading6,
+			FieldValidationNodeTypeOrderedList,
+			FieldValidationNodeTypeUnorderedList,
+			FieldValidationNodeTypeHorizontalRule,
+			FieldValidationNodeTypeBlockquote,
+			FieldValidationNodeTypeEmbeddedAssetBlock,
+			FieldValidationNodeTypeEmbeddedEntryLine,
+			FieldValidationNodeTypeEmbeddedEntryBlock,
+			FieldValidationNodeTypeHyperlink,
+			FieldValidationNodeTypeEntryHyperlink,
+			FieldValidationNodeTypeAssetHyperlink,
+		},
+		ErrorMessage: "error message",
+	}
+
+	data, err := json.Marshal(validation)
+	assertions.Nil(err)
+	assertions.Equal("{\"enabledNodeTypes\":[\"heading-1\",\"heading-2\",\"heading-3\",\"heading-4\",\"heading-5\",\"heading-6\",\"ordered-list\",\"unordered-list\",\"hr\",\"blockquote\",\"embedded-asset-block\",\"embedded-entry-inline\",\"embedded-entry-block\",\"hyperlink\",\"entry-hyperlink\",\"asset-hyperlink\"],\"message\":\"error message\"}", string(data))
+}
+
+func TestFieldValidationEnabledMarks(t *testing.T) {
+	var err error
+	assertions := assert.New(t)
+
+	validation := &FieldValidationEnabledMarks{
+		EnabledMarks: []string{
+			FieldValidationMarkItalic,
+			FieldValidationMarkUnderline,
+			FieldValidationMarkBold,
+			FieldValidationMarkCode,
+		},
+		ErrorMessage: "error message",
+	}
+
+	data, err := json.Marshal(validation)
+	assertions.Nil(err)
+	assertions.Equal("{\"enabledMarks\":[\"italic\",\"underline\",\"bold\",\"code\"],\"message\":\"error message\"}", string(data))
+}

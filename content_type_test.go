@@ -907,6 +907,8 @@ func TestContentTypeFieldValidationsUnmarshal(t *testing.T) {
 	var mimeTypeValidations []FieldValidation
 	var dimensionValidations []FieldValidation
 	var fileSizeValidations []FieldValidation
+	var enabledMarksValidations []FieldValidation
+	var enabledNodeTypesValidations []FieldValidation
 
 	for _, field := range ct.Fields {
 		if field.Name == "text-short" {
@@ -972,6 +974,12 @@ func TestContentTypeFieldValidationsUnmarshal(t *testing.T) {
 			linkValidations = append(linkValidations, field.Items.Validations[0])
 			sizeValidations = append(sizeValidations, field.Validations[0])
 		}
+
+		if field.Name == "richtext" {
+			assertions.Equal(2, len(field.Validations))
+			enabledMarksValidations = append(enabledMarksValidations, field.Validations[0])
+			enabledNodeTypesValidations = append(enabledNodeTypesValidations, field.Validations[1])
+		}
 	}
 
 	for _, validation := range uniqueValidations {
@@ -1021,6 +1029,16 @@ func TestContentTypeFieldValidationsUnmarshal(t *testing.T) {
 
 	for _, validation := range fileSizeValidations {
 		_, ok := validation.(FieldValidationFileSize)
+		assertions.True(ok)
+	}
+
+	for _, validation := range enabledMarksValidations {
+		_, ok := validation.(FieldValidationEnabledMarks)
+		assertions.True(ok)
+	}
+
+	for _, validation := range enabledNodeTypesValidations {
+		_, ok := validation.(FieldValidationEnabledNodeTypes)
 		assertions.True(ok)
 	}
 }
