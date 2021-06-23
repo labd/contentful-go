@@ -47,6 +47,9 @@ const (
 
 	// FieldTypeObject content type field type for object data
 	FieldTypeObject = "Object"
+
+	// FieldTypeRichText content type field type for rich text data
+	FieldTypeRichText = "RichText"
 )
 
 // Field model
@@ -239,6 +242,24 @@ func ParseValidations(data []interface{}) (validations []FieldValidation, err er
 			}
 
 			validations = append(validations, fieldValidationRegex)
+		}
+
+		if _, ok := validation["enabledNodeTypes"]; ok {
+			var fieldValidationEnabledNodeTypes FieldValidationEnabledNodeTypes
+			if err := json.Unmarshal(byteArray, &fieldValidationEnabledNodeTypes); err != nil {
+				return nil, err
+			}
+
+			validations = append(validations, fieldValidationEnabledNodeTypes)
+		}
+
+		if _, ok := validation["enabledMarks"]; ok {
+			var fieldValidationEnabledMarks FieldValidationEnabledMarks
+			if err := json.Unmarshal(byteArray, &fieldValidationEnabledMarks); err != nil {
+				return nil, err
+			}
+
+			validations = append(validations, fieldValidationEnabledMarks)
 		}
 	}
 

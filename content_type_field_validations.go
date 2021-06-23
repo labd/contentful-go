@@ -262,3 +262,79 @@ type FieldValidationRegex struct {
 	Regex        *Regex `json:"regexp,omitempty"`
 	ErrorMessage string `json:"message,omitempty"`
 }
+
+const (
+	// FieldValidationNodeTypeHeading1 Heading 1 node validation token
+	FieldValidationNodeTypeHeading1 = "heading-1"
+
+	// FieldValidationNodeTypeHeading2 Heading 2 node validation token
+	FieldValidationNodeTypeHeading2 = "heading-2"
+
+	// FieldValidationNodeTypeHeading3 Heading 3 node validation token
+	FieldValidationNodeTypeHeading3 = "heading-3"
+
+	// FieldValidationNodeTypeHeading4 Heading 4 node validation token
+	FieldValidationNodeTypeHeading4 = "heading-4"
+
+	// FieldValidationNodeTypeHeading5 Heading 5 node validation token
+	FieldValidationNodeTypeHeading5 = "heading-5"
+
+	// FieldValidationNodeTypeHeading6 Heading 6 node validation token
+	FieldValidationNodeTypeHeading6 = "heading-6"
+
+	// FieldValidationNodeTypeOrderedList Ordered list node validation token
+	FieldValidationNodeTypeOrderedList = "ordered-list"
+
+	// FieldValidationNodeTypeUnorderedList Unordered list node validation token
+	FieldValidationNodeTypeUnorderedList = "unordered-list"
+
+	// FieldValidationNodeTypeHorizontalRule Horizontal rule node validation token
+	FieldValidationNodeTypeHorizontalRule = "hr"
+
+	// FieldValidationNodeTypeBlockquote Blockquote node validation token
+	FieldValidationNodeTypeBlockquote = "blockquote"
+
+	// FieldValidationNodeTypeEmbeddedAssetBlock Asset block node validation token
+	FieldValidationNodeTypeEmbeddedAssetBlock = "embedded-asset-block"
+
+	// FieldValidationNodeTypeEmbeddedEntryLine Inline entry node validation token
+	FieldValidationNodeTypeEmbeddedEntryLine = "embedded-entry-inline"
+
+	// FieldValidationNodeTypeEmbeddedEntryBlock Block entry node validation token
+	FieldValidationNodeTypeEmbeddedEntryBlock = "embedded-entry-block"
+
+	// FieldValidationNodeTypeHyperlink Hyperlink node validation token
+	FieldValidationNodeTypeHyperlink = "hyperlink"
+
+	// FieldValidationNodeTypeEntryHyperlink Entry hyperlink node validation token
+	FieldValidationNodeTypeEntryHyperlink = "entry-hyperlink"
+
+	// FieldValidationNodeTypeAssetHyperlink Asset hyperlink node validation token
+	FieldValidationNodeTypeAssetHyperlink = "asset-hyperlink"
+)
+
+// FieldValidationEnabledNodeTypes model
+type FieldValidationEnabledNodeTypes struct {
+	EnabledNodeTypes []string `json:"enabledNodeTypes,omitempty"`
+	ErrorMessage     string   `json:"message,omitempty"`
+}
+
+const (
+	// FieldValidationMarkItalic Italic mark validation token
+	FieldValidationMarkItalic = "italic"
+
+	// FieldValidationMarkUnderline Unerline mark validation token
+	FieldValidationMarkUnderline = "underline"
+
+	// FieldValidationMarkBold Bold mark validation token
+	FieldValidationMarkBold = "bold"
+
+	// FieldValidationMarkCode Code validation token
+	FieldValidationMarkCode = "code"
+)
+
+// FieldValidationEnabledMarks model
+type FieldValidationEnabledMarks struct {
+	EnabledMarks []string `json:"enabledMarks,omitempty"`
+	ErrorMessage string   `json:"message,omitempty"`
+}

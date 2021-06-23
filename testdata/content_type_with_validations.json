@@ -320,6 +320,29 @@
           "message": "ref-manyRefs number of entries error message"
         }
       ]
+    },
+    {
+      "name": "richtext",
+      "id": "MB0nzivjE8vyIgCi",
+      "apiName": "refManyRefs",
+      "type": "RichText",
+      "required": true,
+      "validations": [
+        {
+          "enabledMarks": [
+            "bold",
+            "underline"
+          ],
+          "message": "Only bold, and underline marks are allowed"
+        },
+        {
+          "enabledNodeTypes": [
+            "heading-2",
+            "hyperlink"
+          ],
+          "message": "Only heading 2, and link to Url nodes are allowed"
+        }
+      ]
     }
   ],
   "displayField": "HbvLK9kzF91K9byY",
