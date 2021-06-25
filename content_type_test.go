@@ -319,8 +319,8 @@ func TestContentTypeSaveForCreate(t *testing.T) {
 	assertions := assert.New(t)
 
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		assertions.Equal(r.Method, "PUT")
-		assertions.Equal(r.RequestURI, "/spaces/"+spaceID+"/environments/"+environmentID+"/content_types/ct-name")
+		assertions.Equal(r.Method, "POST")
+		assertions.Equal(r.RequestURI, "/spaces/"+spaceID+"/environments/"+environmentID+"/content_types")
 		checkHeaders(r, assertions)
 
 		var payload map[string]interface{}
@@ -469,6 +469,37 @@ func TestContentTypeSaveForUpdate(t *testing.T) {
 	assertions.Equal(2, ct.Sys.Version)
 }
 
+func TestContentTypeCreateWithoutID(t *testing.T) {
+	var err error
+	assertions := assert.New(t)
+
+	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		assertions.Equal(r.Method, "POST")
+		assertions.Equal(r.RequestURI, "/spaces/"+spaceID+"/environments/"+environmentID+"/content_types")
+		checkHeaders(r, assertions)
+
+		w.WriteHeader(200)
+		_, _ = fmt.Fprintln(w, readTestData("content_type-updated.json"))
+	})
+
+	// test server
+	server := httptest.NewServer(handler)
+	defer server.Close()
+
+	// cma client
+	cma = NewCMA(CMAToken)
+	cma.BaseURL = server.URL
+
+	// test content type
+	ct := &ContentType{
+		Sys:  &Sys{},
+		Name: "My Content Type",
+	}
+
+	_ = cma.ContentTypes.Upsert(env, ct)
+	assertions.Nil(err)
+}
+
 func TestContentTypeCreateWithID(t *testing.T) {
 	var err error
 	assertions := assert.New(t)
@@ -536,8 +567,8 @@ func TestContentTypeFieldRef(t *testing.T) {
 	assertions := assert.New(t)
 
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		assertions.Equal(r.Method, "PUT")
-		assertions.Equal(r.RequestURI, "/spaces/"+spaceID+"/environments/"+environmentID+"/content_types/ct-name")
+		assertions.Equal(r.Method, "POST")
+		assertions.Equal(r.RequestURI, "/spaces/"+spaceID+"/environments/"+environmentID+"/content_types")
 		checkHeaders(r, assertions)
 
 		var payload map[string]interface{}
@@ -599,8 +630,8 @@ func TestContentTypeFieldArray(t *testing.T) {
 	assertions := assert.New(t)
 
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		assertions.Equal(r.Method, "PUT")
-		assertions.Equal(r.RequestURI, "/spaces/"+spaceID+"/environments/"+environmentID+"/content_types/ct-name")
+		assertions.Equal(r.Method, "POST")
+		assertions.Equal(r.RequestURI, "/spaces/"+spaceID+"/environments/"+environmentID+"/content_types")
 		checkHeaders(r, assertions)
 
 		var payload map[string]interface{}
@@ -662,8 +693,8 @@ func TestContentTypeFieldValidationRangeUniquePredefinedValues(t *testing.T) {
 	assertions := assert.New(t)
 
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		assertions.Equal(r.Method, "PUT")
-		assertions.Equal(r.RequestURI, "/spaces/"+spaceID+"/environments/"+environmentID+"/content_types/ct-name")
+		assertions.Equal(r.Method, "POST")
+		assertions.Equal(r.RequestURI, "/spaces/"+spaceID+"/environments/"+environmentID+"/content_types")
 		checkHeaders(r, assertions)
 
 		var payload map[string]interface{}
@@ -749,8 +780,8 @@ func TestContentTypeFieldTypeMedia(t *testing.T) {
 	assertions := assert.New(t)
 
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		assertions.Equal(r.Method, "PUT")
-		assertions.Equal(r.RequestURI, "/spaces/"+spaceID+"/environments/"+environmentID+"/content_types/ct-name")
+		assertions.Equal(r.Method, "POST")
+		assertions.Equal(r.RequestURI, "/spaces/"+spaceID+"/environments/"+environmentID+"/content_types")
 		checkHeaders(r, assertions)
 
 		var payload map[string]interface{}
