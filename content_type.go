@@ -364,13 +364,16 @@ func (service *ContentTypesService) Get(env *Environment, contentTypeID string) 
 // Upsert a content type to the specified environment
 func (service *ContentTypesService) Upsert(env *Environment, ct *ContentType) error {
 	var path string
+	var method string
 
 	path = fmt.Sprintf("/spaces/%s/environments/%s", env.Sys.Space.Sys.ID, env.Sys.ID)
 
 	if ct.Sys != nil && ct.Sys.ID != "" {
 		path = fmt.Sprintf("%s/content_types/%s", path, ct.Sys.ID)
+		method = "PUT"
 	} else {
-		path = fmt.Sprintf("%s/content_types/%s", path, ct.Name)
+		path = fmt.Sprintf("%s/content_types", path)
+		method = "POST"
 	}
 
 	bytesArray, err := json.Marshal(ct)
@@ -378,7 +381,7 @@ func (service *ContentTypesService) Upsert(env *Environment, ct *ContentType) er
 		return err
 	}
 
-	req, err := service.c.newRequest("PUT", path, nil, bytes.NewReader(bytesArray))
+	req, err := service.c.newRequest(method, path, nil, bytes.NewReader(bytesArray))
 	if err != nil {
 		return err
 	}
