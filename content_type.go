@@ -424,6 +424,18 @@ func (service *ContentTypesService) doDelete(path string, ct *ContentType) error
 // Activate the contenttype, a.k.a publish
 func (service *ContentTypesService) Activate(spaceID string, ct *ContentType) error {
 	path := fmt.Sprintf("/spaces/%s/content_types/%s/published", spaceID, ct.Sys.ID)
+
+	return service.doActivate(path, ct)
+}
+
+// ActivateForEnv activate a content type for a specified environment
+func (service *ContentTypesService) ActivateForEnv(env *Environment, ct *ContentType) error {
+	path := fmt.Sprintf("/spaces/%s/environments/%s/content_types/%s/published", env.Sys.Space.Sys.ID, env.Sys.ID, ct.Sys.ID)
+
+	return service.doActivate(path, ct)
+}
+
+func (service *ContentTypesService) doActivate(path string, ct *ContentType) error {
 	method := "PUT"
 
 	req, err := service.c.newRequest(method, path, nil, nil)
@@ -440,6 +452,17 @@ func (service *ContentTypesService) Activate(spaceID string, ct *ContentType) er
 // Deactivate the contenttype, a.k.a unpublish
 func (service *ContentTypesService) Deactivate(spaceID string, ct *ContentType) error {
 	path := fmt.Sprintf("/spaces/%s/content_types/%s/published", spaceID, ct.Sys.ID)
+
+	return service.doDeactivate(path, ct)
+}
+
+// DeactivateForEnv deactivate a contenttype for a specified environment
+func (service *ContentTypesService) DeactivateForEnv(env *Environment, ct *ContentType) error {
+	path := fmt.Sprintf("/spaces/%s/environments/%s/content_types/%s/published", env.Sys.Space.Sys.ID, env.Sys.ID, ct.Sys.ID)
+	return service.doDeactivate(path, ct)
+}
+
+func (service *ContentTypesService) doDeactivate(path string, ct *ContentType) error {
 	method := "DELETE"
 
 	req, err := service.c.newRequest(method, path, nil, nil)
