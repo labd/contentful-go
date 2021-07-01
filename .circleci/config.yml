@@ -1,6 +1,4 @@
 version: 2.1
-orbs:
-  unmock: unmock/unmock@0.0.14
 jobs:
   build:
     docker:
@@ -15,11 +13,12 @@ jobs:
           key: v1-pkg-cache
           paths:
             - "/go/pkg"
-      - unmock/start
-      - unmock/set:
-          code: 200
       - run:
+          name: Lint
+          command: make lint
+      - run:
+          name: Test
           command: make test
       - run:
+          name: Coverage
           command: bash <(curl -s https://codecov.io/bash) -t $CODECOV_TOKEN
-      - unmock/stop

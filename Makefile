@@ -10,20 +10,13 @@ GO_DEPS_UPDATE=$(GO_CMD) get -d -v -u
 GO_VET=$(GO_CMD) vet
 GO_FMT=$(GO_CMD) fmt
 
-.PHONY: all test lint dep
-
-all: dep test lint
+all: lint test build
 
 test:
 	./tools/test.sh
 
 lint:
 	./tools/lint.sh
-
-dep:
-	curl -fsSL -o /tmp/dep https://github.com/golang/dep/releases/download/v0.3.2/dep-linux-amd64
-	chmod +x /tmp/dep
-	/tmp/dep ensure -vendor-only
 
 build:
 	go build -o contentful-go
