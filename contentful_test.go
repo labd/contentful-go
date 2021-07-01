@@ -27,6 +27,24 @@ var (
 	CPAToken       = "cpa-token"
 	spaceID        = "id1"
 	organizationID = "org-id"
+	environmentID  = "env-id"
+	env            = &Environment{
+		Sys: &Sys{
+			ID:       environmentID,
+			LinkType: "env-link-type",
+			Type:     "env-type",
+			Space: &Space{
+				Name:          "space-name",
+				DefaultLocale: "en",
+				Sys: &Sys{
+					ID:       spaceID,
+					LinkType: "space-link-type",
+					Type:     "space-type",
+				},
+			},
+		},
+		Name: "env-name",
+	}
 )
 
 func readTestData(fileName string) string {
