@@ -1042,3 +1042,34 @@ func TestContentTypeFieldValidationsUnmarshal(t *testing.T) {
 		assertions.True(ok)
 	}
 }
+
+func TestContentTypeFieldValidationsUnmarshalStringError(t *testing.T) {
+	assertions := assert.New(t)
+	incorrectValidation := []interface{}{"$%:\""}
+
+	_, err := ParseValidations(incorrectValidation)
+
+	assertions.EqualError(err, "invalid character '$' looking for beginning of value")
+}
+
+func TestContentTypeFieldEnabledNodeTypesValidationUnmarshalError(t *testing.T) {
+	assertions := assert.New(t)
+	incorrectValidation := []interface{}{map[string]interface{}{
+		"enabledNodeTypes": "This should be an array",
+	}}
+
+	_, err := ParseValidations(incorrectValidation)
+
+	assertions.EqualError(err, "json: cannot unmarshal string into Go struct field FieldValidationEnabledNodeTypes.enabledNodeTypes of type []string")
+}
+
+func TestContentTypeFieldEnabledMarksValidationUnmarshalError(t *testing.T) {
+	assertions := assert.New(t)
+	incorrectValidation := []interface{}{map[string]interface{}{
+		"enabledMarks": "This should be an array",
+	}}
+
+	_, err := ParseValidations(incorrectValidation)
+
+	assertions.EqualError(err, "json: cannot unmarshal string into Go struct field FieldValidationEnabledMarks.enabledMarks of type []string")
+}
