@@ -8,9 +8,7 @@
       "type": "Symbol",
       "required": true,
       "validations": [
-        {
-          "unique": true
-        },
+        "{\"unique\": true}",
         {
           "size": {
             "min": 10,
