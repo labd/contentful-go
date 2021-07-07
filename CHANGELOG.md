@@ -1,5 +1,21 @@
 # CHANGELOG
 
+## v0.6.2 (2021-07-07)
+
+### Added
+
+- feat: add support for rich text field validators (2021-06-23)
+
+### Fixed
+
+- fix: create content type with spaces in the name (2021-06-25)
+
+### Others
+
+- test: rich text validations unmarshalling errors (2021-07-06)
+
+- test: added string validation test to increase coverage (2021-07-06)
+
 ## v0.6.1 (2021-07-01)
 
 ### Added
