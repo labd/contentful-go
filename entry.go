@@ -30,8 +30,8 @@ func (entry *Entry) GetVersion() int {
 }
 
 // List returns entries collection
-func (service *EntriesService) List(spaceID string) *Collection {
-	path := fmt.Sprintf("/spaces/%s/environments/%s/entries", spaceID, service.c.Environment)
+func (service *EntriesService) List(env *Environment) *Collection {
+	path := fmt.Sprintf("/spaces/%s/environments/%s/entries", env.Sys.Space.Sys.ID, env.Sys.ID)
 
 	req, err := service.c.newRequest(http.MethodGet, path, nil, nil)
 	if err != nil {
@@ -46,8 +46,8 @@ func (service *EntriesService) List(spaceID string) *Collection {
 }
 
 // Get returns a single entry
-func (service *EntriesService) Get(spaceID, entryID string) (*Entry, error) {
-	path := fmt.Sprintf("/spaces/%s/entries/%s", spaceID, entryID)
+func (service *EntriesService) Get(env *Environment, entryID string) (*Entry, error) {
+	path := fmt.Sprintf("/spaces/%s/environments/%s/entries/%s", env.Sys.Space.Sys.ID, env.Sys.ID, entryID)
 	query := url.Values{}
 	method := "GET"
 
@@ -65,8 +65,8 @@ func (service *EntriesService) Get(spaceID, entryID string) (*Entry, error) {
 }
 
 // Delete the entry
-func (service *EntriesService) Delete(spaceID string, entryID string) error {
-	path := fmt.Sprintf("/spaces/%s/entries/%s", spaceID, entryID)
+func (service *EntriesService) Delete(env *Environment, entryID string) error {
+	path := fmt.Sprintf("/spaces/%s/environments/%s/entries/%s", env.Sys.Space.Sys.ID, env.Sys.ID, entryID)
 	method := "DELETE"
 
 	req, err := service.c.newRequest(method, path, nil, nil)
@@ -78,8 +78,8 @@ func (service *EntriesService) Delete(spaceID string, entryID string) error {
 }
 
 // Publish the entry
-func (service *EntriesService) Publish(spaceID string, entry *Entry) error {
-	path := fmt.Sprintf("/spaces/%s/entries/%s/published", spaceID, entry.Sys.ID)
+func (service *EntriesService) Publish(env *Environment, entry *Entry) error {
+	path := fmt.Sprintf("/spaces/%s/environments/%s/entries/%s/published", env.Sys.Space.Sys.ID, env.Sys.ID, entry.Sys.ID)
 	method := "PUT"
 
 	req, err := service.c.newRequest(method, path, nil, nil)
@@ -94,8 +94,8 @@ func (service *EntriesService) Publish(spaceID string, entry *Entry) error {
 }
 
 // Unpublish the entry
-func (service *EntriesService) Unpublish(spaceID string, entry *Entry) error {
-	path := fmt.Sprintf("/spaces/%s/entries/%s/published", spaceID, entry.Sys.ID)
+func (service *EntriesService) Unpublish(env *Environment, entry *Entry) error {
+	path := fmt.Sprintf("/spaces/%s/environments/%s/entries/%s/published", env.Sys.Space.Sys.ID, env.Sys.ID, entry.Sys.ID)
 	method := "DELETE"
 
 	req, err := service.c.newRequest(method, path, nil, nil)
@@ -110,20 +110,20 @@ func (service *EntriesService) Unpublish(spaceID string, entry *Entry) error {
 }
 
 // Upsert updates or creates a new entry
-func (service *EntriesService) Upsert(spaceID, contentTypeID string, e *Entry) error {
+func (service *EntriesService) Upsert(env *Environment, contentTypeID string, e *Entry) error {
 	bytesArray, err := json.Marshal(e)
 	if err != nil {
 		return err
 	}
 
-	var path string
+	path := fmt.Sprintf("/spaces/%s/environments/%s", env.Sys.Space.Sys.ID, env.Sys.ID)
 	var method string
 
 	if e.Sys != nil && e.Sys.ID != "" {
-		path = fmt.Sprintf("/spaces/%s/entries/%s", spaceID, e.Sys.ID)
+		path += fmt.Sprintf("/entries/%s", e.Sys.ID)
 		method = "PUT"
 	} else {
-		path = fmt.Sprintf("/spaces/%s/entries", spaceID)
+		path += "/entries"
 		method = "POST"
 	}
 
@@ -139,8 +139,8 @@ func (service *EntriesService) Upsert(spaceID, contentTypeID string, e *Entry) e
 }
 
 // Archive the entry
-func (service *EntriesService) Archive(spaceID string, entry *Entry) error {
-	path := fmt.Sprintf("/spaces/%s/entries/%s/archived", spaceID, entry.Sys.ID)
+func (service *EntriesService) Archive(env *Environment, entry *Entry) error {
+	path := fmt.Sprintf("/spaces/%s/environments/%s/entries/%s/archived", env.Sys.Space.Sys.ID, env.Sys.ID, entry.Sys.ID)
 	method := "PUT"
 
 	req, err := service.c.newRequest(method, path, nil, nil)
@@ -155,8 +155,8 @@ func (service *EntriesService) Archive(spaceID string, entry *Entry) error {
 }
 
 // Unarchive the entry
-func (service *EntriesService) Unarchive(spaceID string, entry *Entry) error {
-	path := fmt.Sprintf("/spaces/%s/entries/%s/archived", spaceID, entry.Sys.ID)
+func (service *EntriesService) Unarchive(env *Environment, entry *Entry) error {
+	path := fmt.Sprintf("/spaces/%s/environments/%s/entries/%s/archived", env.Sys.Space.Sys.ID, env.Sys.ID, entry.Sys.ID)
 	method := "DELETE"
 
 	req, err := service.c.newRequest(method, path, nil, nil)
