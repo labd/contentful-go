@@ -36,8 +36,8 @@ func (entryTask *EntryTask) GetVersion() int {
 }
 
 // List returns entry tasks collection
-func (service *EntryTasksService) List(spaceID, entryID string) *Collection {
-	path := fmt.Sprintf("/spaces/%s/environments/%s/entries/%s/tasks", spaceID, service.c.Environment, entryID)
+func (service *EntryTasksService) List(env *Environment, entryID string) *Collection {
+	path := fmt.Sprintf("/spaces/%s/environments/%s/entries/%s/tasks", env.Sys.Space.Sys.ID, env.Sys.ID, entryID)
 
 	req, err := service.c.newRequest(http.MethodGet, path, nil, nil)
 	if err != nil {
@@ -52,8 +52,8 @@ func (service *EntryTasksService) List(spaceID, entryID string) *Collection {
 }
 
 // Get returns a single entry task
-func (service *EntryTasksService) Get(spaceID, entryID, entryTaskID string) (*EntryTask, error) {
-	path := fmt.Sprintf("/spaces/%s/environments/%s/entries/%s/tasks/%s", spaceID, service.c.Environment, entryID, entryTaskID)
+func (service *EntryTasksService) Get(env *Environment, entryID, entryTaskID string) (*EntryTask, error) {
+	path := fmt.Sprintf("/spaces/%s/environments/%s/entries/%s/tasks/%s", env.Sys.Space.Sys.ID, env.Sys.ID, entryID, entryTaskID)
 	query := url.Values{}
 	method := "GET"
 
@@ -71,8 +71,8 @@ func (service *EntryTasksService) Get(spaceID, entryID, entryTaskID string) (*En
 }
 
 // Delete the entry task
-func (service *EntryTasksService) Delete(spaceID, entryID, entryTaskID string) error {
-	path := fmt.Sprintf("/spaces/%s/environments/%s/entries/%s/tasks/%s", spaceID, service.c.Environment, entryID, entryTaskID)
+func (service *EntryTasksService) Delete(env *Environment, entryID, entryTaskID string) error {
+	path := fmt.Sprintf("/spaces/%s/environments/%s/entries/%s/tasks/%s", env.Sys.Space.Sys.ID, env.Sys.ID, entryID, entryTaskID)
 	method := "DELETE"
 
 	req, err := service.c.newRequest(method, path, nil, nil)
@@ -84,20 +84,20 @@ func (service *EntryTasksService) Delete(spaceID, entryID, entryTaskID string) e
 }
 
 // Upsert updates or creates a new entry task
-func (service *EntryTasksService) Upsert(spaceID, entryID string, entryTask *EntryTask) error {
+func (service *EntryTasksService) Upsert(env *Environment, entryID string, entryTask *EntryTask) error {
 	bytesArray, err := json.Marshal(entryTask)
 	if err != nil {
 		return err
 	}
 
-	var path string
+	path := fmt.Sprintf("/spaces/%s/environments/%s", env.Sys.Space.Sys.ID, env.Sys.ID)
 	var method string
 
 	if entryTask.Sys != nil && entryTask.Sys.CreatedAt != "" {
-		path = fmt.Sprintf("/spaces/%s/environments/%s/entries/%s/tasks/%s", spaceID, service.c.Environment, entryID, entryTask.Sys.ID)
+		path += fmt.Sprintf("/entries/%s/tasks/%s", entryID, entryTask.Sys.ID)
 		method = "PUT"
 	} else {
-		path = fmt.Sprintf("/spaces/%s/environments/%s/entries/%s/tasks", spaceID, service.c.Environment, entryID)
+		path += fmt.Sprintf("/entries/%s/tasks", entryID)
 		method = "POST"
 	}
 
