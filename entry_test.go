@@ -296,7 +296,7 @@ func TestEntriesService_Archive(t *testing.T) {
 	e, err := entryFromTestData("entry_1.json")
 	assertions.Nil(err)
 
-	err = cma.Entries.Archive(spaceID, e)
+	err = cma.Entries.Archive(env, e)
 	assertions.Nil(err)
 }
 

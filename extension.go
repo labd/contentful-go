@@ -41,8 +41,8 @@ func (extension *Extension) GetVersion() int {
 }
 
 // List returns an extensions collection
-func (service *ExtensionsService) List(spaceID string) *Collection {
-	path := fmt.Sprintf("/spaces/%s/environments/%s/extensions", spaceID, service.c.Environment)
+func (service *ExtensionsService) List(env *Environment) *Collection {
+	path := fmt.Sprintf("/spaces/%s/environments/%s/extensions", env.Sys.Space.Sys.ID, env.Sys.ID)
 
 	req, err := service.c.newRequest("GET", path, nil, nil)
 	if err != nil {
@@ -57,8 +57,8 @@ func (service *ExtensionsService) List(spaceID string) *Collection {
 }
 
 // Get returns a single extension
-func (service *ExtensionsService) Get(spaceID, extensionID string) (*Extension, error) {
-	path := fmt.Sprintf("/spaces/%s/environments/%s/extensions/%s", spaceID, service.c.Environment, extensionID)
+func (service *ExtensionsService) Get(env *Environment, extensionID string) (*Extension, error) {
+	path := fmt.Sprintf("/spaces/%s/environments/%s/extensions/%s", env.Sys.Space.Sys.ID, env.Sys.ID, extensionID)
 	query := url.Values{}
 	method := "GET"
 
@@ -76,20 +76,20 @@ func (service *ExtensionsService) Get(spaceID, extensionID string) (*Extension, 
 }
 
 // Upsert updates or creates a new extension
-func (service *ExtensionsService) Upsert(spaceID string, e *Extension) error {
+func (service *ExtensionsService) Upsert(env *Environment, e *Extension) error {
 	bytesArray, err := json.Marshal(e)
 	if err != nil {
 		return err
 	}
 
-	var path string
+	path := fmt.Sprintf("/spaces/%s/environments/%s", env.Sys.Space.Sys.ID, env.Sys.ID)
 	var method string
 
 	if e.Sys != nil && e.Sys.ID != "" {
-		path = fmt.Sprintf("/spaces/%s/environments/%s/extensions/%s", spaceID, service.c.Environment, e.Sys.ID)
+		path += fmt.Sprintf("/extensions/%s", e.Sys.ID)
 		method = "PUT"
 	} else {
-		path = fmt.Sprintf("/spaces/%s/environments/%s/extensions", spaceID, service.c.Environment)
+		path += "/extensions"
 		method = "POST"
 	}
 
@@ -104,8 +104,8 @@ func (service *ExtensionsService) Upsert(spaceID string, e *Extension) error {
 }
 
 // Delete the extension
-func (service *ExtensionsService) Delete(spaceID string, extensionID string) error {
-	path := fmt.Sprintf("/spaces/%s/environments/%s/extensions/%s", spaceID, service.c.Environment, extensionID)
+func (service *ExtensionsService) Delete(env *Environment, extensionID string) error {
+	path := fmt.Sprintf("/spaces/%s/environments/%s/extensions/%s", env.Sys.Space.Sys.ID, env.Sys.ID, extensionID)
 	method := "DELETE"
 
 	req, err := service.c.newRequest(method, path, nil, nil)
