@@ -224,7 +224,7 @@ type FieldValidationSize struct {
 	ErrorMessage string  `json:"message,omitempty"`
 }
 
-//noinspection GoUnusedConst
+// noinspection GoUnusedConst
 const (
 	// FieldValidationRegexPatternEmail email validation
 	FieldValidationRegexPatternEmail = `^\w[\w.-]*@([\w-]+\.)+[\w-]+$`

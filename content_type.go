@@ -19,7 +19,7 @@ type ContentType struct {
 	DisplayField string   `json:"displayField,omitempty"`
 }
 
-//noinspection GoUnusedConst
+// noinspection GoUnusedConst
 const (
 	// FieldTypeText content type field type for text data
 	FieldTypeText = "Text"

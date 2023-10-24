@@ -1,0 +1,20 @@
+version: 3
+
+tasks:
+  build:
+    cmds:
+      - go build ./...
+
+  fmt:
+    cmds:
+      - go fmt ./...
+
+  test:
+    cmds:
+      - go test ./...
+
+  coverage:
+    cmds:
+      - go test -race -coverprofile=coverage.txt -covermode=atomic -coverpkg=./... ./...
+      - go tool cover -html=coverage.txt
+

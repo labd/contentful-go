@@ -12,7 +12,7 @@ import (
 // EntriesService service
 type EntriesService service
 
-//Entry model
+// Entry model
 type Entry struct {
 	Locale string                 `json:"locale"`
 	Sys    *Sys                   `json:"sys"`

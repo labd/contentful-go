@@ -11,6 +11,7 @@ import (
 	"net/url"
 	"strconv"
 	"strings"
+	"sync/atomic"
 	"testing"
 	"time"
 
@@ -469,11 +470,11 @@ func TestHandleError(t *testing.T) {
 func TestBackoffForPerSecondLimiting(t *testing.T) {
 	var err error
 	assertions := assert.New(t)
-	rateLimited := true
+	rateLimited := atomic.Bool{}
 	waitSeconds := 2
 
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if rateLimited == true {
+		if rateLimited.Load() {
 			w.Header().Set("X-Contentful-Request-Id", "request-id")
 			w.Header().Set("Content-Type", "application/vnd.contentful.management.v1+json")
 			w.Header().Set("X-Contentful-Ratelimit-Hour-Limit", "36000")
@@ -499,7 +500,7 @@ func TestBackoffForPerSecondLimiting(t *testing.T) {
 
 	go func() {
 		time.Sleep(time.Second * time.Duration(waitSeconds))
-		rateLimited = false
+		rateLimited.Swap(true)
 	}()
 
 	space, err := cma.Spaces.Get("id1")
