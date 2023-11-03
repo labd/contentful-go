@@ -217,7 +217,7 @@ func (c *Client) newRequest(method, path string, query url.Values, body io.Reade
 }
 
 func (c *Client) do(req *http.Request, v interface{}) error {
-	if c.Debug == true {
+	if c.Debug {
 		command, _ := http2curl.GetCurlCommand(req)
 		fmt.Println(command)
 	}
@@ -271,7 +271,7 @@ func (c *Client) do(req *http.Request, v interface{}) error {
 }
 
 func (c *Client) handleError(req *http.Request, res *http.Response) error {
-	if c.Debug == true {
+	if c.Debug {
 		dump, err := httputil.DumpResponse(res, true)
 		if err != nil {
 			log.Fatal(err)

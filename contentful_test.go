@@ -4,11 +4,12 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"log"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
+	"os"
 	"strconv"
 	"strings"
 	"sync/atomic"
@@ -32,7 +33,7 @@ var (
 
 func readTestData(fileName string) string {
 	path := "testdata/" + fileName
-	content, err := ioutil.ReadFile(path)
+	content, err := os.ReadFile(path)
 	if err != nil {
 		log.Fatal(err)
 		return ""
@@ -296,14 +297,13 @@ func setup() {
 			}
 		}
 
-		file, err := ioutil.ReadFile(path)
+		file, err := os.ReadFile(path)
 		if err != nil {
 			_, _ = fmt.Fprintln(w, err)
 			return
 		}
 
 		_, _ = fmt.Fprintln(w, string(file))
-		return
 	})
 
 	server = httptest.NewServer(handler)
@@ -448,7 +448,7 @@ func TestHandleError(t *testing.T) {
 
 	marshaled, _ := json.Marshal(errResponse)
 	errResponseReader := bytes.NewReader(marshaled)
-	errResponseReadCloser := ioutil.NopCloser(errResponseReader)
+	errResponseReadCloser := io.NopCloser(errResponseReader)
 
 	req, _ := c.newRequest(method, path, query, nil)
 	responseHeaders := http.Header{}

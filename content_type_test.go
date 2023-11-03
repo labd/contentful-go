@@ -530,7 +530,7 @@ func TestContentTypeSaveForCreate(t *testing.T) {
 
 	ct := &ContentType{
 		Name:         "ct-name",
-		Description:  "ct-description",
+		Description:  valueToPointer("ct-description"),
 		Fields:       []*Field{field1, field2},
 		DisplayField: field1.ID,
 	}
@@ -539,7 +539,7 @@ func TestContentTypeSaveForCreate(t *testing.T) {
 	assertions.Nil(err)
 	assertions.Equal("63Vgs0BFK0USe4i2mQUGK6", ct.Sys.ID)
 	assertions.Equal("ct-name", ct.Name)
-	assertions.Equal("ct-description", ct.Description)
+	assertions.Equal("ct-description", *ct.Description)
 }
 
 func TestContentTypeSaveForUpdate(t *testing.T) {
@@ -596,7 +596,7 @@ func TestContentTypeSaveForUpdate(t *testing.T) {
 	assertions.Nil(err)
 
 	ct.Name = "ct-name-updated"
-	ct.Description = "ct-description-updated"
+	ct.Description = valueToPointer("ct-description-updated")
 
 	field1 := ct.Fields[0]
 	field1.Name = "field1-name-updated"
@@ -621,7 +621,7 @@ func TestContentTypeSaveForUpdate(t *testing.T) {
 	assertions.Nil(err)
 	assertions.Equal("63Vgs0BFK0USe4i2mQUGK6", ct.Sys.ID)
 	assertions.Equal("ct-name-updated", ct.Name)
-	assertions.Equal("ct-description-updated", ct.Description)
+	assertions.Equal("ct-description-updated", *ct.Description)
 	assertions.Equal(2, ct.Sys.Version)
 }
 
@@ -774,7 +774,7 @@ func TestContentTypeFieldRef(t *testing.T) {
 
 	ct := &ContentType{
 		Name:         "ct-name",
-		Description:  "ct-description",
+		Description:  valueToPointer("ct-description"),
 		Fields:       []*Field{field1},
 		DisplayField: field1.ID,
 	}
@@ -837,7 +837,7 @@ func TestContentTypeFieldArray(t *testing.T) {
 
 	ct := &ContentType{
 		Name:         "ct-name",
-		Description:  "ct-description",
+		Description:  valueToPointer("ct-description"),
 		Fields:       []*Field{field1},
 		DisplayField: field1.ID,
 	}
@@ -910,21 +910,21 @@ func TestContentTypeFieldValidationRangeUniquePredefinedValues(t *testing.T) {
 			},
 			&FieldValidationRange{
 				Range: &MinMax{
-					Min: 20,
-					Max: 30,
+					Min: valueToPointer(float64(20)),
+					Max: valueToPointer(float64(30)),
 				},
 				ErrorMessage: "error message",
 			},
 			&FieldValidationPredefinedValues{
 				In:           []interface{}{20, 21, 22},
-				ErrorMessage: "error message 2",
+				ErrorMessage: valueToPointer("error message 2"),
 			},
 		},
 	}
 
 	ct := &ContentType{
 		Name:         "ct-name",
-		Description:  "ct-description",
+		Description:  valueToPointer("ct-description"),
 		Fields:       []*Field{field1},
 		DisplayField: field1.ID,
 	}
@@ -1041,17 +1041,17 @@ func TestContentTypeFieldTypeMedia(t *testing.T) {
 			},
 			&FieldValidationDimension{
 				Width: &MinMax{
-					Min: 100,
+					Min: valueToPointer(float64(100)),
 				},
 				Height: &MinMax{
-					Max: 300,
+					Max: valueToPointer(float64(300)),
 				},
 				ErrorMessage: "custom error message",
 			},
 			&FieldValidationFileSize{
 				Size: &MinMax{
-					Min: 30,
-					Max: 400,
+					Min: valueToPointer(float64(30)),
+					Max: valueToPointer(float64(400)),
 				},
 			},
 		},
@@ -1059,7 +1059,7 @@ func TestContentTypeFieldTypeMedia(t *testing.T) {
 
 	ct := &ContentType{
 		Name:         "ct-name",
-		Description:  "ct-description",
+		Description:  valueToPointer("ct-description"),
 		Fields:       []*Field{field1},
 		DisplayField: field1.ID,
 	}

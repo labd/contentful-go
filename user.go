@@ -1,9 +1,5 @@
 package contentful
 
-import (
-	"fmt"
-)
-
 // UsersService service
 type UsersService service
 
@@ -22,7 +18,7 @@ type User struct {
 
 // Me returns current authenticated user
 func (service *UsersService) Me() (*User, error) {
-	path := fmt.Sprintf("/users/me")
+	path := "/users/me"
 	method := "GET"
 
 	req, err := service.c.newRequest(method, path, nil, nil)

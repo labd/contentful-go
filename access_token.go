@@ -31,7 +31,7 @@ func (accessToken *AccessToken) GetVersion() int {
 
 // List returns an access tokens collection
 func (service *AccessTokensService) List() *Collection {
-	path := fmt.Sprint("/users/me/access_tokens")
+	path := "/users/me/access_tokens"
 	method := "GET"
 
 	req, err := service.c.newRequest(method, path, nil, nil)
@@ -74,7 +74,7 @@ func (service *AccessTokensService) Create(accessToken *AccessToken) error {
 		return err
 	}
 
-	path := fmt.Sprint("/users/me/access_tokens")
+	path := "/users/me/access_tokens"
 	method := "POST"
 	req, err := service.c.newRequest(method, path, nil, bytes.NewReader(bytesArray))
 

@@ -17,8 +17,8 @@ type Membership struct {
 	Sys   *Sys    `json:"sys"`
 	Admin bool    `json:"admin"`
 	Roles []Roles `json:"roles"`
-	User  Member  `json:"user, omitempty"`
-	Email string  `json:"email, omitempty"`
+	User  Member  `json:"user,omitempty"`
+	Email string  `json:"email,omitempty"`
 }
 
 // Roles model

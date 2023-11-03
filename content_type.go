@@ -14,7 +14,7 @@ type ContentTypesService service
 type ContentType struct {
 	Sys          *Sys     `json:"sys"`
 	Name         string   `json:"name,omitempty"`
-	Description  string   `json:"description,omitempty"`
+	Description  *string  `json:"description,omitempty"`
 	Fields       []*Field `json:"fields,omitempty"`
 	DisplayField string   `json:"displayField,omitempty"`
 }
@@ -51,16 +51,17 @@ const (
 
 // Field model
 type Field struct {
-	ID          string              `json:"id,omitempty"`
-	Name        string              `json:"name"`
-	Type        string              `json:"type"`
-	LinkType    string              `json:"linkType,omitempty"`
-	Items       *FieldTypeArrayItem `json:"items,omitempty"`
-	Required    bool                `json:"required,omitempty"`
-	Localized   bool                `json:"localized,omitempty"`
-	Disabled    bool                `json:"disabled,omitempty"`
-	Omitted     bool                `json:"omitted,omitempty"`
-	Validations []FieldValidation   `json:"validations,omitempty"`
+	ID           string              `json:"id,omitempty"`
+	Name         string              `json:"name"`
+	Type         string              `json:"type"`
+	LinkType     string              `json:"linkType,omitempty"`
+	Items        *FieldTypeArrayItem `json:"items,omitempty"`
+	Required     bool                `json:"required,omitempty"`
+	Localized    bool                `json:"localized,omitempty"`
+	Disabled     bool                `json:"disabled,omitempty"`
+	Omitted      bool                `json:"omitted,omitempty"`
+	Validations  []FieldValidation   `json:"validations,omitempty"`
+	DefaultValue map[string]any      `json:"defaultValue,omitempty"`
 }
 
 // UnmarshalJSON for custom json unmarshaling
@@ -123,6 +124,10 @@ func (field *Field) UnmarshalJSON(data []byte) error {
 		}
 
 		field.Validations = validations
+	}
+
+	if val, ok := payload["defaultValue"]; ok {
+		field.DefaultValue = val.(map[string]any)
 	}
 
 	return nil
@@ -240,6 +245,33 @@ func ParseValidations(data []interface{}) (validations []FieldValidation, err er
 
 			validations = append(validations, fieldValidationRegex)
 		}
+
+		if _, ok := validation["prohibitRegexp"]; ok {
+			var fieldValidationProhibitRegex FieldValidationProhibitRegex
+			if err := json.Unmarshal(byteArray, &fieldValidationProhibitRegex); err != nil {
+				return nil, err
+			}
+
+			validations = append(validations, fieldValidationProhibitRegex)
+		}
+
+		if _, ok := validation["enabledNodeTypes"]; ok {
+			var fieldValidationEnabledNodeTypes FieldValidationEnabledNodeTypes
+			if err := json.Unmarshal(byteArray, &fieldValidationEnabledNodeTypes); err != nil {
+				return nil, err
+			}
+
+			validations = append(validations, fieldValidationEnabledNodeTypes)
+		}
+
+		if _, ok := validation["enabledMarks"]; ok {
+			var fieldValidationEnabledMarks FieldValidationEnabledMarks
+			if err := json.Unmarshal(byteArray, &fieldValidationEnabledMarks); err != nil {
+				return nil, err
+			}
+
+			validations = append(validations, fieldValidationEnabledMarks)
+		}
 	}
 
 	return validations, nil
@@ -249,7 +281,7 @@ func ParseValidations(data []interface{}) (validations []FieldValidation, err er
 type FieldTypeArrayItem struct {
 	Type        string            `json:"type,omitempty"`
 	Validations []FieldValidation `json:"validations,omitempty"`
-	LinkType    string            `json:"linkType,omitempty"`
+	LinkType    *string           `json:"linkType,omitempty"`
 }
 
 // UnmarshalJSON for custom json unmarshaling
@@ -272,8 +304,9 @@ func (item *FieldTypeArrayItem) UnmarshalJSON(data []byte) error {
 		item.Validations = validations
 	}
 
-	if val, ok := payload["linktype"]; ok {
-		item.LinkType = val.(string)
+	if val, ok := payload["linkType"]; ok {
+		valStr := val.(string)
+		item.LinkType = &valStr
 	}
 
 	return nil

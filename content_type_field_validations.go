@@ -53,13 +53,14 @@ const (
 
 // FieldValidationMimeType model
 type FieldValidationMimeType struct {
-	MimeTypes []string `json:"linkMimetypeGroup,omitempty"`
+	MimeTypes    []string `json:"linkMimetypeGroup,omitempty"`
+	ErrorMessage *string  `json:"message,omitempty"`
 }
 
 // MinMax model
 type MinMax struct {
-	Min float64 `json:"min,omitempty"`
-	Max float64 `json:"max,omitempty"`
+	Min *float64 `json:"min,omitempty"`
+	Max *float64 `json:"max,omitempty"`
 }
 
 // DateMinMax model
@@ -107,11 +108,11 @@ func (v *FieldValidationDimension) UnmarshalJSON(data []byte) error {
 		v.Width = &MinMax{}
 
 		if min, ok := width["min"].(float64); ok {
-			v.Width.Min = min
+			v.Width.Min = &min
 		}
 
 		if max, ok := width["min"].(float64); ok {
-			v.Width.Max = max
+			v.Width.Max = &max
 		}
 	}
 
@@ -119,11 +120,11 @@ func (v *FieldValidationDimension) UnmarshalJSON(data []byte) error {
 		v.Height = &MinMax{}
 
 		if min, ok := height["min"].(float64); ok {
-			v.Height.Min = min
+			v.Height.Min = &min
 		}
 
 		if max, ok := height["max"].(float64); ok {
-			v.Height.Max = max
+			v.Height.Max = &max
 		}
 	}
 
@@ -148,7 +149,7 @@ type FieldValidationUnique struct {
 // FieldValidationPredefinedValues model
 type FieldValidationPredefinedValues struct {
 	In           []interface{} `json:"in,omitempty"`
-	ErrorMessage string        `json:"message"`
+	ErrorMessage *string       `json:"message,omitempty"`
 }
 
 // FieldValidationRange model
@@ -221,7 +222,7 @@ func (v *FieldValidationDate) UnmarshalJSON(data []byte) error {
 // FieldValidationSize model
 type FieldValidationSize struct {
 	Size         *MinMax `json:"size,omitempty"`
-	ErrorMessage string  `json:"message,omitempty"`
+	ErrorMessage *string `json:"message,omitempty"`
 }
 
 // noinspection GoUnusedConst
@@ -259,6 +260,24 @@ type Regex struct {
 
 // FieldValidationRegex model
 type FieldValidationRegex struct {
-	Regex        *Regex `json:"regexp,omitempty"`
-	ErrorMessage string `json:"message,omitempty"`
+	Regex        *Regex  `json:"regexp,omitempty"`
+	ErrorMessage *string `json:"message,omitempty"`
+}
+
+// FieldValidationProhibitRegex model
+type FieldValidationProhibitRegex struct {
+	Regex        *Regex  `json:"prohibitRegexp,omitempty"`
+	ErrorMessage *string `json:"message,omitempty"`
+}
+
+// FieldValidationEnabledNodeTypes model
+type FieldValidationEnabledNodeTypes struct {
+	NodeTypes    []string `json:"enabledNodeTypes,omitempty"`
+	ErrorMessage *string  `json:"message,omitempty"`
+}
+
+// FieldValidationEnabledMarks model
+type FieldValidationEnabledMarks struct {
+	Marks        []string `json:"enabledMarks,omitempty"`
+	ErrorMessage *string  `json:"message,omitempty"`
 }

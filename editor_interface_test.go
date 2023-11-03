@@ -128,9 +128,9 @@ func TestEditorInterfacesService_Update(t *testing.T) {
 	editorInterface, err := editorInterfaceFromTestFile("editor_interface_1.json")
 	assertions.Nil(err)
 
-	editorInterface.Controls[0].WidgetID = "changed id"
+	editorInterface.Controls[0].WidgetID = valueToPointer("changed id")
 
 	err = cma.EditorInterfaces.Update(spaceID, "hfM9RCJIk0wIm06WkEOQY", editorInterface)
 	assertions.Nil(err)
-	assertions.Equal("changed id", editorInterface.Controls[0].WidgetID)
+	assertions.Equal("changed id", *editorInterface.Controls[0].WidgetID)
 }
