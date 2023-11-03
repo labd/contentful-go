@@ -66,6 +66,35 @@ func TestLocalesService_Get(t *testing.T) {
 	assertions.Equal("en-US", locale.Code)
 }
 
+func TestLocalesService_GetWithEnv(t *testing.T) {
+	var err error
+	assertions := assert.New(t)
+	env, err := environmentFromTestData("environment_1.json")
+
+	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		assertions.Equal(r.Method, "GET")
+		assertions.Equal(r.URL.Path, "/spaces/"+spaceID+"/environments/staging/locales/4aGeQYgByqQFJtToAOh2JJ")
+
+		checkHeaders(r, assertions)
+
+		w.WriteHeader(200)
+		_, _ = fmt.Fprintln(w, readTestData("locale_1.json"))
+	})
+
+	// test server
+	server := httptest.NewServer(handler)
+	defer server.Close()
+
+	// cma client
+	cma = NewCMA(CMAToken)
+	cma.BaseURL = server.URL
+
+	locale, err := cma.Locales.GetWithEnv(env, "4aGeQYgByqQFJtToAOh2JJ")
+	assertions.Nil(err)
+	assertions.Equal("U.S. English", locale.Name)
+	assertions.Equal("en-US", locale.Code)
+}
+
 func TestLocalesService_Get_2(t *testing.T) {
 	var err error
 	assertions := assert.New(t)
@@ -129,6 +158,44 @@ func TestLocalesService_Upsert_Create(t *testing.T) {
 	assertions.Nil(err)
 }
 
+func TestLocalesService_UpsertWithEnv_Create(t *testing.T) {
+	var err error
+	assertions := assert.New(t)
+	env, err := environmentFromTestData("environment_1.json")
+
+	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		assertions.Equal(r.Method, "POST")
+		assertions.Equal(r.RequestURI, "/spaces/"+spaceID+"/environments/staging/locales")
+
+		checkHeaders(r, assertions)
+
+		var payload map[string]interface{}
+		err := json.NewDecoder(r.Body).Decode(&payload)
+		assertions.Nil(err)
+		assertions.Equal("German (Austria)", payload["name"])
+		assertions.Equal("de-AT", payload["code"])
+
+		w.WriteHeader(200)
+		_, _ = fmt.Fprintln(w, readTestData("locale_1.json"))
+	})
+
+	// test server
+	server := httptest.NewServer(handler)
+	defer server.Close()
+
+	// cma client
+	cma = NewCMA(CMAToken)
+	cma.BaseURL = server.URL
+
+	locale := &Locale{
+		Name: "German (Austria)",
+		Code: "de-AT",
+	}
+
+	err = cma.Locales.UpsertWithEnv(env, locale)
+	assertions.Nil(err)
+}
+
 func TestLocalesService_Upsert_Update(t *testing.T) {
 	var err error
 	assertions := assert.New(t)
@@ -167,6 +234,45 @@ func TestLocalesService_Upsert_Update(t *testing.T) {
 	assertions.Nil(err)
 }
 
+func TestLocalesService_UpsertWithEnv_Update(t *testing.T) {
+	var err error
+	assertions := assert.New(t)
+	env, err := environmentFromTestData("environment_1.json")
+
+	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		assertions.Equal(r.Method, "PUT")
+		assertions.Equal(r.RequestURI, "/spaces/"+spaceID+"/environments/staging/locales/4aGeQYgByqQFJtToAOh2JJ")
+
+		checkHeaders(r, assertions)
+
+		var payload map[string]interface{}
+		err := json.NewDecoder(r.Body).Decode(&payload)
+		assertions.Nil(err)
+		assertions.Equal("modified-name", payload["name"])
+		assertions.Equal("modified-code", payload["code"])
+
+		w.WriteHeader(200)
+		_, _ = fmt.Fprintln(w, readTestData("locale_1.json"))
+	})
+
+	// test server
+	server := httptest.NewServer(handler)
+	defer server.Close()
+
+	// cma client
+	cma = NewCMA(CMAToken)
+	cma.BaseURL = server.URL
+
+	locale, err := localeFromTestData("locale_1.json")
+	assertions.Nil(err)
+
+	locale.Name = "modified-name"
+	locale.Code = "modified-code"
+
+	err = cma.Locales.UpsertWithEnv(env, locale)
+	assertions.Nil(err)
+}
+
 func TestLocalesService_Delete(t *testing.T) {
 	var err error
 	assertions := assert.New(t)
@@ -193,5 +299,35 @@ func TestLocalesService_Delete(t *testing.T) {
 
 	// delete locale
 	err = cma.Locales.Delete(spaceID, locale)
+	assertions.Nil(err)
+}
+
+func TestLocalesService_DeleteWithEnv(t *testing.T) {
+	var err error
+	assertions := assert.New(t)
+	env, err := environmentFromTestData("environment_1.json")
+
+	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		assertions.Equal(r.Method, "DELETE")
+		assertions.Equal(r.RequestURI, "/spaces/"+spaceID+"/environments/staging/locales/4aGeQYgByqQFJtToAOh2JJ")
+		checkHeaders(r, assertions)
+
+		w.WriteHeader(200)
+	})
+
+	// test server
+	server := httptest.NewServer(handler)
+	defer server.Close()
+
+	// cma client
+	cma = NewCMA(CMAToken)
+	cma.BaseURL = server.URL
+
+	// test locale
+	locale, err := localeFromTestData("locale_1.json")
+	assertions.Nil(err)
+
+	// delete locale
+	err = cma.Locales.DeleteWithEnv(env, locale)
 	assertions.Nil(err)
 }
