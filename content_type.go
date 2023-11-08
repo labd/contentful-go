@@ -140,7 +140,7 @@ func ParseValidations(data []interface{}) (validations []FieldValidation, err er
 		var byteArray []byte
 
 		if validationStr, ok := value.(string); ok {
-			if err := json.Unmarshal([]byte(validationStr), &validation); err != nil {
+			if err = json.Unmarshal([]byte(validationStr), &validation); err != nil {
 				return nil, err
 			}
 
@@ -158,7 +158,7 @@ func ParseValidations(data []interface{}) (validations []FieldValidation, err er
 
 		if _, ok := validation["linkContentType"]; ok {
 			var fieldValidationLink FieldValidationLink
-			if err := json.Unmarshal(byteArray, &fieldValidationLink); err != nil {
+			if err = json.Unmarshal(byteArray, &fieldValidationLink); err != nil {
 				return nil, err
 			}
 
@@ -167,7 +167,7 @@ func ParseValidations(data []interface{}) (validations []FieldValidation, err er
 
 		if _, ok := validation["linkMimetypeGroup"]; ok {
 			var fieldValidationMimeType FieldValidationMimeType
-			if err := json.Unmarshal(byteArray, &fieldValidationMimeType); err != nil {
+			if err = json.Unmarshal(byteArray, &fieldValidationMimeType); err != nil {
 				return nil, err
 			}
 
@@ -176,7 +176,7 @@ func ParseValidations(data []interface{}) (validations []FieldValidation, err er
 
 		if _, ok := validation["assetImageDimensions"]; ok {
 			var fieldValidationDimension FieldValidationDimension
-			if err := json.Unmarshal(byteArray, &fieldValidationDimension); err != nil {
+			if err = json.Unmarshal(byteArray, &fieldValidationDimension); err != nil {
 				return nil, err
 			}
 
@@ -185,7 +185,7 @@ func ParseValidations(data []interface{}) (validations []FieldValidation, err er
 
 		if _, ok := validation["assetFileSize"]; ok {
 			var fieldValidationFileSize FieldValidationFileSize
-			if err := json.Unmarshal(byteArray, &fieldValidationFileSize); err != nil {
+			if err = json.Unmarshal(byteArray, &fieldValidationFileSize); err != nil {
 				return nil, err
 			}
 
@@ -194,7 +194,7 @@ func ParseValidations(data []interface{}) (validations []FieldValidation, err er
 
 		if _, ok := validation["unique"]; ok {
 			var fieldValidationUnique FieldValidationUnique
-			if err := json.Unmarshal(byteArray, &fieldValidationUnique); err != nil {
+			if err = json.Unmarshal(byteArray, &fieldValidationUnique); err != nil {
 				return nil, err
 			}
 
@@ -203,7 +203,7 @@ func ParseValidations(data []interface{}) (validations []FieldValidation, err er
 
 		if _, ok := validation["in"]; ok {
 			var fieldValidationPredefinedValues FieldValidationPredefinedValues
-			if err := json.Unmarshal(byteArray, &fieldValidationPredefinedValues); err != nil {
+			if err = json.Unmarshal(byteArray, &fieldValidationPredefinedValues); err != nil {
 				return nil, err
 			}
 
@@ -212,7 +212,7 @@ func ParseValidations(data []interface{}) (validations []FieldValidation, err er
 
 		if _, ok := validation["range"]; ok {
 			var fieldValidationRange FieldValidationRange
-			if err := json.Unmarshal(byteArray, &fieldValidationRange); err != nil {
+			if err = json.Unmarshal(byteArray, &fieldValidationRange); err != nil {
 				return nil, err
 			}
 
@@ -221,7 +221,7 @@ func ParseValidations(data []interface{}) (validations []FieldValidation, err er
 
 		if _, ok := validation["dateRange"]; ok {
 			var fieldValidationDate FieldValidationDate
-			if err := json.Unmarshal(byteArray, &fieldValidationDate); err != nil {
+			if err = json.Unmarshal(byteArray, &fieldValidationDate); err != nil {
 				return nil, err
 			}
 
@@ -230,7 +230,7 @@ func ParseValidations(data []interface{}) (validations []FieldValidation, err er
 
 		if _, ok := validation["size"]; ok {
 			var fieldValidationSize FieldValidationSize
-			if err := json.Unmarshal(byteArray, &fieldValidationSize); err != nil {
+			if err = json.Unmarshal(byteArray, &fieldValidationSize); err != nil {
 				return nil, err
 			}
 
@@ -239,7 +239,7 @@ func ParseValidations(data []interface{}) (validations []FieldValidation, err er
 
 		if _, ok := validation["regexp"]; ok {
 			var fieldValidationRegex FieldValidationRegex
-			if err := json.Unmarshal(byteArray, &fieldValidationRegex); err != nil {
+			if err = json.Unmarshal(byteArray, &fieldValidationRegex); err != nil {
 				return nil, err
 			}
 
@@ -248,7 +248,7 @@ func ParseValidations(data []interface{}) (validations []FieldValidation, err er
 
 		if _, ok := validation["prohibitRegexp"]; ok {
 			var fieldValidationProhibitRegex FieldValidationProhibitRegex
-			if err := json.Unmarshal(byteArray, &fieldValidationProhibitRegex); err != nil {
+			if err = json.Unmarshal(byteArray, &fieldValidationProhibitRegex); err != nil {
 				return nil, err
 			}
 
@@ -257,7 +257,7 @@ func ParseValidations(data []interface{}) (validations []FieldValidation, err er
 
 		if _, ok := validation["enabledNodeTypes"]; ok {
 			var fieldValidationEnabledNodeTypes FieldValidationEnabledNodeTypes
-			if err := json.Unmarshal(byteArray, &fieldValidationEnabledNodeTypes); err != nil {
+			if err = json.Unmarshal(byteArray, &fieldValidationEnabledNodeTypes); err != nil {
 				return nil, err
 			}
 
@@ -266,7 +266,7 @@ func ParseValidations(data []interface{}) (validations []FieldValidation, err er
 
 		if _, ok := validation["enabledMarks"]; ok {
 			var fieldValidationEnabledMarks FieldValidationEnabledMarks
-			if err := json.Unmarshal(byteArray, &fieldValidationEnabledMarks); err != nil {
+			if err = json.Unmarshal(byteArray, &fieldValidationEnabledMarks); err != nil {
 				return nil, err
 			}
 

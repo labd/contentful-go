@@ -20,10 +20,21 @@ type EditorInterface struct {
 
 // Controls model
 type Controls struct {
-	FieldID         string            `json:"fieldId"`
-	WidgetNameSpace *string           `json:"widgetNamespace,omitempty"`
-	WidgetID        *string           `json:"widgetId,omitempty"`
-	Settings        map[string]string `json:"settings,omitempty"`
+	FieldID         string    `json:"fieldId"`
+	WidgetNameSpace *string   `json:"widgetNamespace,omitempty"`
+	WidgetID        *string   `json:"widgetId,omitempty"`
+	Settings        *Settings `json:"settings,omitempty"`
+}
+
+type Settings struct {
+	HelpText        *string `json:"helpText,omitempty"`
+	TrueLabel       *string `json:"trueLabel,omitempty"`
+	FalseLabel      *string `json:"falseLabel,omitempty"`
+	Stars           *int64  `json:"stars,omitempty"`
+	Format          *string `json:"format,omitempty"`
+	AMPM            *string `json:"ampm,omitempty"`
+	BulkEditing     *bool   `json:"bulkEditing,omitempty"`
+	TrackingFieldId *string `json:"trackingFieldId,omitempty"`
 }
 
 // Sidebar model
@@ -72,7 +83,7 @@ func (service *EditorInterfacesService) doGet(path string) (*EditorInterface, er
 	}
 
 	var editorInterface EditorInterface
-	if ok := service.c.do(req, &editorInterface); ok != nil {
+	if err = service.c.do(req, &editorInterface); err != nil {
 		return nil, err
 	}
 

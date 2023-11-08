@@ -2,6 +2,7 @@ package contentful
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"net/http"
 	"net/http/httptest"
@@ -92,7 +93,9 @@ func TestEditorInterfacesService_Get_2(t *testing.T) {
 	cma.BaseURL = server.URL
 
 	_, err = cma.EditorInterfaces.Get(spaceID, "hfM9RCJIk0wIm06WkEOQY")
-	assertions.Nil(err)
+	assertions.NotNil(err)
+	var notFoundError ErrorResponse
+	errors.As(err, &notFoundError)
 }
 
 func TestEditorInterfacesService_Update(t *testing.T) {
