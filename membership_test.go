@@ -2,6 +2,7 @@ package contentful
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"net/http"
 	"net/http/httptest"
@@ -89,7 +90,9 @@ func TestMembershipsService_Get_2(t *testing.T) {
 	cma.BaseURL = server.URL
 
 	_, err = cma.Memberships.Get(spaceID, "0xWanD4AZI2AR35wW9q51n")
-	assertions.Nil(err)
+	assertions.NotNil(err)
+	var contentfulError ErrorResponse
+	errors.As(err, &contentfulError)
 }
 
 func TestMembershipsService_Upsert_Create(t *testing.T) {

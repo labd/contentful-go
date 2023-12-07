@@ -2,6 +2,7 @@ package contentful
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"net/http"
 	"net/http/httptest"
@@ -89,7 +90,9 @@ func TestAccessTokensServiceGet_2(t *testing.T) {
 	cma.BaseURL = server.URL
 
 	_, err = cma.AccessTokens.Get("hioj6879UYGIfyt654tyfFHG")
-	assertions.Nil(err)
+	assertions.NotNil(err)
+	var contentfulError ErrorResponse
+	errors.As(err, &contentfulError)
 }
 
 func TestEntriesServiceCreate(t *testing.T) {

@@ -1,6 +1,7 @@
 package contentful
 
 import (
+	"errors"
 	"fmt"
 	"net/http"
 	"net/http/httptest"
@@ -90,7 +91,9 @@ func TestWebhookCallsService_Get_2(t *testing.T) {
 	cma.BaseURL = server.URL
 
 	_, err = cma.WebhookCalls.Get(spaceID, "0KzM2HxYr5O1pZ4SaUzK8h", "bar")
-	assertions.Empty(err)
+	assertions.NotNil(err)
+	var contentfulError ErrorResponse
+	errors.As(err, &contentfulError)
 }
 
 func TestWebhookCallsService_Health(t *testing.T) {
@@ -144,5 +147,7 @@ func TestWebhookCallsService_Health_2(t *testing.T) {
 	cma.BaseURL = server.URL
 
 	_, err = cma.WebhookCalls.Health(spaceID, "0KzM2HxYr5O1pZ4SaUzK8h")
-	assertions.Nil(err)
+	assertions.NotNil(err)
+	var contentfulError ErrorResponse
+	errors.As(err, &contentfulError)
 }

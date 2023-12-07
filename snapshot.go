@@ -72,7 +72,7 @@ func (service *SnapshotsService) GetEntrySnapshot(spaceID, entryID, snapshotID s
 
 	var entrySnapshot EntrySnapshot
 	if ok := service.c.do(req, &entrySnapshot); ok != nil {
-		return nil, err
+		return nil, ok
 	}
 
 	return &entrySnapshot, err
@@ -107,7 +107,7 @@ func (service *SnapshotsService) GetContentTypeSnapshots(spaceID, contentTypeID,
 
 	var contentTypeSnapshot ContentTypeSnapshot
 	if ok := service.c.do(req, &contentTypeSnapshot); ok != nil {
-		return nil, err
+		return nil, ok
 	}
 
 	return &contentTypeSnapshot, err

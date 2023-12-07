@@ -57,7 +57,7 @@ func (service *AppInstallationsService) Get(spaceID, appInstallationID string) (
 
 	var installation AppInstallation
 	if ok := service.c.do(req, &installation); ok != nil {
-		return nil, err
+		return nil, ok
 	}
 
 	return &installation, err

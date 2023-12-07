@@ -1,6 +1,7 @@
 package contentful
 
 import (
+	"errors"
 	"fmt"
 	"github.com/stretchr/testify/assert"
 	"net/http"
@@ -56,7 +57,9 @@ func TestResourcesService_Get_2(t *testing.T) {
 	urc.BaseURL = server.URL
 
 	_, err = urc.Resources.Get(spaceID, "0xvkNW6WdQ8JkWlWZ8BC4x")
-	assertions.Nil(err)
+	assertions.NotNil(err)
+	var contentfulError ErrorResponse
+	errors.As(err, &contentfulError)
 }
 
 func TestResourcesService_Create(t *testing.T) {

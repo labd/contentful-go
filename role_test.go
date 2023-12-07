@@ -2,6 +2,7 @@ package contentful
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"net/http"
 	"net/http/httptest"
@@ -89,7 +90,9 @@ func TestRolesService_Get_2(t *testing.T) {
 	cma.BaseURL = server.URL
 
 	_, err = cma.Roles.Get(spaceID, "0xvkNW6WdQ8JkWlWZ8BC4x")
-	assertions.Nil(err)
+	assertions.NotNil(err)
+	var contentfulError ErrorResponse
+	errors.As(err, &contentfulError)
 }
 
 func TestRolesService_Upsert_Create(t *testing.T) {

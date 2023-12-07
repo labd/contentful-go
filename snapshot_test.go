@@ -1,6 +1,7 @@
 package contentful
 
 import (
+	"errors"
 	"fmt"
 	"net/http"
 	"net/http/httptest"
@@ -88,7 +89,9 @@ func TestSnapshotsService_GetEntrySnapshot_2(t *testing.T) {
 	cma.BaseURL = server.URL
 
 	_, err = cma.Snapshots.GetEntrySnapshot(spaceID, "hfM9RCJIk0wIm06WkEOQY", "4FLrUHftHW3v2BLi9fzfjU")
-	assertions.Nil(err)
+	assertions.NotNil(err)
+	var contentfulError ErrorResponse
+	errors.As(err, &contentfulError)
 }
 
 func TestSnapshotsService_ListContentTypeSnapshots(t *testing.T) {
@@ -171,6 +174,7 @@ func TestSnapshotsService_GetContentTypeSnapshots_2(t *testing.T) {
 	cma.BaseURL = server.URL
 
 	_, err = cma.Snapshots.GetContentTypeSnapshots(spaceID, "hfM9RCJIk0wIm06WkEOQY", "4FLrUHftHW3v2BLi9fzfjU")
-	assertions.Nil(err)
-
+	assertions.NotNil(err)
+	var contentfulError ErrorResponse
+	errors.As(err, &contentfulError)
 }

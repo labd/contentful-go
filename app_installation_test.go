@@ -2,6 +2,7 @@ package contentful
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"github.com/stretchr/testify/assert"
 	"net/http"
@@ -89,7 +90,9 @@ func TestAppInstallationsService_Get_2(t *testing.T) {
 	cma.BaseURL = server.URL
 
 	_, err = cma.AppInstallations.Get(spaceID, "app_definition_id")
-	assertions.Nil(err)
+	assertions.NotNil(err)
+	var contentfulError ErrorResponse
+	errors.As(err, &contentfulError)
 }
 
 func TestAppInstallationsService_Upsert_Create(t *testing.T) {

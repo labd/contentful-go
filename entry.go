@@ -58,7 +58,7 @@ func (service *EntriesService) Get(spaceID, entryID string) (*Entry, error) {
 
 	var entry Entry
 	if ok := service.c.do(req, &entry); ok != nil {
-		return nil, err
+		return nil, ok
 	}
 
 	return &entry, err

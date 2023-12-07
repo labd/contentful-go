@@ -70,7 +70,7 @@ func (service *MembershipsService) Get(spaceID, membershipID string) (*Membershi
 
 	var membership Membership
 	if ok := service.c.do(req, &membership); ok != nil {
-		return nil, err
+		return nil, ok
 	}
 
 	return &membership, err

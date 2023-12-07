@@ -64,7 +64,7 @@ func (service *AppDefinitionsService) Get(organizationID, appDefinitionID string
 
 	var definition AppDefinition
 	if ok := service.c.do(req, &definition); ok != nil {
-		return nil, err
+		return nil, ok
 	}
 
 	return &definition, err

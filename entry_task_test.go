@@ -2,6 +2,7 @@ package contentful
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"net/http"
 	"net/http/httptest"
@@ -89,7 +90,9 @@ func TestEntryTasksService_Get_2(t *testing.T) {
 	cma.BaseURL = server.URL
 
 	_, err = cma.EntryTasks.Get(spaceID, "5KsDBWseXY6QegucYAoacS", "RHfHVRz3QkAgcMq4CGg2m5")
-	assertions.Nil(err)
+	assertions.NotNil(err)
+	var contentfulError ErrorResponse
+	errors.As(err, &contentfulError)
 }
 
 func TestEntryTasksService_Delete(t *testing.T) {

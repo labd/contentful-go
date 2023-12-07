@@ -64,7 +64,7 @@ func (service *EntryTasksService) Get(spaceID, entryID, entryTaskID string) (*En
 
 	var entryTask EntryTask
 	if ok := service.c.do(req, &entryTask); ok != nil {
-		return nil, err
+		return nil, ok
 	}
 
 	return &entryTask, err

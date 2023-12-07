@@ -28,7 +28,7 @@ func (service *ResourcesService) Get(spaceID, resourceID string) (*Resource, err
 
 	var resource Resource
 	if ok := service.c.do(req, &resource); ok != nil {
-		return nil, err
+		return nil, ok
 	}
 
 	return &resource, err
