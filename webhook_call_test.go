@@ -93,7 +93,7 @@ func TestWebhookCallsService_Get_2(t *testing.T) {
 	_, err = cma.WebhookCalls.Get(spaceID, "0KzM2HxYr5O1pZ4SaUzK8h", "bar")
 	assertions.NotNil(err)
 	var contentfulError ErrorResponse
-	errors.As(err, &contentfulError)
+	assertions.True(errors.As(err, &contentfulError))
 }
 
 func TestWebhookCallsService_Health(t *testing.T) {
@@ -149,5 +149,5 @@ func TestWebhookCallsService_Health_2(t *testing.T) {
 	_, err = cma.WebhookCalls.Health(spaceID, "0KzM2HxYr5O1pZ4SaUzK8h")
 	assertions.NotNil(err)
 	var contentfulError ErrorResponse
-	errors.As(err, &contentfulError)
+	assertions.True(errors.As(err, &contentfulError))
 }

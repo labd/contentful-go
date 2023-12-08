@@ -92,7 +92,7 @@ func TestAppInstallationsService_Get_2(t *testing.T) {
 	_, err = cma.AppInstallations.Get(spaceID, "app_definition_id")
 	assertions.NotNil(err)
 	var contentfulError ErrorResponse
-	errors.As(err, &contentfulError)
+	assertions.True(errors.As(err, &contentfulError))
 }
 
 func TestAppInstallationsService_Upsert_Create(t *testing.T) {

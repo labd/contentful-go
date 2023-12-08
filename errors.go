@@ -2,8 +2,10 @@ package contentful
 
 import (
 	"bytes"
+	"encoding/json"
 	"fmt"
 	"net/http"
+	"reflect"
 )
 
 // ErrorResponse model
@@ -21,6 +23,39 @@ func (e ErrorResponse) Error() string {
 // ErrorDetails model
 type ErrorDetails struct {
 	Errors []*ErrorDetail `json:"errors,omitempty"`
+}
+
+func (e *ErrorDetails) UnmarshalJSON(data []byte) error {
+	var unmarshaled interface{}
+
+	err := json.Unmarshal(data, &unmarshaled)
+	if err != nil {
+		return err
+	}
+
+	switch reflect.ValueOf(unmarshaled).Kind() {
+	case reflect.String:
+		e.Errors = append(e.Errors, &ErrorDetail{
+			Details: unmarshaled.(string),
+		})
+
+	case reflect.Map:
+		if _, ok := unmarshaled.(map[string]any)["errors"]; ok {
+			intermedidateStruct := &struct {
+				Errors []*ErrorDetail `json:"errors,omitempty"`
+			}{}
+
+			err = json.Unmarshal(data, &intermedidateStruct)
+			if err != nil {
+				return err
+			}
+
+			e.Errors = intermedidateStruct.Errors
+
+		}
+	}
+
+	return nil
 }
 
 // ErrorDetail model

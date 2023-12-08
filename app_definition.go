@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
-	"strconv"
 )
 
 // AppDefinitionsService service
@@ -16,23 +15,36 @@ type AppDefinitionsService service
 type AppDefinition struct {
 	Sys       *Sys        `json:"sys"`
 	Name      string      `json:"name"`
-	SRC       string      `json:"src"`
+	SRC       *string     `json:"src,omitempty"`
+	Bundle    *Bundle     `json:"bundle,omitempty"`
 	Locations []Locations `json:"locations"`
+}
+
+type Bundle struct {
+	Sys *Sys `json:"sys"`
 }
 
 // Locations model
 type Locations struct {
-	Location string `json:"location"`
+	Location       string          `json:"location"`
+	FieldTypes     []FieldType     `json:"fieldTypes,omitempty"`
+	NavigationItem *NavigationItem `json:"navigationItem,omitempty"`
 }
 
-// GetVersion returns entity version
-func (appDefinition *AppDefinition) GetVersion() int {
-	version := 1
-	if appDefinition.Sys != nil {
-		version = appDefinition.Sys.Version
-	}
+type FieldType struct {
+	Type     string  `json:"type"`
+	LinkType *string `json:"linkType,omitempty"`
+	Items    *Items  `json:"items,omitempty"`
+}
 
-	return version
+type NavigationItem struct {
+	Name string `json:"name"`
+	Path string `json:"path"`
+}
+
+type Items struct {
+	Type     string  `json:"type"`
+	LinkType *string `json:"linkType,omitempty"`
 }
 
 // List returns an app definitions collection
@@ -59,7 +71,7 @@ func (service *AppDefinitionsService) Get(organizationID, appDefinitionID string
 
 	req, err := service.c.newRequest(method, path, query, nil)
 	if err != nil {
-		return &AppDefinition{}, err
+		return nil, err
 	}
 
 	var definition AppDefinition
@@ -92,8 +104,6 @@ func (service *AppDefinitionsService) Upsert(organizationID string, definition *
 	if err != nil {
 		return err
 	}
-
-	req.Header.Set("X-Contentful-Version", strconv.Itoa(definition.GetVersion()))
 
 	return service.c.do(req, definition)
 }

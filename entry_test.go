@@ -91,7 +91,7 @@ func TestEntriesService_Get_2(t *testing.T) {
 	_, err = cma.Entries.Get(spaceID, "5KsDBWseXY6QegucYAoacS")
 	assertions.NotNil(err)
 	var contentfulError ErrorResponse
-	errors.As(err, &contentfulError)
+	assertions.True(errors.As(err, &contentfulError))
 }
 
 func TestEntriesService_Delete(t *testing.T) {

@@ -94,7 +94,7 @@ func TestExtensionsService_Get_2(t *testing.T) {
 	_, err = cma.Extensions.Get(spaceID, "0xvkPW9FdQ1kkWlWZ8ga4x")
 	assertions.NotNil(err)
 	var contentfulError ErrorResponse
-	errors.As(err, &contentfulError)
+	assertions.True(errors.As(err, &contentfulError))
 }
 
 func TestExtensionsService_Upsert_Create(t *testing.T) {

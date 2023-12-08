@@ -1,0 +1,44 @@
+{
+  "sys": {
+    "id": "app_bundle_id",
+    "type": "AppBundle",
+    "appDefinition": {
+      "sys": {
+        "id": "<app_definition_id>",
+        "type": "Link",
+        "linkType": "AppDefinition"
+      }
+    },
+    "organization": {
+      "sys": {
+        "type": "Link",
+        "linkType": "Organization",
+        "id": "<organization_id>"
+      }
+    },
+    "createdAt": "2023-11-07T11:53:13.041Z",
+    "updatedAt": "2023-11-07T11:53:13.041Z",
+    "createdBy": {
+      "sys": {
+        "type": "Link",
+        "linkType": "User",
+        "id": "user_id"
+      }
+    },
+    "updatedBy": {
+      "sys": {
+        "type": "Link",
+        "linkType": "User",
+        "id": "user_id"
+      }
+    }
+  },
+  "files": [
+    {
+      "name": "index.html",
+      "size": 309,
+      "md5": "Rh0L3+kiksXJCZ6hdvYqmA=="
+    }
+  ],
+  "comment": "comment"
+}

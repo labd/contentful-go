@@ -50,6 +50,8 @@ type Client struct {
 	AppInstallations   *AppInstallationsService
 	Usages             *UsagesService
 	Resources          *ResourcesService
+	AppUpload          *AppUploadService
+	AppBundle          *AppBundleService
 }
 
 type service struct {
@@ -96,6 +98,12 @@ func NewCMA(token string) *Client {
 	c.AppDefinitions = (*AppDefinitionsService)(&c.commonService)
 	c.AppInstallations = (*AppInstallationsService)(&c.commonService)
 	c.Usages = (*UsagesService)(&c.commonService)
+	c.AppUpload = &AppUploadService{
+		service: c.commonService,
+		BaseURL: "https://upload.contentful.com",
+	}
+
+	c.AppBundle = (*AppBundleService)(&c.commonService)
 	return c
 }
 
@@ -190,7 +198,11 @@ func (c *Client) SetHTTPClient(client *http.Client) {
 }
 
 func (c *Client) newRequest(method, path string, query url.Values, body io.Reader) (*http.Request, error) {
-	u, err := url.Parse(c.BaseURL)
+	return c.newRequestWithBaseUrl(method, c.BaseURL, path, query, body)
+}
+
+func (c *Client) newRequestWithBaseUrl(method, baseUrl string, path string, query url.Values, body io.Reader) (*http.Request, error) {
+	u, err := url.Parse(baseUrl)
 	if err != nil {
 		return nil, err
 	}

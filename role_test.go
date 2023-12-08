@@ -92,7 +92,7 @@ func TestRolesService_Get_2(t *testing.T) {
 	_, err = cma.Roles.Get(spaceID, "0xvkNW6WdQ8JkWlWZ8BC4x")
 	assertions.NotNil(err)
 	var contentfulError ErrorResponse
-	errors.As(err, &contentfulError)
+	assertions.True(errors.As(err, &contentfulError))
 }
 
 func TestRolesService_Upsert_Create(t *testing.T) {

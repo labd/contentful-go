@@ -1,0 +1,7 @@
+{
+  "sys": {
+    "type": "Error",
+    "id": "BadRequest"
+  },
+  "message": "Failed to find upload"
+}

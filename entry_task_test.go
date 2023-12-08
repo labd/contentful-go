@@ -92,7 +92,7 @@ func TestEntryTasksService_Get_2(t *testing.T) {
 	_, err = cma.EntryTasks.Get(spaceID, "5KsDBWseXY6QegucYAoacS", "RHfHVRz3QkAgcMq4CGg2m5")
 	assertions.NotNil(err)
 	var contentfulError ErrorResponse
-	errors.As(err, &contentfulError)
+	assertions.True(errors.As(err, &contentfulError))
 }
 
 func TestEntryTasksService_Delete(t *testing.T) {

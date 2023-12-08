@@ -92,7 +92,7 @@ func TestMembershipsService_Get_2(t *testing.T) {
 	_, err = cma.Memberships.Get(spaceID, "0xWanD4AZI2AR35wW9q51n")
 	assertions.NotNil(err)
 	var contentfulError ErrorResponse
-	errors.As(err, &contentfulError)
+	assertions.True(errors.As(err, &contentfulError))
 }
 
 func TestMembershipsService_Upsert_Create(t *testing.T) {

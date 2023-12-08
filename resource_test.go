@@ -59,7 +59,7 @@ func TestResourcesService_Get_2(t *testing.T) {
 	_, err = urc.Resources.Get(spaceID, "0xvkNW6WdQ8JkWlWZ8BC4x")
 	assertions.NotNil(err)
 	var contentfulError ErrorResponse
-	errors.As(err, &contentfulError)
+	assertions.True(errors.As(err, &contentfulError))
 }
 
 func TestResourcesService_Create(t *testing.T) {

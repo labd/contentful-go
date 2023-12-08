@@ -91,7 +91,7 @@ func TestSnapshotsService_GetEntrySnapshot_2(t *testing.T) {
 	_, err = cma.Snapshots.GetEntrySnapshot(spaceID, "hfM9RCJIk0wIm06WkEOQY", "4FLrUHftHW3v2BLi9fzfjU")
 	assertions.NotNil(err)
 	var contentfulError ErrorResponse
-	errors.As(err, &contentfulError)
+	assertions.True(errors.As(err, &contentfulError))
 }
 
 func TestSnapshotsService_ListContentTypeSnapshots(t *testing.T) {
@@ -176,5 +176,5 @@ func TestSnapshotsService_GetContentTypeSnapshots_2(t *testing.T) {
 	_, err = cma.Snapshots.GetContentTypeSnapshots(spaceID, "hfM9RCJIk0wIm06WkEOQY", "4FLrUHftHW3v2BLi9fzfjU")
 	assertions.NotNil(err)
 	var contentfulError ErrorResponse
-	errors.As(err, &contentfulError)
+	assertions.True(errors.As(err, &contentfulError))
 }

@@ -92,7 +92,7 @@ func TestAccessTokensServiceGet_2(t *testing.T) {
 	_, err = cma.AccessTokens.Get("hioj6879UYGIfyt654tyfFHG")
 	assertions.NotNil(err)
 	var contentfulError ErrorResponse
-	errors.As(err, &contentfulError)
+	assertions.True(errors.As(err, &contentfulError))
 }
 
 func TestEntriesServiceCreate(t *testing.T) {
