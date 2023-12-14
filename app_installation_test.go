@@ -32,7 +32,7 @@ func TestAppInstallationsService_List(t *testing.T) {
 	cma = NewCMA(CMAToken)
 	cma.BaseURL = server.URL
 
-	collection, err := cma.AppInstallations.List(spaceID).Next()
+	collection, err := cma.AppInstallations.List(spaceID, "master").Next()
 	assertions.Nil(err)
 
 	installation := collection.ToAppInstallation()
@@ -62,7 +62,7 @@ func TestAppInstallationsService_Get(t *testing.T) {
 	cma = NewCMA(CMAToken)
 	cma.BaseURL = server.URL
 
-	installation, err := cma.AppInstallations.Get(spaceID, "app_definition_id")
+	installation, err := cma.AppInstallations.Get(spaceID, "app_definition_id", "master")
 	assertions.Nil(err)
 	assertions.Equal("world", installation.Parameters["hello"])
 }
@@ -89,50 +89,13 @@ func TestAppInstallationsService_Get_2(t *testing.T) {
 	cma = NewCMA(CMAToken)
 	cma.BaseURL = server.URL
 
-	_, err = cma.AppInstallations.Get(spaceID, "app_definition_id")
+	_, err = cma.AppInstallations.Get(spaceID, "app_definition_id", "master")
 	assertions.NotNil(err)
 	var contentfulError ErrorResponse
 	assertions.True(errors.As(err, &contentfulError))
 }
 
-func TestAppInstallationsService_Upsert_Create(t *testing.T) {
-	assertions := assert.New(t)
-
-	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		assertions.Equal(r.Method, "POST")
-		assertions.Equal(r.RequestURI, "/spaces/"+spaceID+"/environments/master/app_installations")
-		checkHeaders(r, assertions)
-
-		var payload map[string]interface{}
-		err := json.NewDecoder(r.Body).Decode(&payload)
-		assertions.Nil(err)
-		parameters := payload["parameters"].(map[string]interface{})
-		assertions.Equal("world", parameters["hello"])
-
-		w.WriteHeader(201)
-		_, _ = fmt.Fprintln(w, readTestData("app_installation_1.json"))
-	})
-
-	// test server
-	server := httptest.NewServer(handler)
-	defer server.Close()
-
-	// cma client
-	cma = NewCMA(CMAToken)
-	cma.BaseURL = server.URL
-
-	installation := &AppInstallation{
-		Parameters: map[string]string{
-			"hello": "world",
-		},
-	}
-
-	err := cma.AppInstallations.Upsert(spaceID, "", installation)
-	assertions.Nil(err)
-	assertions.Equal("world", installation.Parameters["hello"])
-}
-
-func TestAppInstallationsService_Upsert_Update(t *testing.T) {
+func TestAppInstallationsService_Upsert(t *testing.T) {
 	var err error
 	assertions := assert.New(t)
 
@@ -164,7 +127,7 @@ func TestAppInstallationsService_Upsert_Update(t *testing.T) {
 
 	installation.Parameters["lorum"] = "ipsum"
 
-	err = cma.AppInstallations.Upsert(spaceID, "app_definition_id", installation)
+	err = cma.AppInstallations.Upsert(spaceID, "app_definition_id", installation, "master")
 	assertions.Nil(err)
 	assertions.Equal("ipsum", installation.Parameters["lorum"])
 }
@@ -189,6 +152,6 @@ func TestAppInstallationsService_Delete(t *testing.T) {
 	cma = NewCMA(CMAToken)
 	cma.BaseURL = server.URL
 
-	err = cma.AppInstallations.Delete(spaceID, "app_definition_id")
+	err = cma.AppInstallations.Delete(spaceID, "app_definition_id", "master")
 	assertions.Nil(err)
 }
