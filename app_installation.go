@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"strings"
 )
 
 // AppInstallationsService service
@@ -53,7 +54,7 @@ func (service *AppInstallationsService) Get(spaceID, appInstallationID string, e
 }
 
 // Upsert updates or creates a new app installation
-func (service *AppInstallationsService) Upsert(spaceID, appInstallationID string, installation *AppInstallation, environment string) error {
+func (service *AppInstallationsService) Upsert(spaceID, appInstallationID string, installation *AppInstallation, environment string, acceptedTerms []string) error {
 	bytesArray, err := json.Marshal(installation)
 	if err != nil {
 		return err
@@ -62,6 +63,11 @@ func (service *AppInstallationsService) Upsert(spaceID, appInstallationID string
 	path := fmt.Sprintf("/spaces/%s/environments/%s/app_installations/%s", spaceID, environment, appInstallationID)
 
 	req, err := service.c.newRequest("PUT", path, nil, bytes.NewReader(bytesArray))
+
+	if len(acceptedTerms) > 0 {
+		req.Header.Add("X-Contentful-Marketplace", strings.Join(acceptedTerms, ","))
+	}
+
 	if err != nil {
 		return err
 	}

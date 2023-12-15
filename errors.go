@@ -22,7 +22,8 @@ func (e ErrorResponse) Error() string {
 
 // ErrorDetails model
 type ErrorDetails struct {
-	Errors []*ErrorDetail `json:"errors,omitempty"`
+	Errors  []*ErrorDetail `json:"errors,omitempty"`
+	Reasons string         `json:"reasons,omitempty"`
 }
 
 func (e *ErrorDetails) UnmarshalJSON(data []byte) error {
@@ -51,6 +52,11 @@ func (e *ErrorDetails) UnmarshalJSON(data []byte) error {
 			}
 
 			e.Errors = intermedidateStruct.Errors
+
+		}
+
+		if val, ok := unmarshaled.(map[string]any)["reasons"]; ok {
+			e.Reasons = val.(string)
 
 		}
 	}

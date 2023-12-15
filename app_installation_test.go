@@ -127,9 +127,50 @@ func TestAppInstallationsService_Upsert(t *testing.T) {
 
 	installation.Parameters["lorum"] = "ipsum"
 
-	err = cma.AppInstallations.Upsert(spaceID, "app_definition_id", installation, "master")
+	err = cma.AppInstallations.Upsert(spaceID, "app_definition_id", installation, "master", []string{})
 	assertions.Nil(err)
 	assertions.Equal("ipsum", installation.Parameters["lorum"])
+}
+
+func TestAppInstallationsService_Upsert_Forbidden(t *testing.T) {
+	var err error
+	assertions := assert.New(t)
+
+	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		assertions.Equal(r.Method, "PUT")
+		assertions.Equal(r.RequestURI, "/spaces/"+spaceID+"/environments/master/app_installations/app_definition_id")
+		checkHeaders(r, assertions)
+
+		var payload map[string]interface{}
+		err := json.NewDecoder(r.Body).Decode(&payload)
+		assertions.Nil(err)
+		parameters := payload["parameters"].(map[string]interface{})
+		assertions.Equal("ipsum", parameters["lorum"])
+
+		w.WriteHeader(403)
+		_, _ = fmt.Fprintln(w, readTestData("app_installation/forbidden.json"))
+	})
+
+	// test server
+	server := httptest.NewServer(handler)
+	defer server.Close()
+
+	// cma client
+	cma = NewCMA(CMAToken)
+	cma.BaseURL = server.URL
+
+	installation, err := appInstallationFromTestFile("app_installation_1.json")
+	assertions.Nil(err)
+
+	installation.Parameters["lorum"] = "ipsum"
+
+	err = cma.AppInstallations.Upsert(spaceID, "app_definition_id", installation, "master", []string{})
+
+	assertions.NotNil(err)
+	var errorResponse ErrorResponse
+	assertions.True(errors.As(err, &errorResponse))
+	assertions.Equal("Expected X-Contentful-Marketplace to be \"i-accept-end-user-license-agreement,i-accept-marketplace-terms-of-service,i-accept-privacy-policy\". Visit https://app.contentful.com/deeplink?link=apps&id=66frtrAqmWSowDJzQNDiD to read Marketplace Terms of Service, EULA and Privacy Policy.", errorResponse.Details.Reasons)
+	assertions.Equal("Forbidden", errorResponse.Message)
 }
 
 func TestAppInstallationsService_Delete(t *testing.T) {

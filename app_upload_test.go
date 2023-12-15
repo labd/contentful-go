@@ -39,6 +39,4 @@ func TestAppUploadService_Create(t *testing.T) {
 	assertions.Nil(err)
 	assertions.Equal("https://api.contentful.com", cma.BaseURL)
 	assertions.Equal("<app_upload_id>", uploadResult.Sys.ID)
-	//assertions.Equal("comment", bundle.Comment)
-	//assertions.Len(bundle.Files, 1)
 }
