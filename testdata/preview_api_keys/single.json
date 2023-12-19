@@ -1,0 +1,48 @@
+{
+  "name": "example",
+  "description": "example",
+  "accessToken": "-fXcUaVWIW4njBjoqG1pJbNz65lg7mqxbugGyZyESzQ",
+  "policies": [
+    {
+      "effect": "allow",
+      "actions": "all"
+    }
+  ],
+  "sys": {
+    "type": "PreviewApiKey",
+    "id": "5leTEFZhsglc4EOkrnMNQ2",
+    "version": 0,
+    "space": {
+      "sys": {
+        "type": "Link",
+        "linkType": "Space",
+        "id": "space-id"
+      }
+    },
+    "createdBy": {
+      "sys": {
+        "type": "Link",
+        "linkType": "User",
+        "id": "user-id"
+      }
+    },
+    "createdAt": "2023-12-18T12:05:40Z",
+    "updatedBy": {
+      "sys": {
+        "type": "Link",
+        "linkType": "User",
+        "id": "user-id"
+      }
+    },
+    "updatedAt": "2023-12-18T12:05:40Z"
+  },
+  "environments": [
+    {
+      "sys": {
+        "id": "master",
+        "type": "Link",
+        "linkType": "Environment"
+      }
+    }
+  ]
+}

@@ -31,11 +31,11 @@ func TestAppBundleService_Create(t *testing.T) {
 	server := httptest.NewServer(handler)
 	defer server.Close()
 
-	// cma client
-	cma = NewCMA(CMAToken)
-	cma.BaseURL = server.URL
+	// cmaClient client
+	cmaClient = NewCMA(CMAToken)
+	cmaClient.BaseURL = server.URL
 
-	bundle, err := cma.AppBundle.Create("organization_id", "definition_id", "comment", "upload_id")
+	bundle, err := cmaClient.AppBundle.Create("organization_id", "definition_id", "comment", "upload_id")
 	assertions.Nil(err)
 	assertions.Equal("app_bundle_id", bundle.Sys.ID)
 	assertions.Equal("comment", bundle.Comment)
@@ -64,11 +64,11 @@ func TestAppBundleService_Create_Error(t *testing.T) {
 	server := httptest.NewServer(handler)
 	defer server.Close()
 
-	// cma client
-	cma = NewCMA(CMAToken)
-	cma.BaseURL = server.URL
+	// cmaClient client
+	cmaClient = NewCMA(CMAToken)
+	cmaClient.BaseURL = server.URL
 
-	bundle, err := cma.AppBundle.Create("organization_id", "definition_id", "", "upload_id")
+	bundle, err := cmaClient.AppBundle.Create("organization_id", "definition_id", "", "upload_id")
 	assertions.NotNil(err)
 	assertions.Nil(bundle)
 	assertions.Equal("Failed to find upload", err.Error())

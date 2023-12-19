@@ -28,11 +28,11 @@ func TestAPIKeyService_List(t *testing.T) {
 	server := httptest.NewServer(handler)
 	defer server.Close()
 
-	// cma client
-	cma = NewCMA(CMAToken)
-	cma.BaseURL = server.URL
+	// cmaClient client
+	cmaClient = NewCMA(CMAToken)
+	cmaClient.BaseURL = server.URL
 
-	res, err := cma.APIKeys.List(spaceID).Next()
+	res, err := cmaClient.APIKeys.List(spaceID).Next()
 	assertions.Nil(err)
 	keys := res.ToAPIKey()
 	assertions.Equal(1, len(keys))
@@ -57,11 +57,11 @@ func TestAPIKeyService_Get(t *testing.T) {
 	server := httptest.NewServer(handler)
 	defer server.Close()
 
-	// cma client
-	cma = NewCMA(CMAToken)
-	cma.BaseURL = server.URL
+	// cmaClient client
+	cmaClient = NewCMA(CMAToken)
+	cmaClient.BaseURL = server.URL
 
-	key, err := cma.APIKeys.Get(spaceID, "exampleapikey")
+	key, err := cmaClient.APIKeys.Get(spaceID, "exampleapikey")
 	assertions.Nil(err)
 	assertions.Equal("exampleapikey", key.Sys.ID)
 }
@@ -84,11 +84,11 @@ func TestAPIKeyService_Get_2(t *testing.T) {
 	server := httptest.NewServer(handler)
 	defer server.Close()
 
-	// cma client
-	cma = NewCMA(CMAToken)
-	cma.BaseURL = server.URL
+	// cmaClient client
+	cmaClient = NewCMA(CMAToken)
+	cmaClient.BaseURL = server.URL
 
-	_, err = cma.APIKeys.Get(spaceID, "exampleapikey")
+	_, err = cmaClient.APIKeys.Get(spaceID, "exampleapikey")
 	assertions.NotNil(err)
 }
 
@@ -113,9 +113,9 @@ func TestAPIKeyService_Upsert_Create(t *testing.T) {
 	server := httptest.NewServer(handler)
 	defer server.Close()
 
-	// cma client
-	cma = NewCMA(CMAToken)
-	cma.BaseURL = server.URL
+	// cmaClient client
+	cmaClient = NewCMA(CMAToken)
+	cmaClient.BaseURL = server.URL
 
 	key := &APIKey{
 		Name:        "Example API Key",
@@ -138,7 +138,7 @@ func TestAPIKeyService_Upsert_Create(t *testing.T) {
 		},
 	}
 
-	err := cma.APIKeys.Upsert(spaceID, key)
+	err := cmaClient.APIKeys.Upsert(spaceID, key)
 	assertions.Nil(err)
 	assertions.Equal("exampleapikey", key.Sys.ID)
 	assertions.Equal("Example API Key", key.Name)
@@ -166,16 +166,16 @@ func TestAPIKeyService_Upsert_Update(t *testing.T) {
 	server := httptest.NewServer(handler)
 	defer server.Close()
 
-	// cma client
-	cma = NewCMA(CMAToken)
-	cma.BaseURL = server.URL
+	// cmaClient client
+	cmaClient = NewCMA(CMAToken)
+	cmaClient.BaseURL = server.URL
 
 	key, err := apiKeyFromTestData("api_key_1.json")
 	assertions.Nil(err)
 
 	key.Name = "This name is updated"
 
-	err = cma.APIKeys.Upsert(spaceID, key)
+	err = cmaClient.APIKeys.Upsert(spaceID, key)
 	assertions.Nil(err)
 	assertions.Equal("This name is updated", key.Name)
 }
@@ -196,15 +196,15 @@ func TestAPIKeyService_Delete(t *testing.T) {
 	server := httptest.NewServer(handler)
 	defer server.Close()
 
-	// cma client
-	cma = NewCMA(CMAToken)
-	cma.BaseURL = server.URL
+	// cmaClient client
+	cmaClient = NewCMA(CMAToken)
+	cmaClient.BaseURL = server.URL
 
 	// test locale
 	key, err := apiKeyFromTestData("api_key_1.json")
 	assertions.Nil(err)
 
 	// delete locale
-	err = cma.APIKeys.Delete(spaceID, key)
+	err = cmaClient.APIKeys.Delete(spaceID, key)
 	assertions.Nil(err)
 }

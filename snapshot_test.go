@@ -28,11 +28,11 @@ func TestSnapshotsService_ListEntrySnapshots(t *testing.T) {
 	server := httptest.NewServer(handler)
 	defer server.Close()
 
-	// cma client
-	cma = NewCMA(CMAToken)
-	cma.BaseURL = server.URL
+	// cmaClient client
+	cmaClient = NewCMA(CMAToken)
+	cmaClient.BaseURL = server.URL
 
-	collection, err := cma.Snapshots.ListEntrySnapshots(spaceID, "hfM9RCJIk0wIm06WkEOQY").Next()
+	collection, err := cmaClient.Snapshots.ListEntrySnapshots(spaceID, "hfM9RCJIk0wIm06WkEOQY").Next()
 	assertions.Nil(err)
 	entrySnapshot := collection.ToEntrySnapshot()
 	assertions.Equal(1, len(entrySnapshot))
@@ -57,11 +57,11 @@ func TestSnapshotsService_GetEntrySnapshot(t *testing.T) {
 	server := httptest.NewServer(handler)
 	defer server.Close()
 
-	// cma client
-	cma = NewCMA(CMAToken)
-	cma.BaseURL = server.URL
+	// cmaClient client
+	cmaClient = NewCMA(CMAToken)
+	cmaClient.BaseURL = server.URL
 
-	entrySnapshot, err := cma.Snapshots.GetEntrySnapshot(spaceID, "hfM9RCJIk0wIm06WkEOQY", "4FLrUHftHW3v2BLi9fzfjU")
+	entrySnapshot, err := cmaClient.Snapshots.GetEntrySnapshot(spaceID, "hfM9RCJIk0wIm06WkEOQY", "4FLrUHftHW3v2BLi9fzfjU")
 	assertions.Nil(err)
 	assertions.Equal("Hello, World!", entrySnapshot.EntrySnapshotDetail.Fields["title"].(map[string]interface{})["en-US"])
 }
@@ -84,11 +84,11 @@ func TestSnapshotsService_GetEntrySnapshot_2(t *testing.T) {
 	server := httptest.NewServer(handler)
 	defer server.Close()
 
-	// cma client
-	cma = NewCMA(CMAToken)
-	cma.BaseURL = server.URL
+	// cmaClient client
+	cmaClient = NewCMA(CMAToken)
+	cmaClient.BaseURL = server.URL
 
-	_, err = cma.Snapshots.GetEntrySnapshot(spaceID, "hfM9RCJIk0wIm06WkEOQY", "4FLrUHftHW3v2BLi9fzfjU")
+	_, err = cmaClient.Snapshots.GetEntrySnapshot(spaceID, "hfM9RCJIk0wIm06WkEOQY", "4FLrUHftHW3v2BLi9fzfjU")
 	assertions.NotNil(err)
 	var contentfulError ErrorResponse
 	assertions.True(errors.As(err, &contentfulError))
@@ -112,11 +112,11 @@ func TestSnapshotsService_ListContentTypeSnapshots(t *testing.T) {
 	server := httptest.NewServer(handler)
 	defer server.Close()
 
-	// cma client
-	cma = NewCMA(CMAToken)
-	cma.BaseURL = server.URL
+	// cmaClient client
+	cmaClient = NewCMA(CMAToken)
+	cmaClient.BaseURL = server.URL
 
-	collection, err := cma.Snapshots.ListContentTypeSnapshots(spaceID, "hfM9RCJIk0wIm06WkEOQY").Next()
+	collection, err := cmaClient.Snapshots.ListContentTypeSnapshots(spaceID, "hfM9RCJIk0wIm06WkEOQY").Next()
 	assertions.Nil(err)
 	entrySnapshot := collection.ToContentTypeSnapshot()
 	assertions.Equal(1, len(entrySnapshot))
@@ -141,11 +141,11 @@ func TestSnapshotsService_GetContentTypeSnapshots(t *testing.T) {
 	server := httptest.NewServer(handler)
 	defer server.Close()
 
-	// cma client
-	cma = NewCMA(CMAToken)
-	cma.BaseURL = server.URL
+	// cmaClient client
+	cmaClient = NewCMA(CMAToken)
+	cmaClient.BaseURL = server.URL
 
-	entrySnapshot, err := cma.Snapshots.GetContentTypeSnapshots(spaceID, "hfM9RCJIk0wIm06WkEOQY", "4FLrUHftHW3v2BLi9fzfjU")
+	entrySnapshot, err := cmaClient.Snapshots.GetContentTypeSnapshots(spaceID, "hfM9RCJIk0wIm06WkEOQY", "4FLrUHftHW3v2BLi9fzfjU")
 	assertions.Nil(err)
 	assertions.Equal("Blog Post", entrySnapshot.ContentTypeSnapshotDetail.Name)
 
@@ -169,11 +169,11 @@ func TestSnapshotsService_GetContentTypeSnapshots_2(t *testing.T) {
 	server := httptest.NewServer(handler)
 	defer server.Close()
 
-	// cma client
-	cma = NewCMA(CMAToken)
-	cma.BaseURL = server.URL
+	// cmaClient client
+	cmaClient = NewCMA(CMAToken)
+	cmaClient.BaseURL = server.URL
 
-	_, err = cma.Snapshots.GetContentTypeSnapshots(spaceID, "hfM9RCJIk0wIm06WkEOQY", "4FLrUHftHW3v2BLi9fzfjU")
+	_, err = cmaClient.Snapshots.GetContentTypeSnapshots(spaceID, "hfM9RCJIk0wIm06WkEOQY", "4FLrUHftHW3v2BLi9fzfjU")
 	assertions.NotNil(err)
 	var contentfulError ErrorResponse
 	assertions.True(errors.As(err, &contentfulError))

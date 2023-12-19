@@ -3,6 +3,8 @@ package contentful
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/flaconi/contentful-go/internal/cma"
+	"github.com/flaconi/contentful-go/service/common"
 	"io"
 	"log"
 	"net/http"
@@ -56,6 +58,10 @@ type Client struct {
 
 type service struct {
 	c *Client
+}
+
+func NewCMAV2(config cma.ClientConfig) (common.SpaceIdClientBuilder, error) {
+	return cma.New(config)
 }
 
 // NewCMA returns a CMA client

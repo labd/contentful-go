@@ -29,11 +29,11 @@ func TestEditorInterfacesService_List(t *testing.T) {
 	server := httptest.NewServer(handler)
 	defer server.Close()
 
-	// cma client
-	cma = NewCMA(CMAToken)
-	cma.BaseURL = server.URL
+	// cmaClient client
+	cmaClient = NewCMA(CMAToken)
+	cmaClient.BaseURL = server.URL
 
-	collection, err := cma.EditorInterfaces.List(spaceID).Next()
+	collection, err := cmaClient.EditorInterfaces.List(spaceID).Next()
 	assertions.Nil(err)
 
 	interfaces := collection.ToEditorInterface()
@@ -60,11 +60,11 @@ func TestEditorInterfacesService_Get(t *testing.T) {
 	server := httptest.NewServer(handler)
 	defer server.Close()
 
-	// cma client
-	cma = NewCMA(CMAToken)
-	cma.BaseURL = server.URL
+	// cmaClient client
+	cmaClient = NewCMA(CMAToken)
+	cmaClient.BaseURL = server.URL
 
-	editorInterface, err := cma.EditorInterfaces.Get(spaceID, "hfM9RCJIk0wIm06WkEOQY")
+	editorInterface, err := cmaClient.EditorInterfaces.Get(spaceID, "hfM9RCJIk0wIm06WkEOQY")
 	assertions.Nil(err)
 	assertions.Equal("name", editorInterface.Controls[0].FieldID)
 	assertions.Equal("extension", editorInterface.SideBar[0].WidgetNameSpace)
@@ -88,11 +88,11 @@ func TestEditorInterfacesService_Get_2(t *testing.T) {
 	server := httptest.NewServer(handler)
 	defer server.Close()
 
-	// cma client
-	cma = NewCMA(CMAToken)
-	cma.BaseURL = server.URL
+	// cmaClient client
+	cmaClient = NewCMA(CMAToken)
+	cmaClient.BaseURL = server.URL
 
-	_, err = cma.EditorInterfaces.Get(spaceID, "hfM9RCJIk0wIm06WkEOQY")
+	_, err = cmaClient.EditorInterfaces.Get(spaceID, "hfM9RCJIk0wIm06WkEOQY")
 	assertions.NotNil(err)
 	var notFoundError ErrorResponse
 	errors.As(err, &notFoundError)
@@ -124,16 +124,16 @@ func TestEditorInterfacesService_Update(t *testing.T) {
 	server := httptest.NewServer(handler)
 	defer server.Close()
 
-	// cma client
-	cma = NewCMA(CMAToken)
-	cma.BaseURL = server.URL
+	// cmaClient client
+	cmaClient = NewCMA(CMAToken)
+	cmaClient.BaseURL = server.URL
 
 	editorInterface, err := editorInterfaceFromTestFile("editor_interface_1.json")
 	assertions.Nil(err)
 
 	editorInterface.Controls[0].WidgetID = valueToPointer("changed id")
 
-	err = cma.EditorInterfaces.Update(spaceID, "hfM9RCJIk0wIm06WkEOQY", editorInterface)
+	err = cmaClient.EditorInterfaces.Update(spaceID, "hfM9RCJIk0wIm06WkEOQY", editorInterface)
 	assertions.Nil(err)
 	assertions.Equal("changed id", *editorInterface.Controls[0].WidgetID)
 }

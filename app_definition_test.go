@@ -28,11 +28,11 @@ func TestAppDefinitionsService_List(t *testing.T) {
 	server := httptest.NewServer(handler)
 	defer server.Close()
 
-	// cma client
-	cma = NewCMA(CMAToken)
-	cma.BaseURL = server.URL
+	// cmaClient client
+	cmaClient = NewCMA(CMAToken)
+	cmaClient.BaseURL = server.URL
 
-	collection, err := cma.AppDefinitions.List("organization_id").Next()
+	collection, err := cmaClient.AppDefinitions.List("organization_id").Next()
 	assertions.Nil(err)
 
 	definitions := collection.ToAppDefinition()
@@ -59,11 +59,11 @@ func TestAppDefinitionsService_Get(t *testing.T) {
 	server := httptest.NewServer(handler)
 	defer server.Close()
 
-	// cma client
-	cma = NewCMA(CMAToken)
-	cma.BaseURL = server.URL
+	// cmaClient client
+	cmaClient = NewCMA(CMAToken)
+	cmaClient.BaseURL = server.URL
 
-	definition, err := cma.AppDefinitions.Get("organization_id", "app_definition_id")
+	definition, err := cmaClient.AppDefinitions.Get("organization_id", "app_definition_id")
 	assertions.Nil(err)
 	assertions.Equal("app_definition_id", definition.Sys.ID)
 	assertions.Equal("Hello world!", definition.Name)
@@ -87,11 +87,11 @@ func TestAppDefinitionsService_Get_2(t *testing.T) {
 	server := httptest.NewServer(handler)
 	defer server.Close()
 
-	// cma client
-	cma = NewCMA(CMAToken)
-	cma.BaseURL = server.URL
+	// cmaClient client
+	cmaClient = NewCMA(CMAToken)
+	cmaClient.BaseURL = server.URL
 
-	_, err = cma.AppDefinitions.Get("organization_id", "app_definition_id")
+	_, err = cmaClient.AppDefinitions.Get("organization_id", "app_definition_id")
 	assertions.NotNil(err)
 	var contentfulError ErrorResponse
 	assertions.True(errors.As(err, &contentfulError))
@@ -115,11 +115,11 @@ func TestAppDefinitionsService_Get_3(t *testing.T) {
 	server := httptest.NewServer(handler)
 	defer server.Close()
 
-	// cma client
-	cma = NewCMA(CMAToken)
-	cma.BaseURL = server.URL
+	// cmaClient client
+	cmaClient = NewCMA(CMAToken)
+	cmaClient.BaseURL = server.URL
 
-	_, err = cma.AppDefinitions.Get("organization_id", "app_definition_id")
+	_, err = cmaClient.AppDefinitions.Get("organization_id", "app_definition_id")
 	assertions.NotNil(err)
 	var contentfulError NotFoundError
 	assertions.True(errors.As(err, &contentfulError))
@@ -147,9 +147,9 @@ func TestAppDefinitionsService_Upsert_Create(t *testing.T) {
 	server := httptest.NewServer(handler)
 	defer server.Close()
 
-	// cma client
-	cma = NewCMA(CMAToken)
-	cma.BaseURL = server.URL
+	// cmaClient client
+	cmaClient = NewCMA(CMAToken)
+	cmaClient.BaseURL = server.URL
 
 	src := "https://example.com/app.html"
 
@@ -163,7 +163,7 @@ func TestAppDefinitionsService_Upsert_Create(t *testing.T) {
 		},
 	}
 
-	err := cma.AppDefinitions.Upsert("organization_id", definition)
+	err := cmaClient.AppDefinitions.Upsert("organization_id", definition)
 	assertions.Nil(err)
 	assertions.Equal("app_definition_id", definition.Sys.ID)
 	assertions.Equal("Hello world!", definition.Name)
@@ -191,9 +191,9 @@ func TestAppDefinitionsService_Upsert_Create_Error(t *testing.T) {
 	server := httptest.NewServer(handler)
 	defer server.Close()
 
-	// cma client
-	cma = NewCMA(CMAToken)
-	cma.BaseURL = server.URL
+	// cmaClient client
+	cmaClient = NewCMA(CMAToken)
+	cmaClient.BaseURL = server.URL
 
 	src := "https://example.com/app.html"
 
@@ -207,7 +207,7 @@ func TestAppDefinitionsService_Upsert_Create_Error(t *testing.T) {
 		},
 	}
 
-	err := cma.AppDefinitions.Upsert("organization_id", definition)
+	err := cmaClient.AppDefinitions.Upsert("organization_id", definition)
 	assertions.NotNil(err)
 	var contentfulError ValidationFailedError
 	assertions.True(errors.As(err, &contentfulError))
@@ -242,9 +242,9 @@ func TestAppDefinitionsService_Upsert_Update(t *testing.T) {
 	server := httptest.NewServer(handler)
 	defer server.Close()
 
-	// cma client
-	cma = NewCMA(CMAToken)
-	cma.BaseURL = server.URL
+	// cmaClient client
+	cmaClient = NewCMA(CMAToken)
+	cmaClient.BaseURL = server.URL
 
 	definition, err := appDefinitionFromTestFile("app_definition_1.json")
 	assertions.Nil(err)
@@ -254,7 +254,7 @@ func TestAppDefinitionsService_Upsert_Update(t *testing.T) {
 	definition.Name = "Hello Pluto"
 	definition.SRC = &src
 
-	err = cma.AppDefinitions.Upsert("organization_id", definition)
+	err = cmaClient.AppDefinitions.Upsert("organization_id", definition)
 	assertions.Nil(err)
 	assertions.Equal("Hello Pluto", definition.Name)
 	assertions.Equal("https://example.com/hellopluto.html", *definition.SRC)
@@ -276,13 +276,13 @@ func TestAppDefinitionsService_Delete(t *testing.T) {
 	server := httptest.NewServer(handler)
 	defer server.Close()
 
-	// cma client
-	cma = NewCMA(CMAToken)
-	cma.BaseURL = server.URL
+	// cmaClient client
+	cmaClient = NewCMA(CMAToken)
+	cmaClient.BaseURL = server.URL
 
 	definition, err := appDefinitionFromTestFile("app_definition_1.json")
 	assertions.Nil(err)
 
-	err = cma.AppDefinitions.Delete("organization_id", definition.Sys.ID)
+	err = cmaClient.AppDefinitions.Delete("organization_id", definition.Sys.ID)
 	assertions.Nil(err)
 }

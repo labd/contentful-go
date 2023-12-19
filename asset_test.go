@@ -28,11 +28,11 @@ func TestAssetsService_List(t *testing.T) {
 	server := httptest.NewServer(handler)
 	defer server.Close()
 
-	// cma client
-	cma = NewCMA(CMAToken)
-	cma.BaseURL = server.URL
+	// cmaClient client
+	cmaClient = NewCMA(CMAToken)
+	cmaClient.BaseURL = server.URL
 
-	collection, err := cma.Assets.List(spaceID).Next()
+	collection, err := cmaClient.Assets.List(spaceID).Next()
 	assertions.Nil(err)
 	asset := collection.ToAsset()
 	assertions.Equal(3, len(asset))
@@ -57,11 +57,11 @@ func TestAssetsService_ListPublished(t *testing.T) {
 	server := httptest.NewServer(handler)
 	defer server.Close()
 
-	// cma client
-	cma = NewCMA(CMAToken)
-	cma.BaseURL = server.URL
+	// cmaClient client
+	cmaClient = NewCMA(CMAToken)
+	cmaClient.BaseURL = server.URL
 
-	collection, err := cma.Assets.ListPublished(spaceID).Next()
+	collection, err := cmaClient.Assets.ListPublished(spaceID).Next()
 	assertions.Nil(err)
 	asset := collection.ToAsset()
 	assertions.Equal(3, len(asset))
@@ -86,11 +86,11 @@ func TestAssetsService_Get(t *testing.T) {
 	server := httptest.NewServer(handler)
 	defer server.Close()
 
-	// cma client
-	cma = NewCMA(CMAToken)
-	cma.BaseURL = server.URL
+	// cmaClient client
+	cmaClient = NewCMA(CMAToken)
+	cmaClient.BaseURL = server.URL
 
-	asset, err := cma.Assets.Get(spaceID, "1x0xpXu4pSGS4OukSyWGUK")
+	asset, err := cmaClient.Assets.Get(spaceID, "1x0xpXu4pSGS4OukSyWGUK")
 	assertions.Nil(err)
 	assertions.Equal("hehehe", asset.Fields.Title["en-US"])
 }
@@ -113,11 +113,11 @@ func TestAssetsService_Get_2(t *testing.T) {
 	server := httptest.NewServer(handler)
 	defer server.Close()
 
-	// cma client
-	cma = NewCMA(CMAToken)
-	cma.BaseURL = server.URL
+	// cmaClient client
+	cmaClient = NewCMA(CMAToken)
+	cmaClient.BaseURL = server.URL
 
-	_, err = cma.Assets.Get(spaceID, "1x0xpXu4pSGS4OukSyWGUK")
+	_, err = cmaClient.Assets.Get(spaceID, "1x0xpXu4pSGS4OukSyWGUK")
 	assertions.NotNil(err)
 }
 
@@ -144,9 +144,9 @@ func TestAssetsService_Upsert_Create(t *testing.T) {
 	server := httptest.NewServer(handler)
 	defer server.Close()
 
-	// cma client
-	cma = NewCMA(CMAToken)
-	cma.BaseURL = server.URL
+	// cmaClient client
+	cmaClient = NewCMA(CMAToken)
+	cmaClient.BaseURL = server.URL
 
 	asset := &Asset{
 		Locale: "en-US",
@@ -177,7 +177,7 @@ func TestAssetsService_Upsert_Create(t *testing.T) {
 		},
 	}
 
-	err := cma.Assets.Upsert(spaceID, asset)
+	err := cmaClient.Assets.Upsert(spaceID, asset)
 	assertions.Nil(err)
 	assertions.Equal("hehehe", asset.Fields.Title["en-US"])
 	assertions.Equal("d3b8dad44e5066cfb805e2357469ee64.png", asset.Fields.File["en-US"].FileName)
@@ -209,9 +209,9 @@ func TestAssetsService_Upsert_Update(t *testing.T) {
 	server := httptest.NewServer(handler)
 	defer server.Close()
 
-	// cma client
-	cma = NewCMA(CMAToken)
-	cma.BaseURL = server.URL
+	// cmaClient client
+	cmaClient = NewCMA(CMAToken)
+	cmaClient.BaseURL = server.URL
 
 	asset, err := assetFromTestData("asset_1.json")
 	assertions.Nil(err)
@@ -219,7 +219,7 @@ func TestAssetsService_Upsert_Update(t *testing.T) {
 	asset.Fields.Title["en-US"] = "updated"
 	asset.Fields.Description["en-US"] = "also updated"
 
-	err = cma.Assets.Upsert(spaceID, asset)
+	err = cmaClient.Assets.Upsert(spaceID, asset)
 	assertions.Nil(err)
 	assertions.Equal("updated", asset.Fields.Title["en-US"])
 	assertions.Equal("also updated", asset.Fields.Description["en-US"])
@@ -241,16 +241,16 @@ func TestAssetsService_Delete(t *testing.T) {
 	server := httptest.NewServer(handler)
 	defer server.Close()
 
-	// cma client
-	cma = NewCMA(CMAToken)
-	cma.BaseURL = server.URL
+	// cmaClient client
+	cmaClient = NewCMA(CMAToken)
+	cmaClient.BaseURL = server.URL
 
 	// test asset
 	asset, err := assetFromTestData("asset_1.json")
 	assertions.Nil(err)
 
 	// delete locale
-	err = cma.Assets.Delete(spaceID, asset)
+	err = cmaClient.Assets.Delete(spaceID, asset)
 	assertions.Nil(err)
 }
 
@@ -272,15 +272,15 @@ func TestAssetsService_Process(t *testing.T) {
 	server := httptest.NewServer(handler)
 	defer server.Close()
 
-	// cma client
-	cma = NewCMA(CMAToken)
-	cma.BaseURL = server.URL
+	// cmaClient client
+	cmaClient = NewCMA(CMAToken)
+	cmaClient.BaseURL = server.URL
 
 	// test asset
 	asset, err := assetFromTestData("asset_1.json")
 	assertions.Nil(err)
 
-	err = cma.Assets.Process(spaceID, asset)
+	err = cmaClient.Assets.Process(spaceID, asset)
 	assertions.Nil(err)
 }
 
@@ -302,15 +302,15 @@ func TestAssetsService_Publish(t *testing.T) {
 	server := httptest.NewServer(handler)
 	defer server.Close()
 
-	// cma client
-	cma = NewCMA(CMAToken)
-	cma.BaseURL = server.URL
+	// cmaClient client
+	cmaClient = NewCMA(CMAToken)
+	cmaClient.BaseURL = server.URL
 
 	// test asset
 	asset, err := assetFromTestData("asset_1.json")
 	assertions.Nil(err)
 
-	err = cma.Assets.Publish(spaceID, asset)
+	err = cmaClient.Assets.Publish(spaceID, asset)
 	assertions.Nil(err)
 }
 
@@ -332,15 +332,15 @@ func TestContentTypesService_Unpublish(t *testing.T) {
 	server := httptest.NewServer(handler)
 	defer server.Close()
 
-	// cma client
-	cma = NewCMA(CMAToken)
-	cma.BaseURL = server.URL
+	// cmaClient client
+	cmaClient = NewCMA(CMAToken)
+	cmaClient.BaseURL = server.URL
 
 	// test asset
 	asset, err := assetFromTestData("asset_1.json")
 	assertions.Nil(err)
 
-	err = cma.Assets.Unpublish(spaceID, asset)
+	err = cmaClient.Assets.Unpublish(spaceID, asset)
 	assertions.Nil(err)
 }
 
@@ -362,15 +362,15 @@ func TestAssetsService_Archive(t *testing.T) {
 	server := httptest.NewServer(handler)
 	defer server.Close()
 
-	// cma client
-	cma = NewCMA(CMAToken)
-	cma.BaseURL = server.URL
+	// cmaClient client
+	cmaClient = NewCMA(CMAToken)
+	cmaClient.BaseURL = server.URL
 
 	// test asset
 	asset, err := assetFromTestData("asset_1.json")
 	assertions.Nil(err)
 
-	err = cma.Assets.Archive(spaceID, asset)
+	err = cmaClient.Assets.Archive(spaceID, asset)
 	assertions.Nil(err)
 }
 
@@ -392,14 +392,14 @@ func TestContentTypesService_Unarchive(t *testing.T) {
 	server := httptest.NewServer(handler)
 	defer server.Close()
 
-	// cma client
-	cma = NewCMA(CMAToken)
-	cma.BaseURL = server.URL
+	// cmaClient client
+	cmaClient = NewCMA(CMAToken)
+	cmaClient.BaseURL = server.URL
 
 	// test asset
 	asset, err := assetFromTestData("asset_1.json")
 	assertions.Nil(err)
 
-	err = cma.Assets.Unarchive(spaceID, asset)
+	err = cmaClient.Assets.Unarchive(spaceID, asset)
 	assertions.Nil(err)
 }

@@ -29,11 +29,11 @@ func TestExtensionsService_List(t *testing.T) {
 	server := httptest.NewServer(handler)
 	defer server.Close()
 
-	// cma client
-	cma = NewCMA(CMAToken)
-	cma.BaseURL = server.URL
+	// cmaClient client
+	cmaClient = NewCMA(CMAToken)
+	cmaClient.BaseURL = server.URL
 
-	collection, err := cma.Extensions.List(spaceID).Next()
+	collection, err := cmaClient.Extensions.List(spaceID).Next()
 	assertions.Nil(err)
 
 	extensions := collection.ToExtension()
@@ -60,11 +60,11 @@ func TestExtensionsService_Get(t *testing.T) {
 	server := httptest.NewServer(handler)
 	defer server.Close()
 
-	// cma client
-	cma = NewCMA(CMAToken)
-	cma.BaseURL = server.URL
+	// cmaClient client
+	cmaClient = NewCMA(CMAToken)
+	cmaClient.BaseURL = server.URL
 
-	extension, err := cma.Extensions.Get(spaceID, "0xvkPW9FdQ1kkWlWZ8ga4x")
+	extension, err := cmaClient.Extensions.Get(spaceID, "0xvkPW9FdQ1kkWlWZ8ga4x")
 	assertions.Nil(err)
 	assertions.Equal("0xvkPW9FdQ1kkWlWZ8ga4x", extension.Sys.ID)
 }
@@ -87,11 +87,11 @@ func TestExtensionsService_Get_2(t *testing.T) {
 	server := httptest.NewServer(handler)
 	defer server.Close()
 
-	// cma client
-	cma = NewCMA(CMAToken)
-	cma.BaseURL = server.URL
+	// cmaClient client
+	cmaClient = NewCMA(CMAToken)
+	cmaClient.BaseURL = server.URL
 
-	_, err = cma.Extensions.Get(spaceID, "0xvkPW9FdQ1kkWlWZ8ga4x")
+	_, err = cmaClient.Extensions.Get(spaceID, "0xvkPW9FdQ1kkWlWZ8ga4x")
 	assertions.NotNil(err)
 	var contentfulError ErrorResponse
 	assertions.True(errors.As(err, &contentfulError))
@@ -120,9 +120,9 @@ func TestExtensionsService_Upsert_Create(t *testing.T) {
 	server := httptest.NewServer(handler)
 	defer server.Close()
 
-	// cma client
-	cma = NewCMA(CMAToken)
-	cma.BaseURL = server.URL
+	// cmaClient client
+	cmaClient = NewCMA(CMAToken)
+	cmaClient.BaseURL = server.URL
 
 	extension := &Extension{
 		Extension: ExtensionDetails{
@@ -140,7 +140,7 @@ func TestExtensionsService_Upsert_Create(t *testing.T) {
 		},
 	}
 
-	err := cma.Extensions.Upsert(spaceID, extension)
+	err := cmaClient.Extensions.Upsert(spaceID, extension)
 	assertions.Nil(err)
 	assertions.Equal("https://example.com/my", extension.Extension.SRC)
 	assertions.Equal("My awesome extension", extension.Extension.Name)
@@ -170,16 +170,16 @@ func TestExtensionsService_Upsert_Update(t *testing.T) {
 	server := httptest.NewServer(handler)
 	defer server.Close()
 
-	// cma client
-	cma = NewCMA(CMAToken)
-	cma.BaseURL = server.URL
+	// cmaClient client
+	cmaClient = NewCMA(CMAToken)
+	cmaClient.BaseURL = server.URL
 
 	extension, err := extensionFromTestFile("extension_1.json")
 	assertions.Nil(err)
 
 	extension.Extension.Name = "The updated extension"
 
-	err = cma.Extensions.Upsert(spaceID, extension)
+	err = cmaClient.Extensions.Upsert(spaceID, extension)
 	assertions.Nil(err)
 	assertions.Equal("The updated extension", extension.Extension.Name)
 }
@@ -200,13 +200,13 @@ func TestExtensionsService_Delete(t *testing.T) {
 	server := httptest.NewServer(handler)
 	defer server.Close()
 
-	// cma client
-	cma = NewCMA(CMAToken)
-	cma.BaseURL = server.URL
+	// cmaClient client
+	cmaClient = NewCMA(CMAToken)
+	cmaClient.BaseURL = server.URL
 
 	extension, err := extensionFromTestFile("extension_1.json")
 	assertions.Nil(err)
 
-	err = cma.Extensions.Delete(spaceID, extension.Sys.ID)
+	err = cmaClient.Extensions.Delete(spaceID, extension.Sys.ID)
 	assertions.Nil(err)
 }

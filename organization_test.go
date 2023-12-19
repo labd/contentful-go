@@ -27,11 +27,11 @@ func TestOrganizationsService_List(t *testing.T) {
 	server := httptest.NewServer(handler)
 	defer server.Close()
 
-	// cma client
-	cma = NewCMA(CMAToken)
-	cma.BaseURL = server.URL
+	// cmaClient client
+	cmaClient = NewCMA(CMAToken)
+	cmaClient.BaseURL = server.URL
 
-	collection, err := cma.Organizations.List().Next()
+	collection, err := cmaClient.Organizations.List().Next()
 	assertions.Nil(err)
 	organization := collection.ToOrganization()
 	assertions.Equal(1, len(organization))

@@ -12,7 +12,7 @@ import (
 )
 
 func ExampleContentTypesService_Get() {
-	cma := NewCMA("cma-token")
+	cma := NewCMA("cmaClient-token")
 
 	contentType, err := cma.ContentTypes.Get("space-id", "content-type-id")
 	if err != nil {
@@ -23,9 +23,9 @@ func ExampleContentTypesService_Get() {
 }
 
 func ExampleContentTypesService_List() {
-	cma := NewCMA("cma-token")
+	cmaClient := NewCMA("cmaClient-token")
 
-	collection, err := cma.ContentTypes.List("space-id").Next()
+	collection, err := cmaClient.ContentTypes.List("space-id").Next()
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -38,7 +38,7 @@ func ExampleContentTypesService_List() {
 }
 
 func ExampleContentTypesService_Upsert_create() {
-	cma := NewCMA("cma-token")
+	cma := NewCMA("cmaClient-token")
 
 	ct, _ := contentTypeFromTestData("content_type.json")
 
@@ -49,7 +49,7 @@ func ExampleContentTypesService_Upsert_create() {
 }
 
 func ExampleContentTypesService_Upsert_create_with_environment() {
-	cma := NewCMA("cma-token")
+	cma := NewCMA("cmaClient-token")
 	env, _ := environmentFromTestData("environment_1.json")
 	ct, _ := contentTypeFromTestData("content_type.json")
 
@@ -60,7 +60,7 @@ func ExampleContentTypesService_Upsert_create_with_environment() {
 }
 
 func ExampleContentTypesService_Upsert_update() {
-	cma := NewCMA("cma-token")
+	cma := NewCMA("cmaClient-token")
 
 	contentType, err := cma.ContentTypes.Get("space-id", "content-type-id")
 	if err != nil {
@@ -76,7 +76,7 @@ func ExampleContentTypesService_Upsert_update() {
 }
 
 func ExampleContentTypesService_Upsert_update_with_environment() {
-	cma := NewCMA("cma-token")
+	cma := NewCMA("cmaClient-token")
 	env, _ := environmentFromTestData("environment_1.json")
 
 	contentType, err := cma.ContentTypes.Get("space-id", "content-type-id")
@@ -93,7 +93,7 @@ func ExampleContentTypesService_Upsert_update_with_environment() {
 }
 
 func ExampleContentTypesService_Activate() {
-	cma := NewCMA("cma-token")
+	cma := NewCMA("cmaClient-token")
 
 	contentType, err := cma.ContentTypes.Get("space-id", "content-type-id")
 	if err != nil {
@@ -107,7 +107,7 @@ func ExampleContentTypesService_Activate() {
 }
 
 func ExampleContentTypesService_Activate_with_environment() {
-	cma := NewCMA("cma-token")
+	cma := NewCMA("cmaClient-token")
 
 	env, _ := environmentFromTestData("environment_1.json")
 
@@ -123,7 +123,7 @@ func ExampleContentTypesService_Activate_with_environment() {
 }
 
 func ExampleContentTypesService_Deactivate() {
-	cma := NewCMA("cma-token")
+	cma := NewCMA("cmaClient-token")
 
 	contentType, err := cma.ContentTypes.Get("space-id", "content-type-id")
 	if err != nil {
@@ -137,7 +137,7 @@ func ExampleContentTypesService_Deactivate() {
 }
 
 func ExampleContentTypesService_Deactivate_with_environment() {
-	cma := NewCMA("cma-token")
+	cma := NewCMA("cmaClient-token")
 
 	env, _ := environmentFromTestData("environment_1.json")
 
@@ -153,7 +153,7 @@ func ExampleContentTypesService_Deactivate_with_environment() {
 }
 
 func ExampleContentTypesService_Delete() {
-	cma := NewCMA("cma-token")
+	cma := NewCMA("cmaClient-token")
 
 	contentType, err := cma.ContentTypes.Get("space-id", "content-type-id")
 	if err != nil {
@@ -167,7 +167,7 @@ func ExampleContentTypesService_Delete() {
 }
 
 func ExampleContentTypesService_Delete_with_environment() {
-	cma := NewCMA("cma-token")
+	cma := NewCMA("cmaClient-token")
 
 	env, _ := environmentFromTestData("environment_1.json")
 
@@ -183,7 +183,7 @@ func ExampleContentTypesService_Delete_with_environment() {
 }
 
 func ExampleContentTypesService_Delete_all_drafts() {
-	cma := NewCMA("cma-token")
+	cma := NewCMA("cmaClient-token")
 
 	collection, err := cma.ContentTypes.List("space-id").Next()
 	if err != nil {
@@ -220,11 +220,11 @@ func TestContentTypesService_List(t *testing.T) {
 	server := httptest.NewServer(handler)
 	defer server.Close()
 
-	// cma client
-	cma = NewCMA(CMAToken)
-	cma.BaseURL = server.URL
+	// cmaClient client
+	cmaClient = NewCMA(CMAToken)
+	cmaClient.BaseURL = server.URL
 
-	collection, err := cma.ContentTypes.List(spaceID).Next()
+	collection, err := cmaClient.ContentTypes.List(spaceID).Next()
 	assertions.Nil(err)
 	contentType := collection.ToContentType()
 	assertions.Equal(4, len(contentType))
@@ -249,11 +249,11 @@ func TestContentTypesService_ListActivated(t *testing.T) {
 	server := httptest.NewServer(handler)
 	defer server.Close()
 
-	// cma client
-	cma = NewCMA(CMAToken)
-	cma.BaseURL = server.URL
+	// cmaClient client
+	cmaClient = NewCMA(CMAToken)
+	cmaClient.BaseURL = server.URL
 
-	_, err = cma.ContentTypes.ListActivated(spaceID).Next()
+	_, err = cmaClient.ContentTypes.ListActivated(spaceID).Next()
 	assertions.Nil(err)
 }
 
@@ -275,11 +275,11 @@ func TestContentTypesService_Get(t *testing.T) {
 	server := httptest.NewServer(handler)
 	defer server.Close()
 
-	// cma client
-	cma = NewCMA(CMAToken)
-	cma.BaseURL = server.URL
+	// cmaClient client
+	cmaClient = NewCMA(CMAToken)
+	cmaClient.BaseURL = server.URL
 
-	contentType, err := cma.ContentTypes.Get(spaceID, "63Vgs0BFK0USe4i2mQUGK6")
+	contentType, err := cmaClient.ContentTypes.Get(spaceID, "63Vgs0BFK0USe4i2mQUGK6")
 	assertions.Nil(err)
 	assertions.Equal("63Vgs0BFK0USe4i2mQUGK6", contentType.Sys.ID)
 }
@@ -305,15 +305,15 @@ func TestContentTypesService_GetFromEnv(t *testing.T) {
 	server := httptest.NewServer(handler)
 	defer server.Close()
 
-	// cma client
-	cma = NewCMA(CMAToken)
-	cma.BaseURL = server.URL
+	// cmaClient client
+	cmaClient = NewCMA(CMAToken)
+	cmaClient.BaseURL = server.URL
 
 	// test content type
 	ct, err := contentTypeFromTestData("content_type.json")
 	assertions.Nil(err)
 
-	contentType, err := cma.ContentTypes.GetWithEnv(env, ct.Sys.ID)
+	contentType, err := cmaClient.ContentTypes.GetWithEnv(env, ct.Sys.ID)
 	assertions.Nil(err)
 	assertions.Equal("63Vgs0BFK0USe4i2mQUGK6", contentType.Sys.ID)
 }
@@ -336,11 +336,11 @@ func TestContentTypesService_Get_2(t *testing.T) {
 	server := httptest.NewServer(handler)
 	defer server.Close()
 
-	// cma client
-	cma = NewCMA(CMAToken)
-	cma.BaseURL = server.URL
+	// cmaClient client
+	cmaClient = NewCMA(CMAToken)
+	cmaClient.BaseURL = server.URL
 
-	_, err = cma.ContentTypes.Get(spaceID, "63Vgs0BFK0USe4i2mQUGK6")
+	_, err = cmaClient.ContentTypes.Get(spaceID, "63Vgs0BFK0USe4i2mQUGK6")
 	assertions.NotNil(err)
 }
 
@@ -362,15 +362,15 @@ func TestContentTypesService_Activate(t *testing.T) {
 	server := httptest.NewServer(handler)
 	defer server.Close()
 
-	// cma client
-	cma = NewCMA(CMAToken)
-	cma.BaseURL = server.URL
+	// cmaClient client
+	cmaClient = NewCMA(CMAToken)
+	cmaClient.BaseURL = server.URL
 
 	// test content type
 	ct, err := contentTypeFromTestData("content_type.json")
 	assertions.Nil(err)
 
-	err = cma.ContentTypes.Activate(spaceID, ct)
+	err = cmaClient.ContentTypes.Activate(spaceID, ct)
 	assertions.Nil(err)
 }
 
@@ -395,15 +395,15 @@ func TestContentTypesService_Activate_with_env(t *testing.T) {
 	server := httptest.NewServer(handler)
 	defer server.Close()
 
-	// cma client
-	cma = NewCMA(CMAToken)
-	cma.BaseURL = server.URL
+	// cmaClient client
+	cmaClient = NewCMA(CMAToken)
+	cmaClient.BaseURL = server.URL
 
 	// test content type
 	ct, err := contentTypeFromTestData("content_type.json")
 	assertions.Nil(err)
 
-	err = cma.ContentTypes.ActivateWithEnv(env, ct)
+	err = cmaClient.ContentTypes.ActivateWithEnv(env, ct)
 	assertions.Nil(err)
 }
 
@@ -425,15 +425,15 @@ func TestContentTypesService_Deactivate(t *testing.T) {
 	server := httptest.NewServer(handler)
 	defer server.Close()
 
-	// cma client
-	cma = NewCMA(CMAToken)
-	cma.BaseURL = server.URL
+	// cmaClient client
+	cmaClient = NewCMA(CMAToken)
+	cmaClient.BaseURL = server.URL
 
 	// test content type
 	ct, err := contentTypeFromTestData("content_type.json")
 	assertions.Nil(err)
 
-	err = cma.ContentTypes.Deactivate(spaceID, ct)
+	err = cmaClient.ContentTypes.Deactivate(spaceID, ct)
 	assertions.Nil(err)
 }
 
@@ -458,15 +458,15 @@ func TestContentTypesService_Deactivate_with_env(t *testing.T) {
 	server := httptest.NewServer(handler)
 	defer server.Close()
 
-	// cma client
-	cma = NewCMA(CMAToken)
-	cma.BaseURL = server.URL
+	// cmaClient client
+	cmaClient = NewCMA(CMAToken)
+	cmaClient.BaseURL = server.URL
 
 	// test content type
 	ct, err := contentTypeFromTestData("content_type.json")
 	assertions.Nil(err)
 
-	err = cma.ContentTypes.DeactivateWithEnv(env, ct)
+	err = cmaClient.ContentTypes.DeactivateWithEnv(env, ct)
 	assertions.Nil(err)
 }
 
@@ -510,9 +510,9 @@ func TestContentTypeSaveForCreate(t *testing.T) {
 	server := httptest.NewServer(handler)
 	defer server.Close()
 
-	// cma client
-	cma = NewCMA(CMAToken)
-	cma.BaseURL = server.URL
+	// cmaClient client
+	cmaClient = NewCMA(CMAToken)
+	cmaClient.BaseURL = server.URL
 
 	field1 := &Field{
 		ID:       "field1",
@@ -535,7 +535,7 @@ func TestContentTypeSaveForCreate(t *testing.T) {
 		DisplayField: field1.ID,
 	}
 
-	err = cma.ContentTypes.Upsert("id1", ct)
+	err = cmaClient.ContentTypes.Upsert("id1", ct)
 	assertions.Nil(err)
 	assertions.Equal("63Vgs0BFK0USe4i2mQUGK6", ct.Sys.ID)
 	assertions.Equal("ct-name", ct.Name)
@@ -587,9 +587,9 @@ func TestContentTypeSaveForUpdate(t *testing.T) {
 	server := httptest.NewServer(handler)
 	defer server.Close()
 
-	// cma client
-	cma = NewCMA(CMAToken)
-	cma.BaseURL = server.URL
+	// cmaClient client
+	cmaClient = NewCMA(CMAToken)
+	cmaClient.BaseURL = server.URL
 
 	// test content type
 	ct, err := contentTypeFromTestData("content_type.json")
@@ -617,7 +617,7 @@ func TestContentTypeSaveForUpdate(t *testing.T) {
 	ct.Fields = append(ct.Fields, field3)
 	ct.DisplayField = ct.Fields[2].ID
 
-	_ = cma.ContentTypes.Upsert("id1", ct)
+	_ = cmaClient.ContentTypes.Upsert("id1", ct)
 	assertions.Nil(err)
 	assertions.Equal("63Vgs0BFK0USe4i2mQUGK6", ct.Sys.ID)
 	assertions.Equal("ct-name-updated", ct.Name)
@@ -642,9 +642,9 @@ func TestContentTypeCreateWithID(t *testing.T) {
 	server := httptest.NewServer(handler)
 	defer server.Close()
 
-	// cma client
-	cma = NewCMA(CMAToken)
-	cma.BaseURL = server.URL
+	// cmaClient client
+	cmaClient = NewCMA(CMAToken)
+	cmaClient.BaseURL = server.URL
 
 	// test content type
 	ct := &ContentType{
@@ -654,7 +654,7 @@ func TestContentTypeCreateWithID(t *testing.T) {
 		Name: "MyContentType",
 	}
 
-	_ = cma.ContentTypes.Upsert("id1", ct)
+	_ = cmaClient.ContentTypes.Upsert("id1", ct)
 	assertions.Nil(err)
 }
 
@@ -674,16 +674,16 @@ func TestContentTypeDelete(t *testing.T) {
 	server := httptest.NewServer(handler)
 	defer server.Close()
 
-	// cma client
-	cma = NewCMA(CMAToken)
-	cma.BaseURL = server.URL
+	// cmaClient client
+	cmaClient = NewCMA(CMAToken)
+	cmaClient.BaseURL = server.URL
 
 	// test content type
 	ct, err := contentTypeFromTestData("content_type.json")
 	assertions.Nil(err)
 
 	// delete content type
-	err = cma.ContentTypes.Delete("id1", ct)
+	err = cmaClient.ContentTypes.Delete("id1", ct)
 	assertions.Nil(err)
 }
 
@@ -708,15 +708,15 @@ func TestContentTypesServiceDeleteFromEnv(t *testing.T) {
 	server := httptest.NewServer(handler)
 	defer server.Close()
 
-	// cma client
-	cma = NewCMA(CMAToken)
-	cma.BaseURL = server.URL
+	// cmaClient client
+	cmaClient = NewCMA(CMAToken)
+	cmaClient.BaseURL = server.URL
 
 	// test content type
 	ct, err := contentTypeFromTestData("content_type.json")
 	assertions.Nil(err)
 
-	err = cma.ContentTypes.DeleteWithEnv(env, ct)
+	err = cmaClient.ContentTypes.DeleteWithEnv(env, ct)
 	assertions.Nil(err)
 }
 
@@ -753,9 +753,9 @@ func TestContentTypeFieldRef(t *testing.T) {
 	server := httptest.NewServer(handler)
 	defer server.Close()
 
-	// cma client
-	cma = NewCMA(CMAToken)
-	cma.BaseURL = server.URL
+	// cmaClient client
+	cmaClient = NewCMA(CMAToken)
+	cmaClient.BaseURL = server.URL
 
 	// test content type
 	linkCt, err := contentTypeFromTestData("content_type.json")
@@ -779,7 +779,7 @@ func TestContentTypeFieldRef(t *testing.T) {
 		DisplayField: field1.ID,
 	}
 
-	err = cma.ContentTypes.Upsert("id1", ct)
+	err = cmaClient.ContentTypes.Upsert("id1", ct)
 	assertions.Nil(err)
 }
 
@@ -817,9 +817,9 @@ func TestContentTypeFieldArray(t *testing.T) {
 	server := httptest.NewServer(handler)
 	defer server.Close()
 
-	// cma client
-	cma = NewCMA(CMAToken)
-	cma.BaseURL = server.URL
+	// cmaClient client
+	cmaClient = NewCMA(CMAToken)
+	cmaClient.BaseURL = server.URL
 
 	field1 := &Field{
 		ID:   "field1",
@@ -842,7 +842,7 @@ func TestContentTypeFieldArray(t *testing.T) {
 		DisplayField: field1.ID,
 	}
 
-	err = cma.ContentTypes.Upsert("id1", ct)
+	err = cmaClient.ContentTypes.Upsert("id1", ct)
 	assertions.Nil(err)
 }
 
@@ -896,9 +896,9 @@ func TestContentTypeFieldValidationRangeUniquePredefinedValues(t *testing.T) {
 	server := httptest.NewServer(handler)
 	defer server.Close()
 
-	// cma client
-	cma = NewCMA(CMAToken)
-	cma.BaseURL = server.URL
+	// cmaClient client
+	cmaClient = NewCMA(CMAToken)
+	cmaClient.BaseURL = server.URL
 
 	field1 := &Field{
 		ID:   "field1",
@@ -929,7 +929,7 @@ func TestContentTypeFieldValidationRangeUniquePredefinedValues(t *testing.T) {
 		DisplayField: field1.ID,
 	}
 
-	err = cma.ContentTypes.Upsert("id1", ct)
+	err = cmaClient.ContentTypes.Upsert("id1", ct)
 	assertions.Nil(err)
 }
 
@@ -1013,9 +1013,9 @@ func TestContentTypeFieldTypeMedia(t *testing.T) {
 	server := httptest.NewServer(handler)
 	defer server.Close()
 
-	// cma client
-	cma = NewCMA(CMAToken)
-	cma.BaseURL = server.URL
+	// cmaClient client
+	cmaClient = NewCMA(CMAToken)
+	cmaClient.BaseURL = server.URL
 
 	field1 := &Field{
 		ID:       "field-id",
@@ -1064,7 +1064,7 @@ func TestContentTypeFieldTypeMedia(t *testing.T) {
 		DisplayField: field1.ID,
 	}
 
-	err = cma.ContentTypes.Upsert("id1", ct)
+	err = cmaClient.ContentTypes.Upsert("id1", ct)
 	assertions.Nil(err)
 }
 
@@ -1080,10 +1080,10 @@ func TestContentTypeFieldValidationsUnmarshal(t *testing.T) {
 	server := httptest.NewServer(handler)
 	defer server.Close()
 
-	cma = NewCMA(CMAToken)
-	cma.BaseURL = server.URL
+	cmaClient = NewCMA(CMAToken)
+	cmaClient.BaseURL = server.URL
 
-	ct, err := cma.ContentTypes.Get(spaceID, "validationsTest")
+	ct, err := cmaClient.ContentTypes.Get(spaceID, "validationsTest")
 	assertions.Nil(err)
 
 	var uniqueValidations []FieldValidation

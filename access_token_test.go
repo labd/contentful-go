@@ -29,11 +29,11 @@ func TestAccessTokensServiceList(t *testing.T) {
 	server := httptest.NewServer(handler)
 	defer server.Close()
 
-	// cma client
-	cma = NewCMA(CMAToken)
-	cma.BaseURL = server.URL
+	// cmaClient client
+	cmaClient = NewCMA(CMAToken)
+	cmaClient.BaseURL = server.URL
 
-	collection, err := cma.AccessTokens.List().Next()
+	collection, err := cmaClient.AccessTokens.List().Next()
 	assertions.Nil(err)
 	keys := collection.ToAccessToken()
 	assertions.Equal(2, len(keys))
@@ -58,11 +58,11 @@ func TestAccessTokensServiceGet(t *testing.T) {
 	server := httptest.NewServer(handler)
 	defer server.Close()
 
-	// cma client
-	cma = NewCMA(CMAToken)
-	cma.BaseURL = server.URL
+	// cmaClient client
+	cmaClient = NewCMA(CMAToken)
+	cmaClient.BaseURL = server.URL
 
-	key, err := cma.AccessTokens.Get("hioj6879UYGIfyt654tyfFHG")
+	key, err := cmaClient.AccessTokens.Get("hioj6879UYGIfyt654tyfFHG")
 	assertions.Nil(err)
 	assertions.Equal("hioj6879UYGIfyt654tyfFHG", key.Sys.ID)
 }
@@ -85,11 +85,11 @@ func TestAccessTokensServiceGet_2(t *testing.T) {
 	server := httptest.NewServer(handler)
 	defer server.Close()
 
-	// cma client
-	cma = NewCMA(CMAToken)
-	cma.BaseURL = server.URL
+	// cmaClient client
+	cmaClient = NewCMA(CMAToken)
+	cmaClient.BaseURL = server.URL
 
-	_, err = cma.AccessTokens.Get("hioj6879UYGIfyt654tyfFHG")
+	_, err = cmaClient.AccessTokens.Get("hioj6879UYGIfyt654tyfFHG")
 	assertions.NotNil(err)
 	var contentfulError ErrorResponse
 	assertions.True(errors.As(err, &contentfulError))
@@ -123,9 +123,9 @@ func TestEntriesServiceCreate(t *testing.T) {
 	server := httptest.NewServer(handler)
 	defer server.Close()
 
-	// cma client
-	cma = NewCMA(CMAToken)
-	cma.BaseURL = server.URL
+	// cmaClient client
+	cmaClient = NewCMA(CMAToken)
+	cmaClient.BaseURL = server.URL
 
 	accessToken := &AccessToken{
 		Name:      "Example Access Token",
@@ -135,7 +135,7 @@ func TestEntriesServiceCreate(t *testing.T) {
 		},
 	}
 
-	err = cma.AccessTokens.Create(accessToken)
+	err = cmaClient.AccessTokens.Create(accessToken)
 	assertions.Nil(err)
 }
 
@@ -162,16 +162,16 @@ func TestAccessTokensService_Revoke(t *testing.T) {
 	server := httptest.NewServer(handler)
 	defer server.Close()
 
-	// cma client
-	cma = NewCMA(CMAToken)
-	cma.BaseURL = server.URL
+	// cmaClient client
+	cmaClient = NewCMA(CMAToken)
+	cmaClient.BaseURL = server.URL
 
 	accessToken, err := accessTokenFromTestFile("access_token_updated.json")
 	assertions.Nil(err)
 
 	accessToken.RevokedAt = "2020-03-25T14:40:24Z"
 
-	err = cma.AccessTokens.Revoke(accessToken)
+	err = cmaClient.AccessTokens.Revoke(accessToken)
 	assertions.Nil(err)
 	assertions.Equal(2, accessToken.Sys.Version)
 	assertions.Equal(2, accessToken.GetVersion())

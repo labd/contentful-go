@@ -28,11 +28,11 @@ func TestEnvironmentsService_List(t *testing.T) {
 	server := httptest.NewServer(handler)
 	defer server.Close()
 
-	// cma client
-	cma = NewCMA(CMAToken)
-	cma.BaseURL = server.URL
+	// cmaClient client
+	cmaClient = NewCMA(CMAToken)
+	cmaClient.BaseURL = server.URL
 
-	collection, err := cma.Environments.List(spaceID).Next()
+	collection, err := cmaClient.Environments.List(spaceID).Next()
 	assertions.Nil(err)
 	environment := collection.ToEnvironment()
 	assertions.Equal(1, len(environment))
@@ -57,11 +57,11 @@ func TestEnvironmentsService_Get(t *testing.T) {
 	server := httptest.NewServer(handler)
 	defer server.Close()
 
-	// cma client
-	cma = NewCMA(CMAToken)
-	cma.BaseURL = server.URL
+	// cmaClient client
+	cmaClient = NewCMA(CMAToken)
+	cmaClient.BaseURL = server.URL
 
-	environment, err := cma.Environments.Get(spaceID, "staging")
+	environment, err := cmaClient.Environments.Get(spaceID, "staging")
 	assertions.Nil(err)
 	assertions.Equal("staging", environment.Name)
 }
@@ -85,11 +85,11 @@ func TestEnvironmentsService_Get_2(t *testing.T) {
 	server := httptest.NewServer(handler)
 	defer server.Close()
 
-	// cma client
-	cma = NewCMA(CMAToken)
-	cma.BaseURL = server.URL
+	// cmaClient client
+	cmaClient = NewCMA(CMAToken)
+	cmaClient.BaseURL = server.URL
 
-	_, err = cma.Environments.Get(spaceID, "master")
+	_, err = cmaClient.Environments.Get(spaceID, "master")
 	assertions.NotNil(err)
 }
 
@@ -116,15 +116,15 @@ func TestEnvironmentsService_Upsert_Create(t *testing.T) {
 	server := httptest.NewServer(handler)
 	defer server.Close()
 
-	// cma client
-	cma = NewCMA(CMAToken)
-	cma.BaseURL = server.URL
+	// cmaClient client
+	cmaClient = NewCMA(CMAToken)
+	cmaClient.BaseURL = server.URL
 
 	environment := &Environment{
 		Name: "staging",
 	}
 
-	err = cma.Environments.Upsert(spaceID, environment)
+	err = cmaClient.Environments.Upsert(spaceID, environment)
 	assertions.Nil(err)
 }
 
@@ -151,16 +151,16 @@ func TestEnvironmentsService_Upsert_Update(t *testing.T) {
 	server := httptest.NewServer(handler)
 	defer server.Close()
 
-	// cma client
-	cma = NewCMA(CMAToken)
-	cma.BaseURL = server.URL
+	// cmaClient client
+	cmaClient = NewCMA(CMAToken)
+	cmaClient.BaseURL = server.URL
 
 	environment, err := environmentFromTestData("environment_1.json")
 	assertions.Nil(err)
 
 	environment.Name = "modified-name"
 
-	err = cma.Environments.Upsert(spaceID, environment)
+	err = cmaClient.Environments.Upsert(spaceID, environment)
 	assertions.Nil(err)
 }
 
@@ -180,15 +180,15 @@ func TestEnvironmentsService_Delete(t *testing.T) {
 	server := httptest.NewServer(handler)
 	defer server.Close()
 
-	// cma client
-	cma = NewCMA(CMAToken)
-	cma.BaseURL = server.URL
+	// cmaClient client
+	cmaClient = NewCMA(CMAToken)
+	cmaClient.BaseURL = server.URL
 
 	// test environment
 	environment, err := environmentFromTestData("environment_1.json")
 	assertions.Nil(err)
 
 	// delete environment
-	err = cma.Environments.Delete(spaceID, environment)
+	err = cmaClient.Environments.Delete(spaceID, environment)
 	assertions.Nil(err)
 }

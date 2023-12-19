@@ -27,11 +27,11 @@ func TestUsersService_Me(t *testing.T) {
 	server := httptest.NewServer(handler)
 	defer server.Close()
 
-	// cma client
-	cma = NewCMA(CMAToken)
-	cma.BaseURL = server.URL
+	// cmaClient client
+	cmaClient = NewCMA(CMAToken)
+	cmaClient.BaseURL = server.URL
 
-	user, err := cma.Users.Me()
+	user, err := cmaClient.Users.Me()
 	assertions.Nil(err)
 	assertions.Equal("j.doe@labdigital.nl", user.Email)
 }
@@ -54,10 +54,10 @@ func TestUsersService_Me_2(t *testing.T) {
 	server := httptest.NewServer(handler)
 	defer server.Close()
 
-	// cma client
-	cma = NewCMA(CMAToken)
-	cma.BaseURL = server.URL
+	// cmaClient client
+	cmaClient = NewCMA(CMAToken)
+	cmaClient.BaseURL = server.URL
 
-	_, err = cma.Users.Me()
+	_, err = cmaClient.Users.Me()
 	assertions.NotEmpty(err)
 }

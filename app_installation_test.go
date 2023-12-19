@@ -28,11 +28,11 @@ func TestAppInstallationsService_List(t *testing.T) {
 	server := httptest.NewServer(handler)
 	defer server.Close()
 
-	// cma client
-	cma = NewCMA(CMAToken)
-	cma.BaseURL = server.URL
+	// cmaClient client
+	cmaClient = NewCMA(CMAToken)
+	cmaClient.BaseURL = server.URL
 
-	collection, err := cma.AppInstallations.List(spaceID, "master").Next()
+	collection, err := cmaClient.AppInstallations.List(spaceID, "master").Next()
 	assertions.Nil(err)
 
 	installation := collection.ToAppInstallation()
@@ -58,11 +58,11 @@ func TestAppInstallationsService_Get(t *testing.T) {
 	server := httptest.NewServer(handler)
 	defer server.Close()
 
-	// cma client
-	cma = NewCMA(CMAToken)
-	cma.BaseURL = server.URL
+	// cmaClient client
+	cmaClient = NewCMA(CMAToken)
+	cmaClient.BaseURL = server.URL
 
-	installation, err := cma.AppInstallations.Get(spaceID, "app_definition_id", "master")
+	installation, err := cmaClient.AppInstallations.Get(spaceID, "app_definition_id", "master")
 	assertions.Nil(err)
 	assertions.Equal("world", installation.Parameters["hello"])
 }
@@ -85,11 +85,11 @@ func TestAppInstallationsService_Get_2(t *testing.T) {
 	server := httptest.NewServer(handler)
 	defer server.Close()
 
-	// cma client
-	cma = NewCMA(CMAToken)
-	cma.BaseURL = server.URL
+	// cmaClient client
+	cmaClient = NewCMA(CMAToken)
+	cmaClient.BaseURL = server.URL
 
-	_, err = cma.AppInstallations.Get(spaceID, "app_definition_id", "master")
+	_, err = cmaClient.AppInstallations.Get(spaceID, "app_definition_id", "master")
 	assertions.NotNil(err)
 	var contentfulError ErrorResponse
 	assertions.True(errors.As(err, &contentfulError))
@@ -118,16 +118,16 @@ func TestAppInstallationsService_Upsert(t *testing.T) {
 	server := httptest.NewServer(handler)
 	defer server.Close()
 
-	// cma client
-	cma = NewCMA(CMAToken)
-	cma.BaseURL = server.URL
+	// cmaClient client
+	cmaClient = NewCMA(CMAToken)
+	cmaClient.BaseURL = server.URL
 
 	installation, err := appInstallationFromTestFile("app_installation_1.json")
 	assertions.Nil(err)
 
 	installation.Parameters["lorum"] = "ipsum"
 
-	err = cma.AppInstallations.Upsert(spaceID, "app_definition_id", installation, "master", []string{})
+	err = cmaClient.AppInstallations.Upsert(spaceID, "app_definition_id", installation, "master", []string{})
 	assertions.Nil(err)
 	assertions.Equal("ipsum", installation.Parameters["lorum"])
 }
@@ -155,16 +155,16 @@ func TestAppInstallationsService_Upsert_Forbidden(t *testing.T) {
 	server := httptest.NewServer(handler)
 	defer server.Close()
 
-	// cma client
-	cma = NewCMA(CMAToken)
-	cma.BaseURL = server.URL
+	// cmaClient client
+	cmaClient = NewCMA(CMAToken)
+	cmaClient.BaseURL = server.URL
 
 	installation, err := appInstallationFromTestFile("app_installation_1.json")
 	assertions.Nil(err)
 
 	installation.Parameters["lorum"] = "ipsum"
 
-	err = cma.AppInstallations.Upsert(spaceID, "app_definition_id", installation, "master", []string{})
+	err = cmaClient.AppInstallations.Upsert(spaceID, "app_definition_id", installation, "master", []string{})
 
 	assertions.NotNil(err)
 	var errorResponse ErrorResponse
@@ -189,10 +189,10 @@ func TestAppInstallationsService_Delete(t *testing.T) {
 	server := httptest.NewServer(handler)
 	defer server.Close()
 
-	// cma client
-	cma = NewCMA(CMAToken)
-	cma.BaseURL = server.URL
+	// cmaClient client
+	cmaClient = NewCMA(CMAToken)
+	cmaClient.BaseURL = server.URL
 
-	err = cma.AppInstallations.Delete(spaceID, "app_definition_id", "master")
+	err = cmaClient.AppInstallations.Delete(spaceID, "app_definition_id", "master")
 	assertions.Nil(err)
 }

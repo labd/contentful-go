@@ -21,7 +21,7 @@ import (
 
 var (
 	server         *httptest.Server
-	cma            *Client
+	cmaClient      *Client
 	urc            *Client
 	c              *Client
 	CMAToken       = "b4c0n73n7fu1"
@@ -494,16 +494,16 @@ func TestBackoffForPerSecondLimiting(t *testing.T) {
 	server := httptest.NewServer(handler)
 	defer server.Close()
 
-	// cma client
-	cma = NewCMA(CMAToken)
-	cma.BaseURL = server.URL
+	// cmaClient client
+	cmaClient = NewCMA(CMAToken)
+	cmaClient.BaseURL = server.URL
 
 	go func() {
 		time.Sleep(time.Second * time.Duration(waitSeconds))
 		rateLimited.Swap(true)
 	}()
 
-	space, err := cma.Spaces.Get("id1")
+	space, err := cmaClient.Spaces.Get("id1")
 	assertions.Nil(err)
 	assertions.Equal(space.Name, "Contentful Example API")
 	assertions.Equal(space.Sys.ID, "id1")

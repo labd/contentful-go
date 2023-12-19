@@ -28,11 +28,11 @@ func TestEnvironmentAliasesServices_List(t *testing.T) {
 	server := httptest.NewServer(handler)
 	defer server.Close()
 
-	// cma client
-	cma = NewCMA(CMAToken)
-	cma.BaseURL = server.URL
+	// cmaClient client
+	cmaClient = NewCMA(CMAToken)
+	cmaClient.BaseURL = server.URL
 
-	collection, err := cma.EnvironmentAliases.List(spaceID).Next()
+	collection, err := cmaClient.EnvironmentAliases.List(spaceID).Next()
 	assertions.Nil(err)
 	environmentAlias := collection.ToEnvironmentAlias()
 	assertions.Equal(1, len(environmentAlias))
@@ -58,11 +58,11 @@ func TestEnvironmentAliasesServices_Get(t *testing.T) {
 	server := httptest.NewServer(handler)
 	defer server.Close()
 
-	// cma client
-	cma = NewCMA(CMAToken)
-	cma.BaseURL = server.URL
+	// cmaClient client
+	cmaClient = NewCMA(CMAToken)
+	cmaClient.BaseURL = server.URL
 
-	environmentAlias, err := cma.EnvironmentAliases.Get(spaceID, "master")
+	environmentAlias, err := cmaClient.EnvironmentAliases.Get(spaceID, "master")
 	assertions.Nil(err)
 	assertions.Equal("master-18-3-2020", environmentAlias.Alias.Sys.ID)
 }
@@ -86,11 +86,11 @@ func TestEnvironmentAliasesServices_Get_2(t *testing.T) {
 	server := httptest.NewServer(handler)
 	defer server.Close()
 
-	// cma client
-	cma = NewCMA(CMAToken)
-	cma.BaseURL = server.URL
+	// cmaClient client
+	cmaClient = NewCMA(CMAToken)
+	cmaClient.BaseURL = server.URL
 
-	_, err = cma.EnvironmentAliases.Get(spaceID, "master")
+	_, err = cmaClient.EnvironmentAliases.Get(spaceID, "master")
 	assertions.NotNil(err)
 }
 
@@ -117,15 +117,15 @@ func TestEnvironmentAliasesService_Update(t *testing.T) {
 	server := httptest.NewServer(handler)
 	defer server.Close()
 
-	// cma client
-	cma = NewCMA(CMAToken)
-	cma.BaseURL = server.URL
+	// cmaClient client
+	cmaClient = NewCMA(CMAToken)
+	cmaClient.BaseURL = server.URL
 
 	environmentAlias, err := environmentAliasFromTestData("environment_alias_1.json")
 	assertions.Nil(err)
 
 	environmentAlias.Alias.Sys.ID = "staging"
 
-	err = cma.EnvironmentAliases.Update(spaceID, environmentAlias)
+	err = cmaClient.EnvironmentAliases.Update(spaceID, environmentAlias)
 	assertions.Nil(err)
 }

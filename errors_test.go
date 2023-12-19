@@ -22,12 +22,12 @@ func TestNotFoundError_Error(t *testing.T) {
 	server := httptest.NewServer(handler)
 	defer server.Close()
 
-	// cma client
-	cma = NewCMA(CMAToken)
-	cma.BaseURL = server.URL
+	// cmaClient client
+	cmaClient = NewCMA(CMAToken)
+	cmaClient.BaseURL = server.URL
 
 	// test space
-	_, err = cma.Spaces.Get("unknown-space-id")
+	_, err = cmaClient.Spaces.Get("unknown-space-id")
 	assertions.NotNil(err)
 	_, ok := err.(NotFoundError)
 	assertions.Equal(true, ok)
@@ -53,13 +53,13 @@ func TestRateLimitExceededError_Error(t *testing.T) {
 	server := httptest.NewServer(handler)
 	defer server.Close()
 
-	// cma client
-	cma = NewCMA(CMAToken)
-	cma.BaseURL = server.URL
+	// cmaClient client
+	cmaClient = NewCMA(CMAToken)
+	cmaClient.BaseURL = server.URL
 
 	// test space
 	space := &Space{Name: "test-space"}
-	err = cma.Spaces.Upsert(space)
+	err = cmaClient.Spaces.Upsert(space)
 	assertions.NotNil(err)
 	_, ok := err.(RateLimitExceededError)
 	assertions.Equal(true, ok)
@@ -85,13 +85,13 @@ func TestAccessTokenInvalidError_Error(t *testing.T) {
 	server := httptest.NewServer(handler)
 	defer server.Close()
 
-	// cma client
-	cma = NewCMA(CMAToken)
-	cma.BaseURL = server.URL
+	// cmaClient client
+	cmaClient = NewCMA(CMAToken)
+	cmaClient.BaseURL = server.URL
 
 	// test space
 	space := &Space{Name: "test-space"}
-	err = cma.Spaces.Upsert(space)
+	err = cmaClient.Spaces.Upsert(space)
 	assertions.NotNil(err)
 	_, ok := err.(AccessTokenInvalidError)
 	assertions.Equal(true, ok)

@@ -26,7 +26,7 @@ func TestResourcesService_Get(t *testing.T) {
 	server := httptest.NewServer(handler)
 	defer server.Close()
 
-	// cma client
+	// cmaClient client
 	urc = NewResourceClient(CMAToken)
 	urc.BaseURL = server.URL
 
@@ -52,7 +52,7 @@ func TestResourcesService_Get_2(t *testing.T) {
 	server := httptest.NewServer(handler)
 	defer server.Close()
 
-	// cma client
+	// cmaClient client
 	urc = NewResourceClient(CMAToken)
 	urc.BaseURL = server.URL
 
@@ -75,7 +75,7 @@ func TestResourcesService_Create(t *testing.T) {
 	server := httptest.NewServer(handler)
 	defer server.Close()
 
-	// cma client
+	// cmaClient client
 	urc = NewResourceClient(CMAToken)
 	urc.BaseURL = server.URL
 
@@ -101,7 +101,7 @@ func TestResourcesService_Delete(t *testing.T) {
 	server := httptest.NewServer(handler)
 	defer server.Close()
 
-	// cma client
+	// cmaClient client
 	urc = NewResourceClient(CMAToken)
 	urc.BaseURL = server.URL
 
@@ -129,7 +129,7 @@ func TestResourcesService_Delete_2(t *testing.T) {
 	server := httptest.NewServer(handler)
 	defer server.Close()
 
-	// cma client
+	// cmaClient client
 	urc = NewResourceClient(CMAToken)
 	urc.BaseURL = server.URL
 

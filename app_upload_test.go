@@ -27,16 +27,16 @@ func TestAppUploadService_Create(t *testing.T) {
 	server := httptest.NewServer(handler)
 	defer server.Close()
 
-	// cma client
-	cma = NewCMA(CMAToken)
-	cma.AppUpload.BaseURL = server.URL
+	// cmaClient client
+	cmaClient = NewCMA(CMAToken)
+	cmaClient.AppUpload.BaseURL = server.URL
 
 	data, err := os.ReadFile("./testdata/resource_uploaded.png")
 
 	assertions.Nil(err)
 
-	uploadResult, err := cma.AppUpload.Create("organization_id", data)
+	uploadResult, err := cmaClient.AppUpload.Create("organization_id", data)
 	assertions.Nil(err)
-	assertions.Equal("https://api.contentful.com", cma.BaseURL)
+	assertions.Equal("https://api.contentful.com", cmaClient.BaseURL)
 	assertions.Equal("<app_upload_id>", uploadResult.Sys.ID)
 }
