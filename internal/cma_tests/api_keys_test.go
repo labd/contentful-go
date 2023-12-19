@@ -86,7 +86,7 @@ func TestAPIKeyService_Upsert_Create(t *testing.T) {
 			Name: "Example API Key",
 			Environments: []model.Environments{
 				{
-					Sys: model.Sys{
+					Sys: model.BaseSys{
 						ID:       "master",
 						Type:     "Link",
 						LinkType: "Environment",
@@ -94,8 +94,8 @@ func TestAPIKeyService_Upsert_Create(t *testing.T) {
 				},
 			},
 		},
-		PreviewAPIKey: &model.BaseAPIKey{
-			Sys: &model.Sys{
+		PreviewAPIKey: &model.PreviewAPIKeySys{
+			Sys: model.BaseSys{
 				ID:       "1Mx3FqXX5XCJDtNpVW4BZI",
 				Type:     "Link",
 				LinkType: "PreviewApiKey",

@@ -11,12 +11,12 @@ type CollectionOptions struct {
 
 type Collection[Items any, Includes any] struct {
 	Query
-	Sys      *model.Sys `json:"sys"`
-	Total    int        `json:"total"`
-	Skip     int        `json:"skip"`
-	Limit    int        `json:"limit"`
-	Items    []Items    `json:"items"`
-	Includes Includes   `json:"includes"`
+	Sys      *model.BaseSys `json:"sys"`
+	Total    int            `json:"total"`
+	Skip     int            `json:"skip"`
+	Limit    int            `json:"limit"`
+	Items    []Items        `json:"items"`
+	Includes Includes       `json:"includes"`
 }
 
 // NewCollection initializes a new collection

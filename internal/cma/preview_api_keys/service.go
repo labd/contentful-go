@@ -13,12 +13,13 @@ import (
 var _ cma.PreviewApiKeys = &previewApiKeys{}
 
 type previewApiKeys struct {
-	client common.RestClient
+	client   common.RestClient
+	basePath string
 }
 
 func (a *previewApiKeys) Get(ctx context.Context, apiKeyID string) (result *model.PreviewAPIKey, err error) {
 
-	res, err := a.client.Get(ctx, fmt.Sprintf("/preview_api_keys/%s", apiKeyID), nil, nil)
+	res, err := a.client.Get(ctx, fmt.Sprintf("%s/%s", a.basePath, apiKeyID), nil, nil)
 
 	if err != nil {
 		return nil, err
@@ -36,7 +37,7 @@ func (a *previewApiKeys) Get(ctx context.Context, apiKeyID string) (result *mode
 func (a *previewApiKeys) List(ctx context.Context) cma.NextableCollection[*model.PreviewAPIKey, any] {
 
 	return cma2.NewCollection[*model.PreviewAPIKey, any](&cma2.CollectionOptions{
-		Path:   "/preview_api_keys",
+		Path:   a.basePath,
 		Client: a.client,
 		Ctx:    ctx,
 	})
@@ -44,6 +45,7 @@ func (a *previewApiKeys) List(ctx context.Context) cma.NextableCollection[*model
 
 func NewPreviewApiKeysService(client common.RestClient) cma.PreviewApiKeys {
 	return &previewApiKeys{
-		client: client,
+		client:   client,
+		basePath: "/preview_api_keys",
 	}
 }

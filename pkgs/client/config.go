@@ -1,4 +1,4 @@
-package cma
+package client
 
 import "github.com/flaconi/contentful-go/service/common"
 

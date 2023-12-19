@@ -37,8 +37,8 @@ func (c *SpaceIdClient) Delete(ctx context.Context, path string, queryParams url
 
 func (c *SpaceIdClient) WithEnvironment(environment string) common.EnvironmentClient {
 	return &EnvironmentClient{
-		Client:      c.client,
-		Environment: environment,
+		client:      c,
+		environment: environment,
 	}
 }
 

@@ -11,10 +11,10 @@ import (
 
 // ErrorResponse model
 type ErrorResponse struct {
-	Sys       *model.Sys    `json:"sys"`
-	Message   string        `json:"message,omitempty"`
-	RequestID string        `json:"requestId,omitempty"`
-	Details   *ErrorDetails `json:"details,omitempty"`
+	Sys       *model.BaseSys `json:"sys"`
+	Message   string         `json:"message,omitempty"`
+	RequestID string         `json:"requestId,omitempty"`
+	Details   *ErrorDetails  `json:"details,omitempty"`
 }
 
 func (e ErrorResponse) Error() string {

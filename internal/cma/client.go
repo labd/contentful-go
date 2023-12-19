@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/flaconi/contentful-go/pkgs/client"
 	common2 "github.com/flaconi/contentful-go/pkgs/common"
 	"github.com/flaconi/contentful-go/service"
 	"github.com/flaconi/contentful-go/service/common"
@@ -27,7 +28,7 @@ type Client struct {
 	url        *url.URL
 }
 
-func New(config ClientConfig) (common.SpaceIdClientBuilder, error) {
+func New(config client.ClientConfig) (common.SpaceIdClientBuilder, error) {
 
 	httpClient := config.HTTPClient
 

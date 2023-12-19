@@ -16,12 +16,13 @@ import (
 var _ cma.ApiKeys = &apiKeysService{}
 
 type apiKeysService struct {
-	client common.RestClient
+	client   common.RestClient
+	basePath string
 }
 
 func (a *apiKeysService) Get(ctx context.Context, apiKeyID string) (result *model.APIKey, err error) {
 
-	res, err := a.client.Get(ctx, fmt.Sprintf("/api_keys/%s", apiKeyID), nil, nil)
+	res, err := a.client.Get(ctx, fmt.Sprintf("%s/%s", a.basePath, apiKeyID), nil, nil)
 
 	if err != nil {
 		return nil, err
@@ -39,7 +40,7 @@ func (a *apiKeysService) Get(ctx context.Context, apiKeyID string) (result *mode
 func (a *apiKeysService) List(ctx context.Context) cma.NextableCollection[*model.APIKey, any] {
 
 	return cma2.NewCollection[*model.APIKey, any](&cma2.CollectionOptions{
-		Path:   "/api_keys",
+		Path:   a.basePath,
 		Client: a.client,
 		Ctx:    ctx,
 	})
@@ -59,14 +60,14 @@ func (a *apiKeysService) Upsert(ctx context.Context, apiKey *model.APIKey) error
 	var res *http.Response
 
 	if apiKey.IsNew() {
-		res, err = a.client.Post(ctx, "/api_keys", nil, headers, bytes.NewReader(bytesArray))
+		res, err = a.client.Post(ctx, a.basePath, nil, headers, bytes.NewReader(bytesArray))
 
 		if err != nil {
 			return err
 		}
 
 	} else {
-		res, err = a.client.Put(ctx, fmt.Sprintf("/api_keys/%s", apiKey.Sys.ID), nil, headers, bytes.NewReader(bytesArray))
+		res, err = a.client.Put(ctx, fmt.Sprintf("%s/%s", a.basePath, apiKey.Sys.ID), nil, headers, bytes.NewReader(bytesArray))
 
 		if err != nil {
 			return err
@@ -83,17 +84,14 @@ func (a *apiKeysService) Delete(ctx context.Context, apiKey *model.APIKey) error
 
 	headers.Set("X-Contentful-Version", strconv.Itoa(apiKey.GetVersion()))
 
-	_, err := a.client.Delete(ctx, fmt.Sprintf("/api_keys/%s", apiKey.Sys.ID), nil, headers)
+	_, err := a.client.Delete(ctx, fmt.Sprintf("%s/%s", a.basePath, apiKey.Sys.ID), nil, headers)
 
-	if err != nil {
-		return err
-	}
-
-	return nil
+	return err
 }
 
 func NewApiKeysService(client common.RestClient) cma.ApiKeys {
 	return &apiKeysService{
-		client: client,
+		client:   client,
+		basePath: "/api_keys",
 	}
 }

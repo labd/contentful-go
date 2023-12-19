@@ -1,30 +1,49 @@
 package model
 
-// Sys model
-type Sys struct {
-	ID          string `json:"id,omitempty"`
-	Type        string `json:"type,omitempty"`
-	LinkType    string `json:"linkType,omitempty"`
-	CreatedAt   string `json:"createdAt,omitempty"`
-	UpdatedAt   string `json:"updatedAt,omitempty"`
-	UpdatedBy   *Sys   `json:"updatedBy,omitempty"`
-	Version     int    `json:"version,omitempty"`
-	Revision    int    `json:"revision,omitempty"`
-	ContentType *struct {
-		Sys Sys `json:"sys,omitempty"`
-	} `json:"contentType,omitempty"`
-	Space *struct {
-		Sys Sys `json:"sys,omitempty"`
-	} `json:"space,omitempty"`
-	FirstPublishedAt string `json:"firstPublishedAt,omitempty"`
-	PublishedCounter int    `json:"publishedCounter,omitempty"`
-	PublishedAt      string `json:"publishedAt,omitempty"`
-	PublishedBy      *Sys   `json:"publishedBy,omitempty"`
-	PublishedVersion int    `json:"publishedVersion,omitempty"`
-	ArchivedAt       string `json:"archivedAt,omitempty"`
-	ArchivedBy       *Sys   `json:"archivedBy,omitempty"`
-	ArchivedVersion  int    `json:"archivedVersion,omitempty"`
-	AppDefinition    *struct {
-		Sys Sys `json:"sys,omitempty"`
-	} `json:"appDefinition,omitempty"`
+type BaseSys struct {
+	ID       string `json:"id,omitempty"`
+	Type     string `json:"type,omitempty"`
+	LinkType string `json:"linkType,omitempty"`
+	Version  int    `json:"version,omitempty"`
 }
+
+type EnvironmentSys struct {
+	SpaceSys
+	Environment *struct {
+		Sys BaseSys `json:"sys,omitempty"`
+	} `json:"environment,omitempty"`
+}
+
+type SpaceSys struct {
+	BaseSys
+	CreatedAt string `json:"createdAt,omitempty"`
+	UpdatedAt string `json:"updatedAt,omitempty"`
+	UpdatedBy *struct {
+		Sys BaseSys `json:"sys,omitempty"`
+	} `json:"updatedBy,omitempty"`
+	CreatedBy *struct {
+		Sys BaseSys `json:"sys,omitempty"`
+	} `json:"createdBy,omitempty"`
+
+	Space *struct {
+		Sys BaseSys `json:"sys,omitempty"`
+	} `json:"space,omitempty"`
+}
+
+//// Sys model
+//type Sys struct {
+//	BaseSys
+//	SpaceSys
+//	//Revision    int `json:"revision,omitempty"`
+//	//ContentType *struct {
+//	//	Sys Sys `json:"sys,omitempty"`
+//	//} `json:"contentType,omitempty"`
+//	//FirstPublishedAt string `json:"firstPublishedAt,omitempty"`
+//	//PublishedCounter int    `json:"publishedCounter,omitempty"`
+//	//PublishedAt      string `json:"publishedAt,omitempty"`
+//	//PublishedBy      *Sys   `json:"publishedBy,omitempty"`
+//	//PublishedVersion int    `json:"publishedVersion,omitempty"`
+//	//ArchivedAt       string `json:"archivedAt,omitempty"`
+//	//ArchivedBy       *Sys   `json:"archivedBy,omitempty"`
+//	//ArchivedVersion  int    `json:"archivedVersion,omitempty"`
+//}

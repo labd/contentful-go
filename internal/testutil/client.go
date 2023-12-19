@@ -3,7 +3,7 @@ package testutil
 import (
 	"fmt"
 	"github.com/flaconi/contentful-go"
-	"github.com/flaconi/contentful-go/internal/cma"
+	client2 "github.com/flaconi/contentful-go/pkgs/client"
 	"github.com/flaconi/contentful-go/service/common"
 	"github.com/stretchr/testify/assert"
 	"net/http"
@@ -56,7 +56,7 @@ func MockClient(
 
 	ts := httptest.NewServer(http.HandlerFunc(handler))
 
-	client, err := contentful.NewCMAV2(cma.ClientConfig{
+	client, err := contentful.NewCMAV2(client2.ClientConfig{
 		URL:       ts.URL,
 		Debug:     false,
 		UserAgent: "testclient",

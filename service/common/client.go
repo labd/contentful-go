@@ -29,4 +29,5 @@ type SpaceIdClient interface {
 
 type EnvironmentClient interface {
 	RestClient
+	AppInstallations() cma.AppInstallations
 }

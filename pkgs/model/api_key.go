@@ -1,7 +1,7 @@
 package model
 
 type BaseAPIKey struct {
-	Sys          *Sys            `json:"sys,omitempty"`
+	Sys          *SpaceSys       `json:"sys,omitempty"`
 	Name         string          `json:"name,omitempty"`
 	Description  string          `json:"description,omitempty"`
 	AccessToken  string          `json:"accessToken,omitempty"`
@@ -17,7 +17,7 @@ type APIKeyPolicy struct {
 
 // Environments model
 type Environments struct {
-	Sys Sys `json:"sys,omitempty"`
+	Sys BaseSys `json:"sys,omitempty"`
 }
 
 // PreviewAPIKey model
@@ -26,7 +26,11 @@ type PreviewAPIKey = BaseAPIKey
 // APIKey model
 type APIKey struct {
 	BaseAPIKey
-	PreviewAPIKey *BaseAPIKey `json:"preview_api_key,omitempty"`
+	PreviewAPIKey *PreviewAPIKeySys `json:"preview_api_key,omitempty"`
+}
+
+type PreviewAPIKeySys struct {
+	Sys BaseSys `json:"sys,omitempty"`
 }
 
 // GetVersion returns entity version
