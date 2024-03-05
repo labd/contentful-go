@@ -1,4 +1,4 @@
-package contentful
+package model
 
 import (
 	"encoding/json"

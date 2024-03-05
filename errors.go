@@ -116,6 +116,21 @@ func (e ValidationFailedError) Error() string {
 	return msg.String()
 }
 
+// InvalidEntryError model
+type InvalidEntryError struct {
+	APIError
+}
+
+func (e InvalidEntryError) Error() string {
+	msg := bytes.Buffer{}
+
+	for _, err := range e.APIError.err.Details.Errors {
+		msg.WriteString(fmt.Sprintf("%s\n", err.Details))
+	}
+
+	return msg.String()
+}
+
 // NotFoundError for 404 errors
 type NotFoundError struct {
 	APIError

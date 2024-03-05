@@ -3,9 +3,11 @@ package contentful
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/flaconi/contentful-go/internal/cda"
 	"github.com/flaconi/contentful-go/internal/cma"
 	"github.com/flaconi/contentful-go/pkgs/client"
-	"github.com/flaconi/contentful-go/service/common"
+	cda_service "github.com/flaconi/contentful-go/service/cda"
+	cma_service "github.com/flaconi/contentful-go/service/cma"
 	"io"
 	"log"
 	"net/http"
@@ -29,40 +31,37 @@ type Client struct {
 	Environment   string
 	commonService service
 
-	Spaces             *SpacesService
-	Users              *UsersService
-	Environments       *EnvironmentsService
-	EnvironmentAliases *EnvironmentAliasesService
-	Organizations      *OrganizationsService
-	Roles              *RolesService
-	Memberships        *MembershipsService
-	Snapshots          *SnapshotsService
-	APIKeys            *APIKeyService
-	AccessTokens       *AccessTokensService
-	Assets             *AssetsService
-	ContentTypes       *ContentTypesService
-	Entries            *EntriesService
-	EntryTasks         *EntryTasksService
-	ScheduledActions   *ScheduledActionsService
-	Locales            *LocalesService
-	Webhooks           *WebhooksService
-	WebhookCalls       *WebhookCallsService
-	EditorInterfaces   *EditorInterfacesService
-	Extensions         *ExtensionsService
-	AppDefinitions     *AppDefinitionsService
-	AppInstallations   *AppInstallationsService
-	Usages             *UsagesService
-	Resources          *ResourcesService
-	AppUpload          *AppUploadService
-	AppBundle          *AppBundleService
+	Spaces           *SpacesService
+	Users            *UsersService
+	Organizations    *OrganizationsService
+	Roles            *RolesService
+	Memberships      *MembershipsService
+	Snapshots        *SnapshotsService
+	AccessTokens     *AccessTokensService
+	Assets           *AssetsService
+	EntryTasks       *EntryTasksService
+	ScheduledActions *ScheduledActionsService
+	Locales          *LocalesService
+	Webhooks         *WebhooksService
+	WebhookCalls     *WebhookCallsService
+	EditorInterfaces *EditorInterfacesService
+	Extensions       *ExtensionsService
+	Usages           *UsagesService
+	Resources        *ResourcesService
+	AppUpload        *AppUploadService
+	AppBundle        *AppBundleService
 }
 
 type service struct {
 	c *Client
 }
 
-func NewCMAV2(config client.ClientConfig) (common.SpaceIdClientBuilder, error) {
+func NewCMAV2(config client.ClientConfig) (cma_service.SpaceIdClientBuilder, error) {
 	return cma.New(config)
+}
+
+func NewCDAV2(config client.ClientConfig) (cda_service.SpaceIdClientBuilder, error) {
+	return cda.New(config)
 }
 
 // NewCMA returns a CMA client
@@ -84,17 +83,12 @@ func NewCMA(token string) *Client {
 
 	c.Spaces = (*SpacesService)(&c.commonService)
 	c.Users = (*UsersService)(&c.commonService)
-	c.Environments = (*EnvironmentsService)(&c.commonService)
-	c.EnvironmentAliases = (*EnvironmentAliasesService)(&c.commonService)
 	c.Organizations = (*OrganizationsService)(&c.commonService)
 	c.Roles = (*RolesService)(&c.commonService)
 	c.Memberships = (*MembershipsService)(&c.commonService)
 	c.Snapshots = (*SnapshotsService)(&c.commonService)
-	c.APIKeys = (*APIKeyService)(&c.commonService)
 	c.AccessTokens = (*AccessTokensService)(&c.commonService)
 	c.Assets = (*AssetsService)(&c.commonService)
-	c.ContentTypes = (*ContentTypesService)(&c.commonService)
-	c.Entries = (*EntriesService)(&c.commonService)
 	c.EntryTasks = (*EntryTasksService)(&c.commonService)
 	c.ScheduledActions = (*ScheduledActionsService)(&c.commonService)
 	c.Locales = (*LocalesService)(&c.commonService)
@@ -102,8 +96,6 @@ func NewCMA(token string) *Client {
 	c.WebhookCalls = (*WebhookCallsService)(&c.commonService)
 	c.EditorInterfaces = (*EditorInterfacesService)(&c.commonService)
 	c.Extensions = (*ExtensionsService)(&c.commonService)
-	c.AppDefinitions = (*AppDefinitionsService)(&c.commonService)
-	c.AppInstallations = (*AppInstallationsService)(&c.commonService)
 	c.Usages = (*UsagesService)(&c.commonService)
 	c.AppUpload = &AppUploadService{
 		service: c.commonService,
@@ -132,10 +124,7 @@ func NewCDA(token string) *Client {
 	c.commonService.c = c
 
 	c.Spaces = (*SpacesService)(&c.commonService)
-	c.APIKeys = (*APIKeyService)(&c.commonService)
 	c.Assets = (*AssetsService)(&c.commonService)
-	c.ContentTypes = (*ContentTypesService)(&c.commonService)
-	c.Entries = (*EntriesService)(&c.commonService)
 	c.Locales = (*LocalesService)(&c.commonService)
 	c.Webhooks = (*WebhooksService)(&c.commonService)
 
@@ -156,10 +145,7 @@ func NewCPA(token string) *Client {
 	}
 
 	c.Spaces = &SpacesService{c: c}
-	c.APIKeys = &APIKeyService{c: c}
 	c.Assets = &AssetsService{c: c}
-	c.ContentTypes = &ContentTypesService{c: c}
-	c.Entries = &EntriesService{c: c}
 	c.Locales = &LocalesService{c: c}
 	c.Webhooks = &WebhooksService{c: c}
 
@@ -325,6 +311,8 @@ func (c *Client) handleError(req *http.Request, res *http.Response) error {
 		return VersionMismatchError{apiError}
 	case "Conflict":
 		return VersionMismatchError{apiError}
+	case "InvalidEntry":
+		return InvalidEntryError{apiError}
 	default:
 		return e
 	}

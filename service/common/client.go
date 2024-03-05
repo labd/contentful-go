@@ -2,7 +2,6 @@ package common
 
 import (
 	"context"
-	"github.com/flaconi/contentful-go/service/cma"
 	"io"
 	"net/http"
 	"net/url"
@@ -23,11 +22,8 @@ type SpaceIdClientBuilder interface {
 type SpaceIdClient interface {
 	RestClient
 	WithEnvironment(environment string) EnvironmentClient
-	ApiKeys() cma.ApiKeys
-	PreviewApiKeys() cma.PreviewApiKeys
 }
 
 type EnvironmentClient interface {
 	RestClient
-	AppInstallations() cma.AppInstallations
 }

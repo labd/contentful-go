@@ -15,7 +15,7 @@ func TestPreviewAPIKeyService_List(t *testing.T) {
 	//var err error
 	assertions := assert.New(t)
 
-	cma, ts := testutil.MockClient(t, assertions, testutil.ResponseData{StatusCode: 200, Path: "preview_api_keys/list.json"}, nil, func(r *http.Request) {
+	cma, ts := testutil.MockCMAClient(t, assertions, testutil.ResponseData{StatusCode: 200, Path: "preview_api_keys/list.json"}, nil, func(r *http.Request) {
 		assertions.Equal("GET", r.Method)
 		assertions.Equal("/spaces/"+testutil.SpaceID+"/preview_api_keys", r.URL.Path)
 	})
@@ -32,7 +32,7 @@ func TestPreviewAPIKeyService_Get(t *testing.T) {
 	var err error
 	assertions := assert.New(t)
 
-	cma, ts := testutil.MockClient(t, assertions, testutil.ResponseData{StatusCode: 200, Path: "preview_api_keys/single.json"}, nil, func(r *http.Request) {
+	cma, ts := testutil.MockCMAClient(t, assertions, testutil.ResponseData{StatusCode: 200, Path: "preview_api_keys/single.json"}, nil, func(r *http.Request) {
 		assertions.Equal("GET", r.Method)
 		assertions.Equal("/spaces/"+testutil.SpaceID+"/preview_api_keys/exampleapikey", r.URL.Path)
 	})
@@ -49,7 +49,7 @@ func TestPreviewAPIKeyService_GetNotFound(t *testing.T) {
 	var err error
 	assertions := assert.New(t)
 
-	cma, ts := testutil.MockClient(t, assertions, testutil.ResponseData{StatusCode: 404, Path: "/preview_api_keys/not_found.json"}, nil, func(r *http.Request) {
+	cma, ts := testutil.MockCMAClient(t, assertions, testutil.ResponseData{StatusCode: 404, Path: "/preview_api_keys/not_found.json"}, nil, func(r *http.Request) {
 		assertions.Equal("GET", r.Method)
 		assertions.Equal("/spaces/"+testutil.SpaceID+"/preview_api_keys/exampleapikey", r.URL.Path)
 	})

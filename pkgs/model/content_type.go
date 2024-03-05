@@ -1,22 +1,17 @@
-package contentful
+package model
 
 import (
-	"bytes"
 	"encoding/json"
-	"fmt"
-	"strconv"
+	"io"
 )
-
-// ContentTypesService service
-type ContentTypesService service
 
 // ContentType model
 type ContentType struct {
-	Sys          *Sys     `json:"sys"`
-	Name         string   `json:"name,omitempty"`
-	Description  *string  `json:"description,omitempty"`
-	Fields       []*Field `json:"fields,omitempty"`
-	DisplayField string   `json:"displayField,omitempty"`
+	Sys          *EnvironmentSys `json:"sys"`
+	Name         string          `json:"name,omitempty"`
+	Description  *string         `json:"description,omitempty"`
+	Fields       []*Field        `json:"fields,omitempty"`
+	DisplayField string          `json:"displayField,omitempty"`
 }
 
 // noinspection GoUnusedConst
@@ -322,186 +317,11 @@ func (ct *ContentType) GetVersion() int {
 	return version
 }
 
-// List return a content type collection
-func (service *ContentTypesService) List(spaceID string) *Collection {
-	path := fmt.Sprintf("/spaces/%s/content_types", spaceID)
-	method := "GET"
-
-	req, err := service.c.newRequest(method, path, nil, nil)
-	if err != nil {
-		return nil
-	}
-
-	col := NewCollection(&CollectionOptions{})
-	col.c = service.c
-	col.req = req
-
-	return col
+func (ct *ContentType) IsNew() bool {
+	return ct.Sys == nil || ct.Sys.ID == ""
 }
 
-// ListActivated return a content type collection, with only activated content types
-func (service *ContentTypesService) ListActivated(spaceID string) *Collection {
-	path := fmt.Sprintf("/spaces/%s/public/content_types", spaceID)
-	method := "GET"
-
-	req, err := service.c.newRequest(method, path, nil, nil)
-	if err != nil {
-		return nil
-	}
-
-	col := NewCollection(&CollectionOptions{})
-	col.c = service.c
-	col.req = req
-
-	return col
-}
-
-// Get fetched a content type specified by `contentTypeID`
-func (service *ContentTypesService) Get(spaceID, contentTypeID string) (*ContentType, error) {
-	path := fmt.Sprintf("/spaces/%s/content_types/%s", spaceID, contentTypeID)
-
-	return service.doGet(path)
-}
-
-// GetFromEnv a content type by `contentTypeID` from an environment
-func (service *ContentTypesService) GetWithEnv(env *Environment, contentTypeID string) (*ContentType, error) {
-	path := fmt.Sprintf("/spaces/%s/environments/%s/content_types/%s", env.Sys.Space.Sys.ID, env.Sys.ID, contentTypeID)
-
-	return service.doGet(path)
-}
-
-func (service *ContentTypesService) doGet(path string) (*ContentType, error) {
-	req, err := service.c.newRequest("GET", path, nil, nil)
-	if err != nil {
-		return nil, err
-	}
-
-	var ct ContentType
-	if err = service.c.do(req, &ct); err != nil {
-		return nil, err
-	}
-
-	return &ct, nil
-}
-
-// Upsert updates or creates a new content type
-func (service *ContentTypesService) Upsert(spaceID string, ct *ContentType) error {
-	var path string
-
-	if ct.Sys != nil && ct.Sys.ID != "" {
-		path = fmt.Sprintf("/spaces/%s/content_types/%s", spaceID, ct.Sys.ID)
-	} else {
-		path = fmt.Sprintf("/spaces/%s/content_types/%s", spaceID, ct.Name)
-	}
-
-	return service.doUpsert(path, ct)
-}
-
-// UpsertEnv a content type for an environment
-func (service *ContentTypesService) UpsertWithEnv(env *Environment, ct *ContentType) error {
-	var path string
-
-	path = fmt.Sprintf("/spaces/%s/environments/%s", env.Sys.Space.Sys.ID, env.Sys.ID)
-
-	if ct.Sys != nil && ct.Sys.ID != "" {
-		path = fmt.Sprintf("%s/content_types/%s", path, ct.Sys.ID)
-	} else {
-		path = fmt.Sprintf("%s/content_types/%s", path, ct.Name)
-	}
-
-	return service.doUpsert(path, ct)
-}
-
-func (service *ContentTypesService) doUpsert(path string, ct *ContentType) error {
-	bytesArray, err := json.Marshal(ct)
-	if err != nil {
-		return err
-	}
-
-	req, err := service.c.newRequest("PUT", path, nil, bytes.NewReader(bytesArray))
-	if err != nil {
-		return err
-	}
-
-	req.Header.Set("X-Contentful-Version", strconv.Itoa(ct.GetVersion()))
-
-	return service.c.do(req, ct)
-}
-
-// Delete the content_type
-func (service *ContentTypesService) Delete(spaceID string, ct *ContentType) error {
-	path := fmt.Sprintf("/spaces/%s/content_types/%s", spaceID, ct.Sys.ID)
-	return service.doDelete(path, ct)
-}
-
-// DeleteFromEnv a content type from an environment
-func (service *ContentTypesService) DeleteWithEnv(env *Environment, ct *ContentType) error {
-	path := fmt.Sprintf("/spaces/%s/environments/%s/content_types/%s", env.Sys.Space.Sys.ID, env.Sys.ID, ct.Sys.ID)
-	return service.doDelete(path, ct)
-}
-
-func (service *ContentTypesService) doDelete(path string, ct *ContentType) error {
-	method := "DELETE"
-
-	req, err := service.c.newRequest(method, path, nil, nil)
-	if err != nil {
-		return err
-	}
-
-	version := strconv.Itoa(ct.Sys.Version)
-	req.Header.Set("X-Contentful-Version", version)
-
-	return service.c.do(req, nil)
-}
-
-// Activate a contenttype, a.k.a publish
-func (service *ContentTypesService) Activate(spaceID string, ct *ContentType) error {
-	path := fmt.Sprintf("/spaces/%s/content_types/%s/published", spaceID, ct.Sys.ID)
-	return service.doActivate(path, ct)
-}
-
-// Activate a contenttype in a specific environment, a.k.a publish
-func (service *ContentTypesService) ActivateWithEnv(env *Environment, ct *ContentType) error {
-	path := fmt.Sprintf("/spaces/%s/environments/%s/content_types/%s/published", env.Sys.Space.Sys.ID, env.Sys.ID, ct.Sys.ID)
-	return service.doActivate(path, ct)
-}
-
-func (service *ContentTypesService) doActivate(path string, ct *ContentType) error {
-	method := "PUT"
-
-	req, err := service.c.newRequest(method, path, nil, nil)
-	if err != nil {
-		return err
-	}
-
-	version := strconv.Itoa(ct.Sys.Version)
-	req.Header.Set("X-Contentful-Version", version)
-
-	return service.c.do(req, ct)
-}
-
-// Deactivate a contenttype, a.k.a unpublish
-func (service *ContentTypesService) Deactivate(spaceID string, ct *ContentType) error {
-	path := fmt.Sprintf("/spaces/%s/content_types/%s/published", spaceID, ct.Sys.ID)
-	return service.doDeactivate(path, ct)
-}
-
-// Deactivate a contenttype in a specific environment, a.k.a unpublish
-func (service *ContentTypesService) DeactivateWithEnv(env *Environment, ct *ContentType) error {
-	path := fmt.Sprintf("/spaces/%s/environments/%s/content_types/%s/published", env.Sys.Space.Sys.ID, env.Sys.ID, ct.Sys.ID)
-	return service.doDeactivate(path, ct)
-}
-
-func (service *ContentTypesService) doDeactivate(path string, ct *ContentType) error {
-	method := "DELETE"
-
-	req, err := service.c.newRequest(method, path, nil, nil)
-	if err != nil {
-		return err
-	}
-
-	version := strconv.Itoa(ct.Sys.Version)
-	req.Header.Set("X-Contentful-Version", version)
-
-	return service.c.do(req, ct)
+func (ct *ContentType) Decode(body io.ReadCloser) error {
+	defer body.Close()
+	return json.NewDecoder(body).Decode(&ct)
 }

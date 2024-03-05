@@ -4,7 +4,8 @@ import (
 	"fmt"
 	"github.com/flaconi/contentful-go"
 	client2 "github.com/flaconi/contentful-go/pkgs/client"
-	"github.com/flaconi/contentful-go/service/common"
+	"github.com/flaconi/contentful-go/pkgs/util"
+	"github.com/flaconi/contentful-go/service/cma"
 	"github.com/stretchr/testify/assert"
 	"net/http"
 	"net/http/httptest"
@@ -12,8 +13,9 @@ import (
 )
 
 var (
-	CMAToken = "b4c0n73n7fu1"
-	SpaceID  = "id1"
+	CMAToken       = "b4c0n73n7fu1"
+	SpaceID        = "id1"
+	OrganizationId = "org1"
 )
 
 // HTTPHandler type defines callback from doing a mock HTTP request
@@ -31,11 +33,11 @@ type ResponseData struct {
 	StatusCode int
 }
 
-func MockClient(
+func MockCMAClient(
 	t *testing.T,
 	assertions *assert.Assertions,
 	fixture ResponseData,
-	callback HTTPHandler, validation ValidateRequest) (common.SpaceIdClientBuilder, *httptest.Server) {
+	callback HTTPHandler, validation ValidateRequest) (cma.SpaceIdClientBuilder, *httptest.Server) {
 
 	handler := func(w http.ResponseWriter, r *http.Request) {
 
@@ -57,9 +59,9 @@ func MockClient(
 	ts := httptest.NewServer(http.HandlerFunc(handler))
 
 	client, err := contentful.NewCMAV2(client2.ClientConfig{
-		URL:       ts.URL,
+		URL:       util.ToPointer(ts.URL),
 		Debug:     false,
-		UserAgent: "testclient",
+		UserAgent: util.ToPointer("testclient"),
 		Token:     CMAToken,
 	})
 

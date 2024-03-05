@@ -4,19 +4,28 @@ import (
 	"context"
 	"fmt"
 	"github.com/flaconi/contentful-go/internal/cma/api_keys"
+	"github.com/flaconi/contentful-go/internal/cma/environment_aliases"
+	"github.com/flaconi/contentful-go/internal/cma/environments"
 	"github.com/flaconi/contentful-go/internal/cma/preview_api_keys"
 	"github.com/flaconi/contentful-go/service/cma"
-	"github.com/flaconi/contentful-go/service/common"
 	"io"
 	"net/http"
 	"net/url"
 )
 
-var _ common.SpaceIdClient = &SpaceIdClient{}
+var _ cma.SpaceIdClient = &SpaceIdClient{}
 
 type SpaceIdClient struct {
 	client  *Client
 	spaceId string
+}
+
+func (c *SpaceIdClient) EnvironmentAliases() cma.EnvironmentAliases {
+	return environment_aliases.NewEnvironmentAliasService(c)
+}
+
+func (c *SpaceIdClient) Environments() cma.Environments {
+	return environments.NewEnvironmentService(c)
 }
 
 func (c *SpaceIdClient) Get(ctx context.Context, path string, queryParams url.Values, headers http.Header) (*http.Response, error) {
@@ -35,7 +44,7 @@ func (c *SpaceIdClient) Delete(ctx context.Context, path string, queryParams url
 	return c.client.Delete(ctx, fmt.Sprintf("/spaces/%s%s", c.spaceId, path), queryParams, headers)
 }
 
-func (c *SpaceIdClient) WithEnvironment(environment string) common.EnvironmentClient {
+func (c *SpaceIdClient) WithEnvironment(environment string) cma.EnvironmentClient {
 	return &EnvironmentClient{
 		client:      c,
 		environment: environment,

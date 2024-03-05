@@ -14,10 +14,9 @@ import (
 )
 
 func TestAPIKeyService_List(t *testing.T) {
-	//var err error
 	assertions := assert.New(t)
 
-	cma, ts := testutil.MockClient(t, assertions, testutil.ResponseData{StatusCode: 200, Path: "api_key.json"}, nil, func(r *http.Request) {
+	cma, ts := testutil.MockCMAClient(t, assertions, testutil.ResponseData{StatusCode: 200, Path: "/api_key/list.json"}, nil, func(r *http.Request) {
 		assertions.Equal("GET", r.Method)
 		assertions.Equal("/spaces/"+testutil.SpaceID+"/api_keys", r.URL.Path)
 	})
@@ -31,44 +30,56 @@ func TestAPIKeyService_List(t *testing.T) {
 }
 
 func TestAPIKeyService_Get(t *testing.T) {
-	var err error
 	assertions := assert.New(t)
 
-	cma, ts := testutil.MockClient(t, assertions, testutil.ResponseData{StatusCode: 200, Path: "api_key_1.json"}, nil, func(r *http.Request) {
-		assertions.Equal("GET", r.Method)
-		assertions.Equal("/spaces/"+testutil.SpaceID+"/api_keys/exampleapikey", r.URL.Path)
-	})
+	var tests = []struct {
+		resultValidation func(assertions *assert.Assertions, apiKey *model.APIKey, err error)
+		path             string
+		name             string
+		statusCode       int
+	}{
+		{
+			resultValidation: func(assertions *assert.Assertions, apiKey *model.APIKey, err error) {
+				assertions.Nil(err)
+				assertions.Equal("Example API Key", apiKey.Name)
+				assertions.Equal("b4c0n73n7fu1", apiKey.AccessToken)
+				assertions.Equal("1Mx3FqXX5XCJDtNpVW4BZI", apiKey.PreviewAPIKey.Sys.ID)
+			},
+			path:       "/api_key/get.json",
+			name:       "found",
+			statusCode: 200,
+		},
+		{
+			resultValidation: func(assertions *assert.Assertions, apiKey *model.APIKey, err error) {
+				assertions.NotNil(err)
+				var contentfulError common.NotFoundError
+				assertions.True(errors.As(err, &contentfulError))
+			},
+			path:       "/api_key/not_found.json",
+			statusCode: 404,
+			name:       "not found",
+		},
+	}
 
-	defer ts.Close()
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			cma, ts := testutil.MockCMAClient(t, assertions, testutil.ResponseData{StatusCode: tt.statusCode, Path: tt.path}, nil, func(r *http.Request) {
+				assertions.Equal("GET", r.Method)
+				assertions.Equal("/spaces/"+testutil.SpaceID+"/api_keys/exampleapikey", r.URL.Path)
+			})
 
-	key, err := cma.WithSpaceId(testutil.SpaceID).ApiKeys().Get(context.Background(), "exampleapikey")
-	assertions.Nil(err)
-	assertions.Equal("Example API Key", key.Name)
-	assertions.Equal("b4c0n73n7fu1", key.AccessToken)
-	assertions.Equal("1Mx3FqXX5XCJDtNpVW4BZI", key.PreviewAPIKey.Sys.ID)
-}
+			defer ts.Close()
 
-func TestAPIKeyService_GetNotFound(t *testing.T) {
-	var err error
-	assertions := assert.New(t)
-
-	cma, ts := testutil.MockClient(t, assertions, testutil.ResponseData{StatusCode: 404, Path: "/api_key/not_found.json"}, nil, func(r *http.Request) {
-		assertions.Equal("GET", r.Method)
-		assertions.Equal("/spaces/"+testutil.SpaceID+"/api_keys/exampleapikey", r.URL.Path)
-	})
-
-	defer ts.Close()
-
-	_, err = cma.WithSpaceId(testutil.SpaceID).ApiKeys().Get(context.Background(), "exampleapikey")
-	assertions.NotNil(err)
-	var contentfulError common.NotFoundError
-	assertions.True(errors.As(err, &contentfulError))
+			apiKey, err := cma.WithSpaceId(testutil.SpaceID).ApiKeys().Get(context.Background(), "exampleapikey")
+			tt.resultValidation(assertions, apiKey, err)
+		})
+	}
 }
 
 func TestAPIKeyService_Upsert_Create(t *testing.T) {
 	assertions := assert.New(t)
 
-	cma, ts := testutil.MockClient(t, assertions, testutil.ResponseData{StatusCode: 201, Path: "api_key_1.json"}, nil, func(r *http.Request) {
+	cma, ts := testutil.MockCMAClient(t, assertions, testutil.ResponseData{StatusCode: 201, Path: "/api_key/get.json"}, nil, func(r *http.Request) {
 		assertions.Equal("POST", r.Method)
 		assertions.Equal("/spaces/"+testutil.SpaceID+"/api_keys", r.URL.Path)
 
@@ -112,7 +123,7 @@ func TestAPIKeyService_Upsert_Create(t *testing.T) {
 func TestAPIKeyService_Upsert_Update(t *testing.T) {
 	assertions := assert.New(t)
 
-	cma, ts := testutil.MockClient(t, assertions, testutil.ResponseData{StatusCode: 200, Path: "api_key_updated.json"}, nil, func(r *http.Request) {
+	cma, ts := testutil.MockCMAClient(t, assertions, testutil.ResponseData{StatusCode: 200, Path: "/api_key/update.json"}, nil, func(r *http.Request) {
 		assertions.Equal("PUT", r.Method)
 		assertions.Equal("/spaces/"+testutil.SpaceID+"/api_keys/exampleapikey", r.URL.Path)
 
@@ -126,7 +137,7 @@ func TestAPIKeyService_Upsert_Update(t *testing.T) {
 	defer ts.Close()
 
 	var key *model.APIKey
-	err := testutil.ModelFromTestData("api_key_1.json", &key)
+	err := testutil.ModelFromTestData("/api_key/get.json", &key)
 	assertions.Nil(err)
 
 	key.Name = "This name is updated"
@@ -141,7 +152,7 @@ func TestAPIKeyService_Delete(t *testing.T) {
 	var err error
 	assertions := assert.New(t)
 
-	cma, ts := testutil.MockClient(t, assertions, testutil.ResponseData{StatusCode: 200, Path: ""}, nil, func(r *http.Request) {
+	cma, ts := testutil.MockCMAClient(t, assertions, testutil.ResponseData{StatusCode: 200, Path: ""}, nil, func(r *http.Request) {
 		assertions.Equal("DELETE", r.Method)
 		assertions.Equal("/spaces/"+testutil.SpaceID+"/api_keys/exampleapikey", r.URL.Path)
 	})
@@ -149,7 +160,7 @@ func TestAPIKeyService_Delete(t *testing.T) {
 	defer ts.Close()
 
 	var key *model.APIKey
-	err = testutil.ModelFromTestData("api_key_1.json", &key)
+	err = testutil.ModelFromTestData("/api_key/get.json", &key)
 	assertions.Nil(err)
 
 	err = cma.WithSpaceId(testutil.SpaceID).ApiKeys().Delete(context.Background(), key)

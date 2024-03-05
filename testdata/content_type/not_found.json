@@ -1,0 +1,14 @@
+{
+  "sys": {
+    "type": "Error",
+    "id": "NotFound"
+  },
+  "message": "The resource could not be found.",
+  "details": {
+    "type": "ContentType",
+    "id": "test",
+    "environment": "testing",
+    "space": "ge37wc5qkpcd"
+  },
+  "requestId": "800ce4cc-41e6-427d-82ec-a23058abf7ea"
+}

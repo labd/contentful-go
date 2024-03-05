@@ -56,3 +56,7 @@ func (col Collection[Items, Includes]) Next() (*common.Collection[Items, Include
 	}
 	return &col.Collection, nil
 }
+
+func (col Collection[Items, Includes]) GetQuery() *common.Query {
+	return col.Query
+}

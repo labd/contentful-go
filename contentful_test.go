@@ -71,18 +71,6 @@ func webhookFromTestData(fileName string) (*Webhook, error) {
 	return &webhook, nil
 }
 
-func contentTypeFromTestData(fileName string) (*ContentType, error) {
-	content := readTestData(fileName)
-
-	var ct ContentType
-	err := json.NewDecoder(strings.NewReader(content)).Decode(&ct)
-	if err != nil {
-		return nil, err
-	}
-
-	return &ct, nil
-}
-
 func localeFromTestData(fileName string) (*Locale, error) {
 	content := readTestData(fileName)
 
@@ -105,30 +93,6 @@ func environmentFromTestData(fileName string) (*Environment, error) {
 	}
 
 	return &environment, nil
-}
-
-func environmentAliasFromTestData(fileName string) (*EnvironmentAlias, error) {
-	content := readTestData(fileName)
-
-	var environmentAlias EnvironmentAlias
-	err := json.NewDecoder(strings.NewReader(content)).Decode(&environmentAlias)
-	if err != nil {
-		return nil, err
-	}
-
-	return &environmentAlias, nil
-}
-
-func entryFromTestData(fileName string) (*Entry, error) {
-	content := readTestData(fileName)
-
-	var entry Entry
-	err := json.NewDecoder(strings.NewReader(content)).Decode(&entry)
-	if err != nil {
-		return nil, err
-	}
-
-	return &entry, nil
 }
 
 func roleFromTestData(fileName string) (*Role, error) {
@@ -165,18 +129,6 @@ func assetFromTestData(fileName string) (*Asset, error) {
 	}
 
 	return &asset, nil
-}
-
-func apiKeyFromTestData(fileName string) (*APIKey, error) {
-	content := readTestData(fileName)
-
-	var apiKey APIKey
-	err := json.NewDecoder(strings.NewReader(content)).Decode(&apiKey)
-	if err != nil {
-		return nil, err
-	}
-
-	return &apiKey, nil
 }
 
 func accessTokenFromTestFile(fileName string) (*AccessToken, error) {
@@ -237,30 +189,6 @@ func extensionFromTestFile(fileName string) (*Extension, error) {
 	}
 
 	return &extension, nil
-}
-
-func appDefinitionFromTestFile(fileName string) (*AppDefinition, error) {
-	content := readTestData(fileName)
-
-	var appDefinition AppDefinition
-	err := json.NewDecoder(strings.NewReader(content)).Decode(&appDefinition)
-	if err != nil {
-		return nil, err
-	}
-
-	return &appDefinition, nil
-}
-
-func appInstallationFromTestFile(fileName string) (*AppInstallation, error) {
-	content := readTestData(fileName)
-
-	var appInstallation AppInstallation
-	err := json.NewDecoder(strings.NewReader(content)).Decode(&appInstallation)
-	if err != nil {
-		return nil, err
-	}
-
-	return &appInstallation, nil
 }
 
 func resourceFromTestFile(fileName string) (*Resource, error) {

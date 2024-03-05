@@ -38,7 +38,6 @@ func (a *apiKeysService) Get(ctx context.Context, apiKeyID string) (result *mode
 }
 
 func (a *apiKeysService) List(ctx context.Context) cma.NextableCollection[*model.APIKey, any] {
-
 	return cma2.NewCollection[*model.APIKey, any](&cma2.CollectionOptions{
 		Path:   a.basePath,
 		Client: a.client,
@@ -61,17 +60,12 @@ func (a *apiKeysService) Upsert(ctx context.Context, apiKey *model.APIKey) error
 
 	if apiKey.IsNew() {
 		res, err = a.client.Post(ctx, a.basePath, nil, headers, bytes.NewReader(bytesArray))
-
-		if err != nil {
-			return err
-		}
-
 	} else {
 		res, err = a.client.Put(ctx, fmt.Sprintf("%s/%s", a.basePath, apiKey.Sys.ID), nil, headers, bytes.NewReader(bytesArray))
+	}
 
-		if err != nil {
-			return err
-		}
+	if err != nil {
+		return err
 	}
 
 	defer res.Body.Close()

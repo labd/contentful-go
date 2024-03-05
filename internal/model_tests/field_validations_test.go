@@ -1,8 +1,10 @@
-package contentful
+package model_tests
 
 import (
 	"bytes"
 	"encoding/json"
+	"github.com/flaconi/contentful-go/pkgs/model"
+	"github.com/flaconi/contentful-go/pkgs/util"
 	"testing"
 	"time"
 
@@ -13,7 +15,7 @@ func TestFieldValidationLink(t *testing.T) {
 	var err error
 	assertions := assert.New(t)
 
-	validation := &FieldValidationLink{
+	validation := &model.FieldValidationLink{
 		LinkContentType: []string{"test", "test2"},
 	}
 
@@ -26,7 +28,7 @@ func TestFieldValidationUnique(t *testing.T) {
 	var err error
 	assertions := assert.New(t)
 
-	validation := &FieldValidationUnique{
+	validation := &model.FieldValidationUnique{
 		Unique: false,
 	}
 
@@ -39,9 +41,9 @@ func TestFieldValidationPredefinedValues(t *testing.T) {
 	var err error
 	assertions := assert.New(t)
 
-	validation := &FieldValidationPredefinedValues{
+	validation := &model.FieldValidationPredefinedValues{
 		In:           []interface{}{5, 10, "string", 6.4},
-		ErrorMessage: valueToPointer("error message"),
+		ErrorMessage: util.ToPointer("error message"),
 	}
 
 	data, err := json.Marshal(validation)
@@ -54,10 +56,10 @@ func TestFieldValidationRange(t *testing.T) {
 	assertions := assert.New(t)
 
 	// between
-	validation := &FieldValidationRange{
-		Range: &MinMax{
-			Min: valueToPointer(float64(60)),
-			Max: valueToPointer(float64(100)),
+	validation := &model.FieldValidationRange{
+		Range: &model.MinMax{
+			Min: util.ToPointer(float64(60)),
+			Max: util.ToPointer(float64(100)),
 		},
 		ErrorMessage: "error message",
 	}
@@ -65,7 +67,7 @@ func TestFieldValidationRange(t *testing.T) {
 	assertions.Nil(err)
 	assertions.Equal("{\"range\":{\"min\":60,\"max\":100},\"message\":\"error message\"}", string(data))
 
-	var validationCheck FieldValidationRange
+	var validationCheck model.FieldValidationRange
 	err = json.NewDecoder(bytes.NewReader(data)).Decode(&validationCheck)
 	assertions.Nil(err)
 	assertions.Equal(float64(60), *validationCheck.Range.Min)
@@ -73,16 +75,16 @@ func TestFieldValidationRange(t *testing.T) {
 	assertions.Equal("error message", validationCheck.ErrorMessage)
 
 	// greater than equal to
-	validation = &FieldValidationRange{
-		Range: &MinMax{
-			Min: valueToPointer(float64(10)),
+	validation = &model.FieldValidationRange{
+		Range: &model.MinMax{
+			Min: util.ToPointer(float64(10)),
 		},
 		ErrorMessage: "error message",
 	}
 	data, err = json.Marshal(validation)
 	assertions.Nil(err)
 	assertions.Equal("{\"range\":{\"min\":10},\"message\":\"error message\"}", string(data))
-	validationCheck = FieldValidationRange{}
+	validationCheck = model.FieldValidationRange{}
 	err = json.NewDecoder(bytes.NewReader(data)).Decode(&validationCheck)
 	assertions.Nil(err)
 	assertions.Equal(float64(10), *validationCheck.Range.Min)
@@ -90,16 +92,16 @@ func TestFieldValidationRange(t *testing.T) {
 	assertions.Equal("error message", validationCheck.ErrorMessage)
 
 	// less than equal to
-	validation = &FieldValidationRange{
-		Range: &MinMax{
-			Max: valueToPointer(float64(90)),
+	validation = &model.FieldValidationRange{
+		Range: &model.MinMax{
+			Max: util.ToPointer(float64(90)),
 		},
 		ErrorMessage: "error message",
 	}
 	data, err = json.Marshal(validation)
 	assertions.Nil(err)
 	assertions.Equal("{\"range\":{\"max\":90},\"message\":\"error message\"}", string(data))
-	validationCheck = FieldValidationRange{}
+	validationCheck = model.FieldValidationRange{}
 	err = json.NewDecoder(bytes.NewReader(data)).Decode(&validationCheck)
 	assertions.Nil(err)
 	assertions.Equal(float64(90), *validationCheck.Range.Max)
@@ -112,18 +114,18 @@ func TestFieldValidationSize(t *testing.T) {
 	assertions := assert.New(t)
 
 	// between
-	validation := &FieldValidationSize{
-		Size: &MinMax{
-			Min: valueToPointer(float64(4)),
-			Max: valueToPointer(float64(6)),
+	validation := &model.FieldValidationSize{
+		Size: &model.MinMax{
+			Min: util.ToPointer(float64(4)),
+			Max: util.ToPointer(float64(6)),
 		},
-		ErrorMessage: valueToPointer("error message"),
+		ErrorMessage: util.ToPointer("error message"),
 	}
 	data, err := json.Marshal(validation)
 	assertions.Nil(err)
 	assertions.Equal("{\"size\":{\"min\":4,\"max\":6},\"message\":\"error message\"}", string(data))
 
-	var validationCheck FieldValidationSize
+	var validationCheck model.FieldValidationSize
 	err = json.NewDecoder(bytes.NewReader(data)).Decode(&validationCheck)
 	assertions.Nil(err)
 	assertions.Equal(float64(4), *validationCheck.Size.Min)
@@ -136,16 +138,16 @@ func TestFieldValidationDate(t *testing.T) {
 	assertions := assert.New(t)
 
 	layout := "2006-01-02T03:04:05"
-	min := time.Now()
-	max := time.Now()
+	minTime := time.Now()
+	maxTime := time.Now()
 
-	minStr := min.Format(layout)
-	maxStr := max.Format(layout)
+	minStr := minTime.Format(layout)
+	maxStr := maxTime.Format(layout)
 
-	validation := &FieldValidationDate{
-		Range: &DateMinMax{
-			Min: min,
-			Max: max,
+	validation := &model.FieldValidationDate{
+		Range: &model.DateMinMax{
+			Min: minTime,
+			Max: maxTime,
 		},
 		ErrorMessage: "error message",
 	}
@@ -153,14 +155,10 @@ func TestFieldValidationDate(t *testing.T) {
 	assertions.Nil(err)
 	assertions.Equal("{\"dateRange\":{\"min\":\""+minStr+"\",\"max\":\""+maxStr+"\"},\"message\":\"error message\"}", string(data))
 
-	var validationCheck FieldValidationDate
+	var validationCheck model.FieldValidationDate
 	err = json.NewDecoder(bytes.NewReader(data)).Decode(&validationCheck)
 	assertions.Nil(err)
 	assertions.Equal(minStr, validationCheck.Range.Min.Format(layout))
 	assertions.Equal(maxStr, validationCheck.Range.Max.Format(layout))
 	assertions.Equal("error message", validationCheck.ErrorMessage)
-}
-
-func valueToPointer[T any](value T) *T {
-	return &value
 }

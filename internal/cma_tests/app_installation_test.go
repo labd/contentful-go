@@ -17,7 +17,7 @@ func TestAppInstallationService_List(t *testing.T) {
 	//var err error
 	assertions := assert.New(t)
 
-	cma, ts := testutil.MockClient(t, assertions, testutil.ResponseData{StatusCode: 200, Path: "app_installation.json"}, nil, func(r *http.Request) {
+	cma, ts := testutil.MockCMAClient(t, assertions, testutil.ResponseData{StatusCode: 200, Path: "app_installation/list.json"}, nil, func(r *http.Request) {
 		assertions.Equal("GET", r.Method)
 		assertions.Equal("/spaces/"+testutil.SpaceID+"/environments/master/app_installations", r.URL.Path)
 	})
@@ -34,7 +34,7 @@ func TestAppInstallationService_Get(t *testing.T) {
 	var err error
 	assertions := assert.New(t)
 
-	cma, ts := testutil.MockClient(t, assertions, testutil.ResponseData{StatusCode: 200, Path: "app_installation_1.json"}, nil, func(r *http.Request) {
+	cma, ts := testutil.MockCMAClient(t, assertions, testutil.ResponseData{StatusCode: 200, Path: "app_installation/get.json"}, nil, func(r *http.Request) {
 		assertions.Equal("GET", r.Method)
 		assertions.Equal("/spaces/"+testutil.SpaceID+"/environments/master/app_installations/app_definition_id", r.URL.Path)
 	})
@@ -50,7 +50,7 @@ func TestAppInstallationService_GetNotFound(t *testing.T) {
 	var err error
 	assertions := assert.New(t)
 
-	cma, ts := testutil.MockClient(t, assertions, testutil.ResponseData{StatusCode: 404, Path: "/app_installation/not_found.json"}, nil, func(r *http.Request) {
+	cma, ts := testutil.MockCMAClient(t, assertions, testutil.ResponseData{StatusCode: 404, Path: "/app_installation/not_found.json"}, nil, func(r *http.Request) {
 		assertions.Equal("GET", r.Method)
 		assertions.Equal("/spaces/"+testutil.SpaceID+"/environments/master/app_installations/app_definition_id", r.URL.Path)
 	})
@@ -66,7 +66,7 @@ func TestAppInstallationService_GetNotFound(t *testing.T) {
 func TestAppInstallationService_Upsert(t *testing.T) {
 	assertions := assert.New(t)
 
-	cma, ts := testutil.MockClient(t, assertions, testutil.ResponseData{StatusCode: 200, Path: "app_installation_updated.json"}, nil, func(r *http.Request) {
+	cma, ts := testutil.MockCMAClient(t, assertions, testutil.ResponseData{StatusCode: 200, Path: "app_installation/update.json"}, nil, func(r *http.Request) {
 		assertions.Equal("PUT", r.Method)
 		assertions.Equal("/spaces/"+testutil.SpaceID+"/environments/master/app_installations/<app_definition_id>", r.URL.Path)
 
@@ -81,7 +81,7 @@ func TestAppInstallationService_Upsert(t *testing.T) {
 	defer ts.Close()
 
 	var installation *model.AppInstallation
-	err := testutil.ModelFromTestData("app_installation_1.json", &installation)
+	err := testutil.ModelFromTestData("app_installation/get.json", &installation)
 	assertions.Nil(err)
 
 	installation.Parameters["lorum"] = "ipsum"
@@ -95,7 +95,7 @@ func TestAppInstallationService_Upsert(t *testing.T) {
 func TestAppInstallationService_Upsert_Forbidden(t *testing.T) {
 	assertions := assert.New(t)
 
-	cma, ts := testutil.MockClient(t, assertions, testutil.ResponseData{StatusCode: 403, Path: "app_installation/forbidden.json"}, nil, func(r *http.Request) {
+	cma, ts := testutil.MockCMAClient(t, assertions, testutil.ResponseData{StatusCode: 403, Path: "app_installation/forbidden.json"}, nil, func(r *http.Request) {
 		assertions.Equal("PUT", r.Method)
 		assertions.Equal("/spaces/"+testutil.SpaceID+"/environments/master/app_installations/<app_definition_id>", r.URL.Path)
 
@@ -110,7 +110,7 @@ func TestAppInstallationService_Upsert_Forbidden(t *testing.T) {
 	defer ts.Close()
 
 	var installation *model.AppInstallation
-	err := testutil.ModelFromTestData("app_installation_1.json", &installation)
+	err := testutil.ModelFromTestData("app_installation/get.json", &installation)
 	assertions.Nil(err)
 
 	installation.Parameters["lorum"] = "ipsum"
@@ -127,7 +127,7 @@ func TestAppInstallationService_Delete(t *testing.T) {
 	var err error
 	assertions := assert.New(t)
 
-	cma, ts := testutil.MockClient(t, assertions, testutil.ResponseData{StatusCode: 200, Path: ""}, nil, func(r *http.Request) {
+	cma, ts := testutil.MockCMAClient(t, assertions, testutil.ResponseData{StatusCode: 200, Path: ""}, nil, func(r *http.Request) {
 		assertions.Equal("DELETE", r.Method)
 		assertions.Equal("/spaces/"+testutil.SpaceID+"/environments/master/app_installations/<app_definition_id>", r.URL.Path)
 	})
@@ -135,7 +135,7 @@ func TestAppInstallationService_Delete(t *testing.T) {
 	defer ts.Close()
 
 	var installation *model.AppInstallation
-	err = testutil.ModelFromTestData("app_installation_1.json", &installation)
+	err = testutil.ModelFromTestData("app_installation/get.json", &installation)
 	assertions.Nil(err)
 
 	err = cma.WithSpaceId(testutil.SpaceID).WithEnvironment("master").AppInstallations().Delete(context.Background(), installation)

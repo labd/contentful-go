@@ -148,11 +148,11 @@ func (q *Query) GreaterThanOrEqual(field string, value interface{}) *Query {
 	return q
 }
 
-// Query param
-func (q *Query) Query(qStr string) *Query {
-	q.q = qStr
-	return q
-}
+//// Query param
+//func (q *Query) Query(qStr string) *Query {
+//	q.q = qStr
+//	return q
+//}
 
 // Match param
 func (q *Query) Match(field, match string) *Query {

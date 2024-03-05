@@ -103,3 +103,35 @@ func TestAccessTokenInvalidError_Error(t *testing.T) {
 	assertions.Equal("Error", accessTokenInvalidError.APIError.err.Sys.Type)
 	assertions.Equal("AccessTokenInvalid", accessTokenInvalidError.APIError.err.Sys.ID)
 }
+
+func TestAccessToken422_Error(t *testing.T) {
+	var err error
+	assertions := assert.New(t)
+
+	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(422)
+		_, _ = fmt.Fprintln(w, readTestData("error_unique_422.json"))
+	})
+
+	// test server
+	server := httptest.NewServer(handler)
+	defer server.Close()
+
+	// cmaClient client
+	cmaClient = NewCMA(CMAToken)
+	cmaClient.BaseURL = server.URL
+
+	// test space
+	space := &Space{Name: "test-space"}
+	err = cmaClient.Spaces.Upsert(space)
+	assertions.NotNil(err)
+	_, ok := err.(InvalidEntryError)
+	assertions.Equal(true, ok)
+	accessTokenInvalidError := err.(InvalidEntryError)
+	assertions.Equal("Same field value present in other entry\n", accessTokenInvalidError.Error())
+	assertions.Equal(422, accessTokenInvalidError.APIError.res.StatusCode)
+	assertions.Equal("23e4333f-8fea-4f56-ac4d-4adeb8159185", accessTokenInvalidError.APIError.err.RequestID)
+	assertions.Equal("Validation error", accessTokenInvalidError.APIError.err.Message)
+	assertions.Equal("Error", accessTokenInvalidError.APIError.err.Sys.Type)
+	assertions.Equal("InvalidEntry", accessTokenInvalidError.APIError.err.Sys.ID)
+}

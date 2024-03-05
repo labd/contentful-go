@@ -14,7 +14,7 @@ type EnvironmentSys struct {
 	} `json:"environment,omitempty"`
 }
 
-type SpaceSys struct {
+type CreatedSys struct {
 	BaseSys
 	CreatedAt string `json:"createdAt,omitempty"`
 	UpdatedAt string `json:"updatedAt,omitempty"`
@@ -24,7 +24,10 @@ type SpaceSys struct {
 	CreatedBy *struct {
 		Sys BaseSys `json:"sys,omitempty"`
 	} `json:"createdBy,omitempty"`
+}
 
+type SpaceSys struct {
+	CreatedSys
 	Space *struct {
 		Sys BaseSys `json:"sys,omitempty"`
 	} `json:"space,omitempty"`

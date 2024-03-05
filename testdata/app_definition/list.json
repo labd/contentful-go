@@ -1,0 +1,46 @@
+{
+  "sys": {
+    "type": "Array"
+  },
+  "total": 1,
+  "skip": 0,
+  "limit": 100,
+  "items": [
+    {
+      "sys": {
+        "id": "app_definition_id",
+        "type": "AppDefinition",
+        "createdAt": "2020-01-01T13:00:00.000Z",
+        "createdBy": {
+          "sys": {
+            "type": "Link",
+            "linkType": "User",
+            "id": "7BslKh9TdKGOK41VmLDjFZ"
+          }
+        },
+        "updatedAt": "2020-01-01T13:00:00.000Z",
+        "updatedBy": {
+          "sys": {
+            "type": "Link",
+            "linkType": "User",
+            "id": "7BslKh9TdKGOK41VmLDjFZ"
+          }
+        },
+        "organization": {
+          "sys": {
+            "type": "Link",
+            "linkType": "Organization",
+            "id": "organization_id"
+          }
+        }
+      },
+      "name": "Hello world!",
+      "src": "https://example.com/app.html",
+      "locations": [
+        {
+          "location": "entry-sidebar"
+        }
+      ]
+    }
+  ]
+}

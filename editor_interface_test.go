@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/flaconi/contentful-go/pkgs/util"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -131,7 +132,7 @@ func TestEditorInterfacesService_Update(t *testing.T) {
 	editorInterface, err := editorInterfaceFromTestFile("editor_interface_1.json")
 	assertions.Nil(err)
 
-	editorInterface.Controls[0].WidgetID = valueToPointer("changed id")
+	editorInterface.Controls[0].WidgetID = util.ToPointer("changed id")
 
 	err = cmaClient.EditorInterfaces.Update(spaceID, "hfM9RCJIk0wIm06WkEOQY", editorInterface)
 	assertions.Nil(err)

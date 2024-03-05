@@ -69,7 +69,7 @@ func TestLocalesService_Get(t *testing.T) {
 func TestLocalesService_GetWithEnv(t *testing.T) {
 	var err error
 	assertions := assert.New(t)
-	env, err := environmentFromTestData("environment_1.json")
+	env, err := environmentFromTestData("environment/get.json")
 
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		assertions.Equal(r.Method, "GET")
@@ -161,7 +161,7 @@ func TestLocalesService_Upsert_Create(t *testing.T) {
 func TestLocalesService_UpsertWithEnv_Create(t *testing.T) {
 	var err error
 	assertions := assert.New(t)
-	env, err := environmentFromTestData("environment_1.json")
+	env, err := environmentFromTestData("environment/get.json")
 
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		assertions.Equal(r.Method, "POST")
@@ -237,7 +237,7 @@ func TestLocalesService_Upsert_Update(t *testing.T) {
 func TestLocalesService_UpsertWithEnv_Update(t *testing.T) {
 	var err error
 	assertions := assert.New(t)
-	env, err := environmentFromTestData("environment_1.json")
+	env, err := environmentFromTestData("environment/get.json")
 
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		assertions.Equal(r.Method, "PUT")
@@ -305,7 +305,7 @@ func TestLocalesService_Delete(t *testing.T) {
 func TestLocalesService_DeleteWithEnv(t *testing.T) {
 	var err error
 	assertions := assert.New(t)
-	env, err := environmentFromTestData("environment_1.json")
+	env, err := environmentFromTestData("environment/get.json")
 
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		assertions.Equal(r.Method, "DELETE")

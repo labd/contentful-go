@@ -1,0 +1,1 @@
+{"sys":{"type":"Error","id":"InvalidEntry"},"message":"Validation error","details":{"errors":[{"name":"unique","details":"Same field value present in other entry","path":["fields","identifier","en-US"],"value":"_BOTTOM_american-crew","conflicting":[{"sys":{"type":"Link","linkType":"Entry","id":"1Z5NfSeYUTW0pOQD4IZmJA"}}]}]},"requestId":"23e4333f-8fea-4f56-ac4d-4adeb8159185"}

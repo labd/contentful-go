@@ -7,6 +7,7 @@ import (
 	"github.com/flaconi/contentful-go/pkgs/model"
 	"net/http"
 	"reflect"
+	"strings"
 )
 
 // ErrorResponse model
@@ -67,25 +68,28 @@ func (e *ErrorDetails) UnmarshalJSON(data []byte) error {
 
 // ErrorDetail model
 type ErrorDetail struct {
-	ID      string      `json:"id,omitempty"`
-	Name    string      `json:"name,omitempty"`
-	Path    interface{} `json:"path,omitempty"`
-	Details string      `json:"details,omitempty"`
-	Value   interface{} `json:"value,omitempty"`
+	ID          string      `json:"id,omitempty"`
+	Name        string      `json:"name,omitempty"`
+	Path        interface{} `json:"path,omitempty"`
+	Details     string      `json:"details,omitempty"`
+	Value       interface{} `json:"value,omitempty"`
+	Conflicting []*struct {
+		Sys model.BaseSys `json:"sys,omitempty"`
+	} `json:"conflicting,omitempty"`
 }
 
 // APIError model
 type APIError struct {
 	req *http.Request
 	res *http.Response
-	err *ErrorResponse
+	Err *ErrorResponse
 }
 
 func NewApiError(req *http.Request, res *http.Response, err *ErrorResponse) APIError {
 	return APIError{
 		req: req,
 		res: res,
-		err: err,
+		Err: err,
 	}
 }
 
@@ -95,7 +99,7 @@ type AccessTokenInvalidError struct {
 }
 
 func (e AccessTokenInvalidError) Error() string {
-	return e.APIError.err.Message
+	return e.APIError.Err.Message
 }
 
 // VersionMismatchError for 409 errors
@@ -115,14 +119,45 @@ type ValidationFailedError struct {
 func (e ValidationFailedError) Error() string {
 	msg := bytes.Buffer{}
 
-	for _, err := range e.APIError.err.Details.Errors {
+	for _, err := range e.APIError.Err.Details.Errors {
 		if err.Name == "uniqueFieldIds" || err.Name == "uniqueFieldApiNames" {
 			return msg.String()
 		}
-		msg.WriteString(fmt.Sprintf("%s\n", err.Details))
+
+		if path, ok := getPathAsString(err.Path); ok {
+			msg.WriteString(fmt.Sprintf("Value \"%s\" in path \"%s\" with details: \"%s\"\n", err.Value, *path, err.Details))
+			continue
+		}
+
+		msg.WriteString(fmt.Sprintf("Value %s in path %+v %s\n", err.Value, err.Path, err.Details))
 	}
 
 	return msg.String()
+}
+
+func getPathAsString(path any) (*string, bool) {
+	switch x := path.(type) {
+	case []string:
+		res := strings.Join(x, ".")
+		return &res, true
+	case []any:
+		var res []string
+
+		for _, val := range x {
+			switch val.(type) {
+			case string:
+				res = append(res, val.(string))
+
+			default:
+				res = append(res, fmt.Sprintf("%+v", val))
+			}
+		}
+
+		ret := strings.Join(res, ".")
+		return &ret, true
+	default:
+		return nil, false
+	}
 }
 
 // NotFoundError for 404 errors
@@ -140,7 +175,7 @@ type RateLimitExceededError struct {
 }
 
 func (e RateLimitExceededError) Error() string {
-	return e.APIError.err.Message
+	return e.APIError.Err.Message
 }
 
 // BadRequestError error model for bad request responses
@@ -154,3 +189,21 @@ type AccessDeniedError struct{}
 
 // ServerError error model for server error responses
 type ServerError struct{}
+
+// InvalidEntryError model
+type InvalidEntryError struct {
+	APIError
+}
+
+func (e InvalidEntryError) Error() string {
+	msg := bytes.Buffer{}
+
+	for _, err := range e.APIError.Err.Details.Errors {
+		if err.Name == "unique" {
+			return msg.String()
+		}
+		msg.WriteString(fmt.Sprintf("%s\n", err.Details))
+	}
+
+	return msg.String()
+}

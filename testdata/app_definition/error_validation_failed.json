@@ -1,0 +1,21 @@
+{
+  "sys": {
+    "type": "Error",
+    "id": "ValidationFailed"
+  },
+  "message": "Validation error",
+  "details": {
+    "errors": [
+      {
+        "name": "regexp",
+        "details": "Does not match /(^https://)|(^http://localhost(:[0-9]+)?(/|$))/",
+        "path": [
+          "src"
+        ],
+        "value": "localhost",
+        "pattern": "(^https://)|(^http://localhost(:[0-9]+)?(/|$))"
+      }
+    ]
+  },
+  "requestId": "374987sdvHGJ87bc06000dfa78265"
+}
