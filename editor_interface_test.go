@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/flaconi/contentful-go/pkgs/common"
 	"github.com/flaconi/contentful-go/pkgs/util"
 	"net/http"
 	"net/http/httptest"
@@ -95,7 +96,7 @@ func TestEditorInterfacesService_Get_2(t *testing.T) {
 
 	_, err = cmaClient.EditorInterfaces.Get(spaceID, "hfM9RCJIk0wIm06WkEOQY")
 	assertions.NotNil(err)
-	var notFoundError ErrorResponse
+	var notFoundError common.ErrorResponse
 	errors.As(err, &notFoundError)
 }
 

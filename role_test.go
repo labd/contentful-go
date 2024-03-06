@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/flaconi/contentful-go/pkgs/common"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -91,7 +92,7 @@ func TestRolesService_Get_2(t *testing.T) {
 
 	_, err = cmaClient.Roles.Get(spaceID, "0xvkNW6WdQ8JkWlWZ8BC4x")
 	assertions.NotNil(err)
-	var contentfulError ErrorResponse
+	var contentfulError common.ErrorResponse
 	assertions.True(errors.As(err, &contentfulError))
 }
 

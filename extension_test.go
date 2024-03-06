@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/flaconi/contentful-go/pkgs/common"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -93,7 +94,7 @@ func TestExtensionsService_Get_2(t *testing.T) {
 
 	_, err = cmaClient.Extensions.Get(spaceID, "0xvkPW9FdQ1kkWlWZ8ga4x")
 	assertions.NotNil(err)
-	var contentfulError ErrorResponse
+	var contentfulError common.ErrorResponse
 	assertions.True(errors.As(err, &contentfulError))
 }
 

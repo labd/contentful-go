@@ -120,10 +120,6 @@ func (e ValidationFailedError) Error() string {
 	msg := bytes.Buffer{}
 
 	for _, err := range e.APIError.Err.Details.Errors {
-		if err.Name == "uniqueFieldIds" || err.Name == "uniqueFieldApiNames" {
-			return msg.String()
-		}
-
 		if path, ok := getPathAsString(err.Path); ok {
 			msg.WriteString(fmt.Sprintf("Value \"%s\" in path \"%s\" with details: \"%s\"\n", err.Value, *path, err.Details))
 			continue
@@ -199,9 +195,6 @@ func (e InvalidEntryError) Error() string {
 	msg := bytes.Buffer{}
 
 	for _, err := range e.APIError.Err.Details.Errors {
-		if err.Name == "unique" {
-			return msg.String()
-		}
 		msg.WriteString(fmt.Sprintf("%s\n", err.Details))
 	}
 

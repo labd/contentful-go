@@ -3,6 +3,7 @@ package contentful
 import (
 	"errors"
 	"fmt"
+	"github.com/flaconi/contentful-go/pkgs/common"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -92,7 +93,7 @@ func TestWebhookCallsService_Get_2(t *testing.T) {
 
 	_, err = cmaClient.WebhookCalls.Get(spaceID, "0KzM2HxYr5O1pZ4SaUzK8h", "bar")
 	assertions.NotNil(err)
-	var contentfulError ErrorResponse
+	var contentfulError common.ErrorResponse
 	assertions.True(errors.As(err, &contentfulError))
 }
 
@@ -148,6 +149,6 @@ func TestWebhookCallsService_Health_2(t *testing.T) {
 
 	_, err = cmaClient.WebhookCalls.Health(spaceID, "0KzM2HxYr5O1pZ4SaUzK8h")
 	assertions.NotNil(err)
-	var contentfulError ErrorResponse
+	var contentfulError common.ErrorResponse
 	assertions.True(errors.As(err, &contentfulError))
 }

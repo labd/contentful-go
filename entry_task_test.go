@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/flaconi/contentful-go/pkgs/common"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -91,7 +92,7 @@ func TestEntryTasksService_Get_2(t *testing.T) {
 
 	_, err = cmaClient.EntryTasks.Get(spaceID, "5KsDBWseXY6QegucYAoacS", "RHfHVRz3QkAgcMq4CGg2m5")
 	assertions.NotNil(err)
-	var contentfulError ErrorResponse
+	var contentfulError common.ErrorResponse
 	assertions.True(errors.As(err, &contentfulError))
 }
 

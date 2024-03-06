@@ -4,12 +4,15 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"github.com/flaconi/contentful-go/pkgs/common"
+	"github.com/flaconi/contentful-go/pkgs/model"
 	"io"
 	"log"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
 	"os"
+	"reflect"
 	"strconv"
 	"strings"
 	"sync/atomic"
@@ -365,8 +368,8 @@ func TestHandleError(t *testing.T) {
 	path := "/some/path"
 	requestID := "request-id"
 	query := url.Values{}
-	errResponse := ErrorResponse{
-		Sys: &Sys{
+	errResponse := common.ErrorResponse{
+		Sys: &model.BaseSys{
 			ID:   "AccessTokenInvalid",
 			Type: "Error",
 		},
@@ -389,10 +392,16 @@ func TestHandleError(t *testing.T) {
 	}
 
 	err := c.handleError(req, res)
-	assertions.IsType(AccessTokenInvalidError{}, err)
-	assertions.Equal(req, err.(AccessTokenInvalidError).APIError.req)
-	assertions.Equal(res, err.(AccessTokenInvalidError).APIError.res)
-	assertions.Equal(&errResponse, err.(AccessTokenInvalidError).APIError.err)
+	assertions.IsType(common.AccessTokenInvalidError{}, err)
+
+	apiError := err.(common.AccessTokenInvalidError).APIError
+
+	refVal := reflect.ValueOf(&apiError).Elem()
+
+	assertions.True(refVal.FieldByName("req").Equal(reflect.ValueOf(req)))
+	assertions.True(refVal.FieldByName("res").Equal(reflect.ValueOf(res)))
+
+	assertions.Equal(&errResponse, err.(common.AccessTokenInvalidError).APIError.Err)
 }
 
 func TestBackoffForPerSecondLimiting(t *testing.T) {

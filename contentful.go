@@ -6,6 +6,7 @@ import (
 	"github.com/flaconi/contentful-go/internal/cda"
 	"github.com/flaconi/contentful-go/internal/cma"
 	"github.com/flaconi/contentful-go/pkgs/client"
+	"github.com/flaconi/contentful-go/pkgs/common"
 	cda_service "github.com/flaconi/contentful-go/service/cda"
 	cma_service "github.com/flaconi/contentful-go/service/cma"
 	"io"
@@ -253,7 +254,7 @@ func (c *Client) do(req *http.Request, v interface{}) error {
 	apiError := c.handleError(req, res)
 
 	// return apiError if it is not rate limit error
-	if _, ok := apiError.(RateLimitExceededError); !ok {
+	if _, ok := apiError.(common.RateLimitExceededError); !ok {
 		return apiError
 	}
 
@@ -285,34 +286,30 @@ func (c *Client) handleError(req *http.Request, res *http.Response) error {
 		fmt.Printf("%q", dump)
 	}
 
-	var e ErrorResponse
+	var e common.ErrorResponse
 	defer res.Body.Close()
 	err := json.NewDecoder(res.Body).Decode(&e)
 	if err != nil {
 		return err
 	}
 
-	apiError := APIError{
-		req: req,
-		res: res,
-		err: &e,
-	}
+	apiError := common.NewApiError(req, res, &e)
 
 	switch errType := e.Sys.ID; errType {
 	case "NotFound":
-		return NotFoundError{apiError}
+		return common.NotFoundError{apiError}
 	case "RateLimitExceeded":
-		return RateLimitExceededError{apiError}
+		return common.RateLimitExceededError{apiError}
 	case "AccessTokenInvalid":
-		return AccessTokenInvalidError{apiError}
+		return common.AccessTokenInvalidError{apiError}
 	case "ValidationFailed":
-		return ValidationFailedError{apiError}
+		return common.ValidationFailedError{apiError}
 	case "VersionMismatch":
-		return VersionMismatchError{apiError}
+		return common.VersionMismatchError{apiError}
 	case "Conflict":
-		return VersionMismatchError{apiError}
+		return common.VersionMismatchError{apiError}
 	case "InvalidEntry":
-		return InvalidEntryError{apiError}
+		return common.InvalidEntryError{apiError}
 	default:
 		return e
 	}

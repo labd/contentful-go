@@ -3,6 +3,7 @@ package contentful
 import (
 	"errors"
 	"fmt"
+	"github.com/flaconi/contentful-go/pkgs/common"
 	"github.com/stretchr/testify/assert"
 	"net/http"
 	"net/http/httptest"
@@ -58,7 +59,7 @@ func TestResourcesService_Get_2(t *testing.T) {
 
 	_, err = urc.Resources.Get(spaceID, "0xvkNW6WdQ8JkWlWZ8BC4x")
 	assertions.NotNil(err)
-	var contentfulError ErrorResponse
+	var contentfulError common.ErrorResponse
 	assertions.True(errors.As(err, &contentfulError))
 }
 
