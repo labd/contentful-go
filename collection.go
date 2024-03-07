@@ -70,26 +70,6 @@ func (col *Collection) ToSpace() []*Space {
 	return spaces
 }
 
-// ToLocale cast Items to Locale model
-func (col *Collection) ToLocale() []*Locale {
-	var locales []*Locale
-
-	byteArray, _ := json.Marshal(col.Items)
-	_ = json.NewDecoder(bytes.NewReader(byteArray)).Decode(&locales)
-
-	return locales
-}
-
-// ToAsset cast Items to Asset model
-func (col *Collection) ToAsset() []*Asset {
-	var assets []*Asset
-
-	byteArray, _ := json.Marshal(col.Items)
-	_ = json.NewDecoder(bytes.NewReader(byteArray)).Decode(&assets)
-
-	return assets
-}
-
 // ToWebhook cast Items to Webhook model
 func (col *Collection) ToWebhook() []*Webhook {
 	var webhooks []*Webhook

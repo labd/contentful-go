@@ -7,6 +7,7 @@ import (
 	"github.com/flaconi/contentful-go/internal/cma/assets"
 	"github.com/flaconi/contentful-go/internal/cma/content_types"
 	"github.com/flaconi/contentful-go/internal/cma/entries"
+	"github.com/flaconi/contentful-go/internal/cma/locales"
 	"github.com/flaconi/contentful-go/service/cma"
 	"github.com/flaconi/contentful-go/service/common"
 	"io"
@@ -50,4 +51,8 @@ func (c *EnvironmentClient) Assets() cma.Assets {
 }
 func (c *EnvironmentClient) ContentTypes() cma.ContentTypes {
 	return content_types.NewContentTypeService(c)
+}
+
+func (c *EnvironmentClient) Locales() cma.Locales {
+	return locales.NewLocaleService(c)
 }

@@ -9,6 +9,7 @@ import (
 	"github.com/flaconi/contentful-go/pkgs/model"
 	"github.com/flaconi/contentful-go/service/cma"
 	"github.com/flaconi/contentful-go/service/common"
+	"github.com/hashicorp/go-multierror"
 	"net/http"
 	"strconv"
 )
@@ -71,8 +72,24 @@ func (e assetService) Upsert(ctx context.Context, asset *model.Asset) error {
 }
 
 func (e assetService) Process(ctx context.Context, asset *model.Asset) error {
-	//TODO implement me
-	panic("implement me")
+	headers := make(http.Header)
+
+	headers.Set("X-Contentful-Version", strconv.Itoa(asset.GetVersion()))
+
+	var err error
+
+	for locale := range asset.Fields.File {
+		_, resultErr := e.client.Put(ctx, fmt.Sprintf("%s/%s/files/%s/process", e.basePath, asset.Sys.ID, locale), nil, headers, nil)
+		if resultErr != nil {
+			err = multierror.Append(err, resultErr)
+		}
+	}
+
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (e assetService) Delete(ctx context.Context, asset *model.Asset) error {

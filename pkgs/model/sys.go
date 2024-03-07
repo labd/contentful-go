@@ -33,6 +33,21 @@ type SpaceSys struct {
 	} `json:"space,omitempty"`
 }
 
+type PublishSys struct {
+	EnvironmentSys
+	ContentType *struct {
+		Sys BaseSys `json:"sys,omitempty"`
+	} `json:"contentType,omitempty"`
+	FirstPublishedAt string   `json:"firstPublishedAt,omitempty"`
+	PublishedCounter int      `json:"publishedCounter,omitempty"`
+	PublishedAt      string   `json:"publishedAt,omitempty"`
+	PublishedBy      *BaseSys `json:"publishedBy,omitempty"`
+	PublishedVersion int      `json:"publishedVersion,omitempty"`
+	ArchivedAt       string   `json:"archivedAt,omitempty"`
+	ArchivedBy       *BaseSys `json:"archivedBy,omitempty"`
+	ArchivedVersion  int      `json:"archivedVersion,omitempty"`
+}
+
 //// Sys model
 //type Sys struct {
 //	BaseSys

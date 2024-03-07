@@ -1,23 +1,8 @@
 package model
 
-type EntrySys struct {
-	EnvironmentSys
-	ContentType *struct {
-		Sys BaseSys `json:"sys,omitempty"`
-	} `json:"contentType,omitempty"`
-	FirstPublishedAt string   `json:"firstPublishedAt,omitempty"`
-	PublishedCounter int      `json:"publishedCounter,omitempty"`
-	PublishedAt      string   `json:"publishedAt,omitempty"`
-	PublishedBy      *BaseSys `json:"publishedBy,omitempty"`
-	PublishedVersion int      `json:"publishedVersion,omitempty"`
-	ArchivedAt       string   `json:"archivedAt,omitempty"`
-	ArchivedBy       *BaseSys `json:"archivedBy,omitempty"`
-	ArchivedVersion  int      `json:"archivedVersion,omitempty"`
-}
-
 type Entry struct {
 	Locale string                 `json:"locale"`
-	Sys    *EntrySys              `json:"sys"`
+	Sys    *PublishSys            `json:"sys"`
 	Fields map[string]interface{} `json:"fields"`
 }
 

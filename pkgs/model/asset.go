@@ -1,9 +1,8 @@
 package model
 
 type Asset struct {
-	Locale string
-	Sys    *EnvironmentSys `json:"sys,omitempty"`
-	Fields *AssetFields    `json:"fields,omitempty"`
+	Sys    *PublishSys  `json:"sys,omitempty"`
+	Fields *AssetFields `json:"fields,omitempty"`
 }
 
 func (asset *Asset) GetVersion() int {

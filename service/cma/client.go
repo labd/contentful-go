@@ -25,6 +25,7 @@ type EnvironmentClient interface {
 	Entries() Entries
 	Assets() Assets
 	ContentTypes() ContentTypes
+	Locales() Locales
 }
 
 type OrganizationIdClient interface {

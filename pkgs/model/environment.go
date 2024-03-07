@@ -6,7 +6,7 @@ import (
 )
 
 type StatusSys struct {
-	CreatedSys
+	SpaceSys
 	Status *struct {
 		Sys BaseSys `json:"sys,omitempty"`
 	} `json:"Status,omitempty"`

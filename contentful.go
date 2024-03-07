@@ -39,10 +39,8 @@ type Client struct {
 	Memberships      *MembershipsService
 	Snapshots        *SnapshotsService
 	AccessTokens     *AccessTokensService
-	Assets           *AssetsService
 	EntryTasks       *EntryTasksService
 	ScheduledActions *ScheduledActionsService
-	Locales          *LocalesService
 	Webhooks         *WebhooksService
 	WebhookCalls     *WebhookCallsService
 	EditorInterfaces *EditorInterfacesService
@@ -89,10 +87,8 @@ func NewCMA(token string) *Client {
 	c.Memberships = (*MembershipsService)(&c.commonService)
 	c.Snapshots = (*SnapshotsService)(&c.commonService)
 	c.AccessTokens = (*AccessTokensService)(&c.commonService)
-	c.Assets = (*AssetsService)(&c.commonService)
 	c.EntryTasks = (*EntryTasksService)(&c.commonService)
 	c.ScheduledActions = (*ScheduledActionsService)(&c.commonService)
-	c.Locales = (*LocalesService)(&c.commonService)
 	c.Webhooks = (*WebhooksService)(&c.commonService)
 	c.WebhookCalls = (*WebhookCallsService)(&c.commonService)
 	c.EditorInterfaces = (*EditorInterfacesService)(&c.commonService)
@@ -125,8 +121,6 @@ func NewCDA(token string) *Client {
 	c.commonService.c = c
 
 	c.Spaces = (*SpacesService)(&c.commonService)
-	c.Assets = (*AssetsService)(&c.commonService)
-	c.Locales = (*LocalesService)(&c.commonService)
 	c.Webhooks = (*WebhooksService)(&c.commonService)
 
 	return c
@@ -146,8 +140,6 @@ func NewCPA(token string) *Client {
 	}
 
 	c.Spaces = &SpacesService{c: c}
-	c.Assets = &AssetsService{c: c}
-	c.Locales = &LocalesService{c: c}
 	c.Webhooks = &WebhooksService{c: c}
 
 	return c

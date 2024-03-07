@@ -74,30 +74,6 @@ func webhookFromTestData(fileName string) (*Webhook, error) {
 	return &webhook, nil
 }
 
-func localeFromTestData(fileName string) (*Locale, error) {
-	content := readTestData(fileName)
-
-	var locale Locale
-	err := json.NewDecoder(strings.NewReader(content)).Decode(&locale)
-	if err != nil {
-		return nil, err
-	}
-
-	return &locale, nil
-}
-
-func environmentFromTestData(fileName string) (*Environment, error) {
-	content := readTestData(fileName)
-
-	var environment Environment
-	err := json.NewDecoder(strings.NewReader(content)).Decode(&environment)
-	if err != nil {
-		return nil, err
-	}
-
-	return &environment, nil
-}
-
 func roleFromTestData(fileName string) (*Role, error) {
 	content := readTestData(fileName)
 
@@ -120,18 +96,6 @@ func membershipFromTestData(fileName string) (*Membership, error) {
 	}
 
 	return &membership, nil
-}
-
-func assetFromTestData(fileName string) (*Asset, error) {
-	content := readTestData(fileName)
-
-	var asset Asset
-	err := json.NewDecoder(strings.NewReader(content)).Decode(&asset)
-	if err != nil {
-		return nil, err
-	}
-
-	return &asset, nil
 }
 
 func accessTokenFromTestFile(fileName string) (*AccessToken, error) {

@@ -1,0 +1,9 @@
+{
+  "sys": {
+    "type": "Error",
+    "id": "NotFound"
+  },
+  "message": "The resource could not be found.",
+  "details": "Could not find a locale.",
+  "requestId": "427d9430-909f-41e1-8e54-39853f428acf"
+}
