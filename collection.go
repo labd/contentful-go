@@ -60,36 +60,6 @@ func (col *Collection) Next() (*Collection, error) {
 	return col, nil
 }
 
-// ToContentType cast Items to ContentType model
-func (col *Collection) ToContentType() []*ContentType {
-	var contentTypes []*ContentType
-
-	byteArray, _ := json.Marshal(col.Items)
-	_ = json.NewDecoder(bytes.NewReader(byteArray)).Decode(&contentTypes)
-
-	return contentTypes
-}
-
-// ToEnvironment cast Items to Environment model
-func (col *Collection) ToEnvironment() []*Environment {
-	var environments []*Environment
-
-	byteArray, _ := json.Marshal(col.Items)
-	_ = json.NewDecoder(bytes.NewReader(byteArray)).Decode(&environments)
-
-	return environments
-}
-
-// ToEnvironmentAlias cast Items to EnvironmentAlias model
-func (col *Collection) ToEnvironmentAlias() []*EnvironmentAlias {
-	var environmentAlias []*EnvironmentAlias
-
-	byteArray, _ := json.Marshal(col.Items)
-	_ = json.NewDecoder(bytes.NewReader(byteArray)).Decode(&environmentAlias)
-
-	return environmentAlias
-}
-
 // ToSpace cast Items to Space model
 func (col *Collection) ToSpace() []*Space {
 	var spaces []*Space
@@ -98,46 +68,6 @@ func (col *Collection) ToSpace() []*Space {
 	_ = json.NewDecoder(bytes.NewReader(byteArray)).Decode(&spaces)
 
 	return spaces
-}
-
-// ToEntry cast Items to Entry model
-func (col *Collection) ToEntry() []*Entry {
-	var entries []*Entry
-
-	byteArray, _ := json.Marshal(col.Items)
-	_ = json.NewDecoder(bytes.NewReader(byteArray)).Decode(&entries)
-
-	return entries
-}
-
-// ToLocale cast Items to Locale model
-func (col *Collection) ToLocale() []*Locale {
-	var locales []*Locale
-
-	byteArray, _ := json.Marshal(col.Items)
-	_ = json.NewDecoder(bytes.NewReader(byteArray)).Decode(&locales)
-
-	return locales
-}
-
-// ToAsset cast Items to Asset model
-func (col *Collection) ToAsset() []*Asset {
-	var assets []*Asset
-
-	byteArray, _ := json.Marshal(col.Items)
-	_ = json.NewDecoder(bytes.NewReader(byteArray)).Decode(&assets)
-
-	return assets
-}
-
-// ToAPIKey cast Items to APIKey model
-func (col *Collection) ToAPIKey() []*APIKey {
-	var apiKeys []*APIKey
-
-	byteArray, _ := json.Marshal(col.Items)
-	_ = json.NewDecoder(bytes.NewReader(byteArray)).Decode(&apiKeys)
-
-	return apiKeys
 }
 
 // ToWebhook cast Items to Webhook model
@@ -238,26 +168,6 @@ func (col *Collection) ToWebhookCall() []*WebhookCall {
 	_ = json.NewDecoder(bytes.NewReader(byteArray)).Decode(&webhookCall)
 
 	return webhookCall
-}
-
-// ToAppDefinition cast Items to AppDefinition model
-func (col *Collection) ToAppDefinition() []*AppDefinition {
-	var appDefinitions []*AppDefinition
-
-	byteArray, _ := json.Marshal(col.Items)
-	_ = json.NewDecoder(bytes.NewReader(byteArray)).Decode(&appDefinitions)
-
-	return appDefinitions
-}
-
-// ToAppInstallation cast Items to AppInstallation model
-func (col *Collection) ToAppInstallation() []*AppInstallation {
-	var appInstallation []*AppInstallation
-
-	byteArray, _ := json.Marshal(col.Items)
-	_ = json.NewDecoder(bytes.NewReader(byteArray)).Decode(&appInstallation)
-
-	return appInstallation
 }
 
 // ToUsage cast Items to Usage model

@@ -1,0 +1,10 @@
+{
+  "sys": {
+    "type": "Error",
+    "id": "AccessDenied"
+  },
+  "message": "Forbidden",
+  "details": {
+    "reasons": "Expected X-Contentful-Marketplace to be \"i-accept-end-user-license-agreement,i-accept-marketplace-terms-of-service,i-accept-privacy-policy\". Visit https://app.contentful.com/deeplink?link=apps&id=66frtrAqmWSowDJzQNDiD to read Marketplace Terms of Service, EULA and Privacy Policy."
+  }
+}

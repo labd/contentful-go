@@ -1,10 +1,13 @@
 package contentful
 
 import (
+	"errors"
 	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"testing"
+
+	"github.com/labd/contentful-go/pkgs/common"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -27,11 +30,11 @@ func TestWebhookCallsService_List(t *testing.T) {
 	server := httptest.NewServer(handler)
 	defer server.Close()
 
-	// cma client
-	cma = NewCMA(CMAToken)
-	cma.BaseURL = server.URL
+	// cmaClient client
+	cmaClient = NewCMA(CMAToken)
+	cmaClient.BaseURL = server.URL
 
-	collection, err := cma.WebhookCalls.List(spaceID, "0KzM2HxYr5O1pZ4SaUzK8h").Next()
+	collection, err := cmaClient.WebhookCalls.List(spaceID, "0KzM2HxYr5O1pZ4SaUzK8h").Next()
 	assertions.Nil(err)
 
 	spaces := collection.ToWebhookCall()
@@ -57,11 +60,11 @@ func TestWebhookCallsService_Get(t *testing.T) {
 	server := httptest.NewServer(handler)
 	defer server.Close()
 
-	// cma client
-	cma = NewCMA(CMAToken)
-	cma.BaseURL = server.URL
+	// cmaClient client
+	cmaClient = NewCMA(CMAToken)
+	cmaClient.BaseURL = server.URL
 
-	callDetails, err := cma.WebhookCalls.Get(spaceID, "0KzM2HxYr5O1pZ4SaUzK8h", "bar")
+	callDetails, err := cmaClient.WebhookCalls.Get(spaceID, "0KzM2HxYr5O1pZ4SaUzK8h", "bar")
 	assertions.Nil(err)
 	assertions.Equal("bar", callDetails.Sys.ID)
 	assertions.Equal("https://webhooks.example.com/endpoint", callDetails.Request.URL)
@@ -85,12 +88,14 @@ func TestWebhookCallsService_Get_2(t *testing.T) {
 	server := httptest.NewServer(handler)
 	defer server.Close()
 
-	// cma client
-	cma = NewCMA(CMAToken)
-	cma.BaseURL = server.URL
+	// cmaClient client
+	cmaClient = NewCMA(CMAToken)
+	cmaClient.BaseURL = server.URL
 
-	_, err = cma.WebhookCalls.Get(spaceID, "0KzM2HxYr5O1pZ4SaUzK8h", "bar")
-	assertions.Empty(err)
+	_, err = cmaClient.WebhookCalls.Get(spaceID, "0KzM2HxYr5O1pZ4SaUzK8h", "bar")
+	assertions.NotNil(err)
+	var contentfulError common.ErrorResponse
+	assertions.True(errors.As(err, &contentfulError))
 }
 
 func TestWebhookCallsService_Health(t *testing.T) {
@@ -111,11 +116,11 @@ func TestWebhookCallsService_Health(t *testing.T) {
 	server := httptest.NewServer(handler)
 	defer server.Close()
 
-	// cma client
-	cma = NewCMA(CMAToken)
-	cma.BaseURL = server.URL
+	// cmaClient client
+	cmaClient = NewCMA(CMAToken)
+	cmaClient.BaseURL = server.URL
 
-	health, err := cma.WebhookCalls.Health(spaceID, "0KzM2HxYr5O1pZ4SaUzK8h")
+	health, err := cmaClient.WebhookCalls.Health(spaceID, "0KzM2HxYr5O1pZ4SaUzK8h")
 	assertions.Nil(err)
 	assertions.Equal("bar", health.Sys.ID)
 	assertions.Equal(233, health.Calls.Total)
@@ -139,10 +144,12 @@ func TestWebhookCallsService_Health_2(t *testing.T) {
 	server := httptest.NewServer(handler)
 	defer server.Close()
 
-	// cma client
-	cma = NewCMA(CMAToken)
-	cma.BaseURL = server.URL
+	// cmaClient client
+	cmaClient = NewCMA(CMAToken)
+	cmaClient.BaseURL = server.URL
 
-	_, err = cma.WebhookCalls.Health(spaceID, "0KzM2HxYr5O1pZ4SaUzK8h")
-	assertions.Nil(err)
+	_, err = cmaClient.WebhookCalls.Health(spaceID, "0KzM2HxYr5O1pZ4SaUzK8h")
+	assertions.NotNil(err)
+	var contentfulError common.ErrorResponse
+	assertions.True(errors.As(err, &contentfulError))
 }

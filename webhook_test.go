@@ -28,11 +28,11 @@ func TestWebhooksService_List(t *testing.T) {
 	server := httptest.NewServer(handler)
 	defer server.Close()
 
-	// cma client
-	cma = NewCMA(CMAToken)
-	cma.BaseURL = server.URL
+	// cmaClient client
+	cmaClient = NewCMA(CMAToken)
+	cmaClient.BaseURL = server.URL
 
-	collection, err := cma.Webhooks.List(spaceID).Next()
+	collection, err := cmaClient.Webhooks.List(spaceID).Next()
 	assertions.Nil(err)
 	webhook := collection.ToWebhook()
 	assertions.Equal(1, len(webhook))
@@ -57,11 +57,11 @@ func TestWebhooksService_Get(t *testing.T) {
 	server := httptest.NewServer(handler)
 	defer server.Close()
 
-	// cma client
-	cma = NewCMA(CMAToken)
-	cma.BaseURL = server.URL
+	// cmaClient client
+	cmaClient = NewCMA(CMAToken)
+	cmaClient.BaseURL = server.URL
 
-	webhook, err := cma.Webhooks.Get(spaceID, "7fstd9fZ9T2p3kwD49FxhI")
+	webhook, err := cmaClient.Webhooks.Get(spaceID, "7fstd9fZ9T2p3kwD49FxhI")
 	assertions.Nil(err)
 	assertions.Equal("webhook-name", webhook.Name)
 }
@@ -84,11 +84,11 @@ func TestWebhooksService_Get_2(t *testing.T) {
 	server := httptest.NewServer(handler)
 	defer server.Close()
 
-	// cma client
-	cma = NewCMA(CMAToken)
-	cma.BaseURL = server.URL
+	// cmaClient client
+	cmaClient = NewCMA(CMAToken)
+	cmaClient.BaseURL = server.URL
 
-	_, err = cma.Webhooks.Get(spaceID, "7fstd9fZ9T2p3kwD49FxhI")
+	_, err = cmaClient.Webhooks.Get(spaceID, "7fstd9fZ9T2p3kwD49FxhI")
 	assertions.NotNil(err)
 }
 
@@ -133,9 +133,9 @@ func TestWebhooksService_Upsert_Create(t *testing.T) {
 	server := httptest.NewServer(handler)
 	defer server.Close()
 
-	// cma client
-	cma = NewCMA(CMAToken)
-	cma.BaseURL = server.URL
+	// cmaClient client
+	cmaClient = NewCMA(CMAToken)
+	cmaClient.BaseURL = server.URL
 
 	webhook := &Webhook{
 		Name: "webhook-name",
@@ -158,7 +158,7 @@ func TestWebhooksService_Upsert_Create(t *testing.T) {
 		},
 	}
 
-	err = cma.Webhooks.Upsert(spaceID, webhook)
+	err = cmaClient.Webhooks.Upsert(spaceID, webhook)
 	assertions.Nil(err)
 	assertions.Equal("7fstd9fZ9T2p3kwD49FxhI", webhook.Sys.ID)
 	assertions.Equal("webhook-name", webhook.Name)
@@ -207,9 +207,9 @@ func TestWebhooksService_Upsert_Update(t *testing.T) {
 	server := httptest.NewServer(handler)
 	defer server.Close()
 
-	// cma client
-	cma = NewCMA(CMAToken)
-	cma.BaseURL = server.URL
+	// cmaClient client
+	cmaClient = NewCMA(CMAToken)
+	cmaClient.BaseURL = server.URL
 
 	// test webhook
 	webhook, err := webhookFromTestData("webhook_1.json")
@@ -235,7 +235,7 @@ func TestWebhooksService_Upsert_Update(t *testing.T) {
 		},
 	}
 
-	err = cma.Webhooks.Upsert(spaceID, webhook)
+	err = cmaClient.Webhooks.Upsert(spaceID, webhook)
 	assertions.Nil(err)
 	assertions.Equal("7fstd9fZ9T2p3kwD49FxhI", webhook.Sys.ID)
 	assertions.Equal(1, webhook.Sys.Version)
@@ -259,14 +259,14 @@ func TestWebhooksService_Delete(t *testing.T) {
 	server := httptest.NewServer(handler)
 	defer server.Close()
 
-	// cma client
-	cma = NewCMA(CMAToken)
-	cma.BaseURL = server.URL
+	// cmaClient client
+	cmaClient = NewCMA(CMAToken)
+	cmaClient.BaseURL = server.URL
 
 	// test webhook
 	webhook, err := webhookFromTestData("webhook_1.json")
 	assertions.Nil(err)
 
-	err = cma.Webhooks.Delete(spaceID, webhook)
+	err = cmaClient.Webhooks.Delete(spaceID, webhook)
 	assertions.Nil(err)
 }

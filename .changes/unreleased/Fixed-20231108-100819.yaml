@@ -1,0 +1,3 @@
+kind: Fixed
+body: fixes error return for editor_interface
+time: 2023-11-08T10:08:19.748008+01:00

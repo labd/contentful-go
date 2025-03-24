@@ -3,8 +3,8 @@ package contentful
 import (
 	"bytes"
 	"fmt"
-	"io/ioutil"
 	"net/url"
+	"os"
 )
 
 // ResourcesService service
@@ -28,7 +28,7 @@ func (service *ResourcesService) Get(spaceID, resourceID string) (*Resource, err
 
 	var resource Resource
 	if ok := service.c.do(req, &resource); ok != nil {
-		return nil, err
+		return nil, ok
 	}
 
 	return &resource, err
@@ -36,7 +36,7 @@ func (service *ResourcesService) Get(spaceID, resourceID string) (*Resource, err
 
 // Create creates an upload resource
 func (service *ResourcesService) Create(spaceID, filePath string) error {
-	bytesArray, err := ioutil.ReadFile(filePath)
+	bytesArray, err := os.ReadFile(filePath)
 	if err != nil {
 		return err
 	}

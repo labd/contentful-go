@@ -2,10 +2,13 @@ package contentful
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"testing"
+
+	"github.com/labd/contentful-go/pkgs/common"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -28,11 +31,11 @@ func TestMembershipsService_List(t *testing.T) {
 	server := httptest.NewServer(handler)
 	defer server.Close()
 
-	// cma client
-	cma = NewCMA(CMAToken)
-	cma.BaseURL = server.URL
+	// cmaClient client
+	cmaClient = NewCMA(CMAToken)
+	cmaClient.BaseURL = server.URL
 
-	collection, err := cma.Memberships.List(spaceID).Next()
+	collection, err := cmaClient.Memberships.List(spaceID).Next()
 	assertions.Nil(err)
 	membership := collection.ToMembership()
 	assertions.Equal(2, len(membership))
@@ -57,11 +60,11 @@ func TestMembershipsService_Get(t *testing.T) {
 	server := httptest.NewServer(handler)
 	defer server.Close()
 
-	// cma client
-	cma = NewCMA(CMAToken)
-	cma.BaseURL = server.URL
+	// cmaClient client
+	cmaClient = NewCMA(CMAToken)
+	cmaClient.BaseURL = server.URL
 
-	membership, err := cma.Memberships.Get(spaceID, "0xWanD4AZI2AR35wW9q51n")
+	membership, err := cmaClient.Memberships.Get(spaceID, "0xWanD4AZI2AR35wW9q51n")
 	assertions.Nil(err)
 	assertions.Equal("0xWanD4AZI2AR35wW9q51n", membership.Sys.ID)
 }
@@ -84,12 +87,14 @@ func TestMembershipsService_Get_2(t *testing.T) {
 	server := httptest.NewServer(handler)
 	defer server.Close()
 
-	// cma client
-	cma = NewCMA(CMAToken)
-	cma.BaseURL = server.URL
+	// cmaClient client
+	cmaClient = NewCMA(CMAToken)
+	cmaClient.BaseURL = server.URL
 
-	_, err = cma.Memberships.Get(spaceID, "0xWanD4AZI2AR35wW9q51n")
-	assertions.Nil(err)
+	_, err = cmaClient.Memberships.Get(spaceID, "0xWanD4AZI2AR35wW9q51n")
+	assertions.NotNil(err)
+	var contentfulError common.ErrorResponse
+	assertions.True(errors.As(err, &contentfulError))
 }
 
 func TestMembershipsService_Upsert_Create(t *testing.T) {
@@ -119,9 +124,9 @@ func TestMembershipsService_Upsert_Create(t *testing.T) {
 	server := httptest.NewServer(handler)
 	defer server.Close()
 
-	// cma client
-	cma = NewCMA(CMAToken)
-	cma.BaseURL = server.URL
+	// cmaClient client
+	cmaClient = NewCMA(CMAToken)
+	cmaClient.BaseURL = server.URL
 
 	membership := &Membership{
 		Admin: true,
@@ -137,7 +142,7 @@ func TestMembershipsService_Upsert_Create(t *testing.T) {
 		Email: "johndoe@nonexistent.com",
 	}
 
-	err = cma.Memberships.Upsert(spaceID, membership)
+	err = cmaClient.Memberships.Upsert(spaceID, membership)
 	assertions.Nil(err)
 }
 
@@ -166,16 +171,16 @@ func TestMembershipsService_Upsert_Update(t *testing.T) {
 	server := httptest.NewServer(handler)
 	defer server.Close()
 
-	// cma client
-	cma = NewCMA(CMAToken)
-	cma.BaseURL = server.URL
+	// cmaClient client
+	cmaClient = NewCMA(CMAToken)
+	cmaClient.BaseURL = server.URL
 
 	membership, err := membershipFromTestData("membership_1.json")
 	assertions.Nil(err)
 
 	membership.Email = "editedmail@examplemail.com"
 
-	err = cma.Memberships.Upsert(spaceID, membership)
+	err = cmaClient.Memberships.Upsert(spaceID, membership)
 	assertions.Nil(err)
 }
 
@@ -195,15 +200,15 @@ func TestMembershipsService_Delete(t *testing.T) {
 	server := httptest.NewServer(handler)
 	defer server.Close()
 
-	// cma client
-	cma = NewCMA(CMAToken)
-	cma.BaseURL = server.URL
+	// cmaClient client
+	cmaClient = NewCMA(CMAToken)
+	cmaClient.BaseURL = server.URL
 
 	// test role
 	membership, err := membershipFromTestData("membership_1.json")
 	assertions.Nil(err)
 
 	// delete role
-	err = cma.Memberships.Delete(spaceID, membership.Sys.ID)
+	err = cmaClient.Memberships.Delete(spaceID, membership.Sys.ID)
 	assertions.Nil(err)
 }

@@ -28,11 +28,11 @@ func TestScheduledActionsService_List(t *testing.T) {
 	server := httptest.NewServer(handler)
 	defer server.Close()
 
-	// cma client
-	cma = NewCMA(CMAToken)
-	cma.BaseURL = server.URL
+	// cmaClient client
+	cmaClient = NewCMA(CMAToken)
+	cmaClient.BaseURL = server.URL
 
-	collection, err := cma.ScheduledActions.List(spaceID, "5KsDBWseXY6QegucYAoacS").Next()
+	collection, err := cmaClient.ScheduledActions.List(spaceID, "5KsDBWseXY6QegucYAoacS").Next()
 	assertions.Nil(err)
 	scheduledActions := collection.ToScheduledAction()
 	assertions.Equal(1, len(scheduledActions))
@@ -55,14 +55,14 @@ func TestScheduledActionsService_Delete(t *testing.T) {
 	server := httptest.NewServer(handler)
 	defer server.Close()
 
-	// cma client
-	cma = NewCMA(CMAToken)
-	cma.BaseURL = server.URL
+	// cmaClient client
+	cmaClient = NewCMA(CMAToken)
+	cmaClient.BaseURL = server.URL
 
 	scheduledAction, err := scheduledActionFromTestFile("scheduled_action_canceled.json")
 	assertions.Nil(err)
 
-	err = cma.ScheduledActions.Delete(spaceID, "5KsDBWseXY6QegucYAoacS", scheduledAction.Sys.ID)
+	err = cmaClient.ScheduledActions.Delete(spaceID, "5KsDBWseXY6QegucYAoacS", scheduledAction.Sys.ID)
 	assertions.Nil(err)
 	assertions.Equal("3A13SXSDwO8c46NrjigFYT", scheduledAction.Sys.ID)
 }
@@ -88,9 +88,9 @@ func TestScheduledActionsService_Create(t *testing.T) {
 	server := httptest.NewServer(handler)
 	defer server.Close()
 
-	// cma client
-	cma = NewCMA(CMAToken)
-	cma.BaseURL = server.URL
+	// cmaClient client
+	cmaClient = NewCMA(CMAToken)
+	cmaClient.BaseURL = server.URL
 
 	scheduledAction := &ScheduledAction{
 		Sys: &Sys{
@@ -116,7 +116,7 @@ func TestScheduledActionsService_Create(t *testing.T) {
 		Action: "publish",
 	}
 
-	err := cma.ScheduledActions.Create(spaceID, "5KsDBWseXY6QegucYAoacS", scheduledAction)
+	err := cmaClient.ScheduledActions.Create(spaceID, "5KsDBWseXY6QegucYAoacS", scheduledAction)
 	assertions.Nil(err)
 
 	assertions.Equal("publish", scheduledAction.Action)

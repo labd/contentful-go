@@ -4,23 +4,28 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"log"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
+	"os"
+	"reflect"
 	"strconv"
 	"strings"
 	"sync/atomic"
 	"testing"
 	"time"
 
+	"github.com/labd/contentful-go/pkgs/common"
+	"github.com/labd/contentful-go/pkgs/model"
+
 	"github.com/stretchr/testify/assert"
 )
 
 var (
 	server         *httptest.Server
-	cma            *Client
+	cmaClient      *Client
 	urc            *Client
 	c              *Client
 	CMAToken       = "b4c0n73n7fu1"
@@ -32,7 +37,7 @@ var (
 
 func readTestData(fileName string) string {
 	path := "testdata/" + fileName
-	content, err := ioutil.ReadFile(path)
+	content, err := os.ReadFile(path)
 	if err != nil {
 		log.Fatal(err)
 		return ""
@@ -70,66 +75,6 @@ func webhookFromTestData(fileName string) (*Webhook, error) {
 	return &webhook, nil
 }
 
-func contentTypeFromTestData(fileName string) (*ContentType, error) {
-	content := readTestData(fileName)
-
-	var ct ContentType
-	err := json.NewDecoder(strings.NewReader(content)).Decode(&ct)
-	if err != nil {
-		return nil, err
-	}
-
-	return &ct, nil
-}
-
-func localeFromTestData(fileName string) (*Locale, error) {
-	content := readTestData(fileName)
-
-	var locale Locale
-	err := json.NewDecoder(strings.NewReader(content)).Decode(&locale)
-	if err != nil {
-		return nil, err
-	}
-
-	return &locale, nil
-}
-
-func environmentFromTestData(fileName string) (*Environment, error) {
-	content := readTestData(fileName)
-
-	var environment Environment
-	err := json.NewDecoder(strings.NewReader(content)).Decode(&environment)
-	if err != nil {
-		return nil, err
-	}
-
-	return &environment, nil
-}
-
-func environmentAliasFromTestData(fileName string) (*EnvironmentAlias, error) {
-	content := readTestData(fileName)
-
-	var environmentAlias EnvironmentAlias
-	err := json.NewDecoder(strings.NewReader(content)).Decode(&environmentAlias)
-	if err != nil {
-		return nil, err
-	}
-
-	return &environmentAlias, nil
-}
-
-func entryFromTestData(fileName string) (*Entry, error) {
-	content := readTestData(fileName)
-
-	var entry Entry
-	err := json.NewDecoder(strings.NewReader(content)).Decode(&entry)
-	if err != nil {
-		return nil, err
-	}
-
-	return &entry, nil
-}
-
 func roleFromTestData(fileName string) (*Role, error) {
 	content := readTestData(fileName)
 
@@ -152,30 +97,6 @@ func membershipFromTestData(fileName string) (*Membership, error) {
 	}
 
 	return &membership, nil
-}
-
-func assetFromTestData(fileName string) (*Asset, error) {
-	content := readTestData(fileName)
-
-	var asset Asset
-	err := json.NewDecoder(strings.NewReader(content)).Decode(&asset)
-	if err != nil {
-		return nil, err
-	}
-
-	return &asset, nil
-}
-
-func apiKeyFromTestData(fileName string) (*APIKey, error) {
-	content := readTestData(fileName)
-
-	var apiKey APIKey
-	err := json.NewDecoder(strings.NewReader(content)).Decode(&apiKey)
-	if err != nil {
-		return nil, err
-	}
-
-	return &apiKey, nil
 }
 
 func accessTokenFromTestFile(fileName string) (*AccessToken, error) {
@@ -238,30 +159,6 @@ func extensionFromTestFile(fileName string) (*Extension, error) {
 	return &extension, nil
 }
 
-func appDefinitionFromTestFile(fileName string) (*AppDefinition, error) {
-	content := readTestData(fileName)
-
-	var appDefinition AppDefinition
-	err := json.NewDecoder(strings.NewReader(content)).Decode(&appDefinition)
-	if err != nil {
-		return nil, err
-	}
-
-	return &appDefinition, nil
-}
-
-func appInstallationFromTestFile(fileName string) (*AppInstallation, error) {
-	content := readTestData(fileName)
-
-	var appInstallation AppInstallation
-	err := json.NewDecoder(strings.NewReader(content)).Decode(&appInstallation)
-	if err != nil {
-		return nil, err
-	}
-
-	return &appInstallation, nil
-}
-
 func resourceFromTestFile(fileName string) (*Resource, error) {
 	content := readTestData(fileName)
 
@@ -296,14 +193,13 @@ func setup() {
 			}
 		}
 
-		file, err := ioutil.ReadFile(path)
+		file, err := os.ReadFile(path)
 		if err != nil {
 			_, _ = fmt.Fprintln(w, err)
 			return
 		}
 
 		_, _ = fmt.Fprintln(w, string(file))
-		return
 	})
 
 	server = httptest.NewServer(handler)
@@ -437,8 +333,8 @@ func TestHandleError(t *testing.T) {
 	path := "/some/path"
 	requestID := "request-id"
 	query := url.Values{}
-	errResponse := ErrorResponse{
-		Sys: &Sys{
+	errResponse := common.ErrorResponse{
+		Sys: &model.BaseSys{
 			ID:   "AccessTokenInvalid",
 			Type: "Error",
 		},
@@ -448,7 +344,7 @@ func TestHandleError(t *testing.T) {
 
 	marshaled, _ := json.Marshal(errResponse)
 	errResponseReader := bytes.NewReader(marshaled)
-	errResponseReadCloser := ioutil.NopCloser(errResponseReader)
+	errResponseReadCloser := io.NopCloser(errResponseReader)
 
 	req, _ := c.newRequest(method, path, query, nil)
 	responseHeaders := http.Header{}
@@ -461,10 +357,16 @@ func TestHandleError(t *testing.T) {
 	}
 
 	err := c.handleError(req, res)
-	assertions.IsType(AccessTokenInvalidError{}, err)
-	assertions.Equal(req, err.(AccessTokenInvalidError).APIError.req)
-	assertions.Equal(res, err.(AccessTokenInvalidError).APIError.res)
-	assertions.Equal(&errResponse, err.(AccessTokenInvalidError).APIError.err)
+	assertions.IsType(common.AccessTokenInvalidError{}, err)
+
+	apiError := err.(common.AccessTokenInvalidError).APIError
+
+	refVal := reflect.ValueOf(&apiError).Elem()
+
+	assertions.True(refVal.FieldByName("req").Equal(reflect.ValueOf(req)))
+	assertions.True(refVal.FieldByName("res").Equal(reflect.ValueOf(res)))
+
+	assertions.Equal(&errResponse, err.(common.AccessTokenInvalidError).APIError.Err)
 }
 
 func TestBackoffForPerSecondLimiting(t *testing.T) {
@@ -494,16 +396,16 @@ func TestBackoffForPerSecondLimiting(t *testing.T) {
 	server := httptest.NewServer(handler)
 	defer server.Close()
 
-	// cma client
-	cma = NewCMA(CMAToken)
-	cma.BaseURL = server.URL
+	// cmaClient client
+	cmaClient = NewCMA(CMAToken)
+	cmaClient.BaseURL = server.URL
 
 	go func() {
 		time.Sleep(time.Second * time.Duration(waitSeconds))
 		rateLimited.Swap(true)
 	}()
 
-	space, err := cma.Spaces.Get("id1")
+	space, err := cmaClient.Spaces.Get("id1")
 	assertions.Nil(err)
 	assertions.Equal(space.Name, "Contentful Example API")
 	assertions.Equal(space.Sys.ID, "id1")

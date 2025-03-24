@@ -17,8 +17,8 @@ type Membership struct {
 	Sys   *Sys    `json:"sys"`
 	Admin bool    `json:"admin"`
 	Roles []Roles `json:"roles"`
-	User  Member  `json:"user, omitempty"`
-	Email string  `json:"email, omitempty"`
+	User  Member  `json:"user,omitempty"`
+	Email string  `json:"email,omitempty"`
 }
 
 // Roles model
@@ -70,7 +70,7 @@ func (service *MembershipsService) Get(spaceID, membershipID string) (*Membershi
 
 	var membership Membership
 	if ok := service.c.do(req, &membership); ok != nil {
-		return nil, err
+		return nil, ok
 	}
 
 	return &membership, err

@@ -2,10 +2,13 @@ package contentful
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"testing"
+
+	"github.com/labd/contentful-go/pkgs/common"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -28,11 +31,11 @@ func TestRolesService_List(t *testing.T) {
 	server := httptest.NewServer(handler)
 	defer server.Close()
 
-	// cma client
-	cma = NewCMA(CMAToken)
-	cma.BaseURL = server.URL
+	// cmaClient client
+	cmaClient = NewCMA(CMAToken)
+	cmaClient.BaseURL = server.URL
 
-	collection, err := cma.Roles.List(spaceID).Next()
+	collection, err := cmaClient.Roles.List(spaceID).Next()
 	assertions.Nil(err)
 	role := collection.ToRole()
 	assertions.Equal(2, len(role))
@@ -57,11 +60,11 @@ func TestRolesService_Get(t *testing.T) {
 	server := httptest.NewServer(handler)
 	defer server.Close()
 
-	// cma client
-	cma = NewCMA(CMAToken)
-	cma.BaseURL = server.URL
+	// cmaClient client
+	cmaClient = NewCMA(CMAToken)
+	cmaClient.BaseURL = server.URL
 
-	role, err := cma.Roles.Get(spaceID, "0xvkNW6WdQ8JkWlWZ8BC4x")
+	role, err := cmaClient.Roles.Get(spaceID, "0xvkNW6WdQ8JkWlWZ8BC4x")
 	assertions.Nil(err)
 	assertions.Equal("Some role", role.Name)
 }
@@ -84,12 +87,14 @@ func TestRolesService_Get_2(t *testing.T) {
 	server := httptest.NewServer(handler)
 	defer server.Close()
 
-	// cma client
-	cma = NewCMA(CMAToken)
-	cma.BaseURL = server.URL
+	// cmaClient client
+	cmaClient = NewCMA(CMAToken)
+	cmaClient.BaseURL = server.URL
 
-	_, err = cma.Roles.Get(spaceID, "0xvkNW6WdQ8JkWlWZ8BC4x")
-	assertions.Nil(err)
+	_, err = cmaClient.Roles.Get(spaceID, "0xvkNW6WdQ8JkWlWZ8BC4x")
+	assertions.NotNil(err)
+	var contentfulError common.ErrorResponse
+	assertions.True(errors.As(err, &contentfulError))
 }
 
 func TestRolesService_Upsert_Create(t *testing.T) {
@@ -119,9 +124,9 @@ func TestRolesService_Upsert_Create(t *testing.T) {
 	server := httptest.NewServer(handler)
 	defer server.Close()
 
-	// cma client
-	cma = NewCMA(CMAToken)
-	cma.BaseURL = server.URL
+	// cmaClient client
+	cmaClient = NewCMA(CMAToken)
+	cmaClient.BaseURL = server.URL
 
 	role := &Role{
 		Name:        "Author",
@@ -157,7 +162,7 @@ func TestRolesService_Upsert_Create(t *testing.T) {
 		},
 	}
 
-	err = cma.Roles.Upsert(spaceID, role)
+	err = cmaClient.Roles.Upsert(spaceID, role)
 	assertions.Nil(err)
 }
 
@@ -186,16 +191,16 @@ func TestRolesService_Upsert_Update(t *testing.T) {
 	server := httptest.NewServer(handler)
 	defer server.Close()
 
-	// cma client
-	cma = NewCMA(CMAToken)
-	cma.BaseURL = server.URL
+	// cmaClient client
+	cmaClient = NewCMA(CMAToken)
+	cmaClient.BaseURL = server.URL
 
 	role, err := roleFromTestData("role_1.json")
 	assertions.Nil(err)
 
 	role.Description = "Edited text"
 
-	err = cma.Roles.Upsert(spaceID, role)
+	err = cmaClient.Roles.Upsert(spaceID, role)
 	assertions.Nil(err)
 }
 
@@ -215,15 +220,15 @@ func TestRolesServiceDelete(t *testing.T) {
 	server := httptest.NewServer(handler)
 	defer server.Close()
 
-	// cma client
-	cma = NewCMA(CMAToken)
-	cma.BaseURL = server.URL
+	// cmaClient client
+	cmaClient = NewCMA(CMAToken)
+	cmaClient.BaseURL = server.URL
 
 	// test role
 	role, err := roleFromTestData("role_1.json")
 	assertions.Nil(err)
 
 	// delete role
-	err = cma.Roles.Delete(spaceID, role.Sys.ID)
+	err = cmaClient.Roles.Delete(spaceID, role.Sys.ID)
 	assertions.Nil(err)
 }

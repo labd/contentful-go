@@ -11,6 +11,13 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/labd/contentful-go/internal/cda"
+	"github.com/labd/contentful-go/internal/cma"
+	"github.com/labd/contentful-go/pkgs/client"
+	"github.com/labd/contentful-go/pkgs/common"
+	cda_service "github.com/labd/contentful-go/service/cda"
+	cma_service "github.com/labd/contentful-go/service/cma"
+
 	"moul.io/http2curl"
 )
 
@@ -26,34 +33,35 @@ type Client struct {
 	Environment   string
 	commonService service
 
-	Spaces             *SpacesService
-	Users              *UsersService
-	Environments       *EnvironmentsService
-	EnvironmentAliases *EnvironmentAliasesService
-	Organizations      *OrganizationsService
-	Roles              *RolesService
-	Memberships        *MembershipsService
-	Snapshots          *SnapshotsService
-	APIKeys            *APIKeyService
-	AccessTokens       *AccessTokensService
-	Assets             *AssetsService
-	ContentTypes       *ContentTypesService
-	Entries            *EntriesService
-	EntryTasks         *EntryTasksService
-	ScheduledActions   *ScheduledActionsService
-	Locales            *LocalesService
-	Webhooks           *WebhooksService
-	WebhookCalls       *WebhookCallsService
-	EditorInterfaces   *EditorInterfacesService
-	Extensions         *ExtensionsService
-	AppDefinitions     *AppDefinitionsService
-	AppInstallations   *AppInstallationsService
-	Usages             *UsagesService
-	Resources          *ResourcesService
+	Spaces           *SpacesService
+	Users            *UsersService
+	Organizations    *OrganizationsService
+	Roles            *RolesService
+	Memberships      *MembershipsService
+	Snapshots        *SnapshotsService
+	AccessTokens     *AccessTokensService
+	EntryTasks       *EntryTasksService
+	ScheduledActions *ScheduledActionsService
+	Webhooks         *WebhooksService
+	WebhookCalls     *WebhookCallsService
+	EditorInterfaces *EditorInterfacesService
+	Extensions       *ExtensionsService
+	Usages           *UsagesService
+	Resources        *ResourcesService
+	AppUpload        *AppUploadService
+	AppBundle        *AppBundleService
 }
 
 type service struct {
 	c *Client
+}
+
+func NewCMAV2(config client.ClientConfig) (cma_service.SpaceIdClientBuilder, error) {
+	return cma.New(config)
+}
+
+func NewCDAV2(config client.ClientConfig) (cda_service.SpaceIdClientBuilder, error) {
+	return cda.New(config)
 }
 
 // NewCMA returns a CMA client
@@ -75,27 +83,24 @@ func NewCMA(token string) *Client {
 
 	c.Spaces = (*SpacesService)(&c.commonService)
 	c.Users = (*UsersService)(&c.commonService)
-	c.Environments = (*EnvironmentsService)(&c.commonService)
-	c.EnvironmentAliases = (*EnvironmentAliasesService)(&c.commonService)
 	c.Organizations = (*OrganizationsService)(&c.commonService)
 	c.Roles = (*RolesService)(&c.commonService)
 	c.Memberships = (*MembershipsService)(&c.commonService)
 	c.Snapshots = (*SnapshotsService)(&c.commonService)
-	c.APIKeys = (*APIKeyService)(&c.commonService)
 	c.AccessTokens = (*AccessTokensService)(&c.commonService)
-	c.Assets = (*AssetsService)(&c.commonService)
-	c.ContentTypes = (*ContentTypesService)(&c.commonService)
-	c.Entries = (*EntriesService)(&c.commonService)
 	c.EntryTasks = (*EntryTasksService)(&c.commonService)
 	c.ScheduledActions = (*ScheduledActionsService)(&c.commonService)
-	c.Locales = (*LocalesService)(&c.commonService)
 	c.Webhooks = (*WebhooksService)(&c.commonService)
 	c.WebhookCalls = (*WebhookCallsService)(&c.commonService)
 	c.EditorInterfaces = (*EditorInterfacesService)(&c.commonService)
 	c.Extensions = (*ExtensionsService)(&c.commonService)
-	c.AppDefinitions = (*AppDefinitionsService)(&c.commonService)
-	c.AppInstallations = (*AppInstallationsService)(&c.commonService)
 	c.Usages = (*UsagesService)(&c.commonService)
+	c.AppUpload = &AppUploadService{
+		service: c.commonService,
+		BaseURL: "https://upload.contentful.com",
+	}
+
+	c.AppBundle = (*AppBundleService)(&c.commonService)
 	return c
 }
 
@@ -117,11 +122,6 @@ func NewCDA(token string) *Client {
 	c.commonService.c = c
 
 	c.Spaces = (*SpacesService)(&c.commonService)
-	c.APIKeys = (*APIKeyService)(&c.commonService)
-	c.Assets = (*AssetsService)(&c.commonService)
-	c.ContentTypes = (*ContentTypesService)(&c.commonService)
-	c.Entries = (*EntriesService)(&c.commonService)
-	c.Locales = (*LocalesService)(&c.commonService)
 	c.Webhooks = (*WebhooksService)(&c.commonService)
 
 	return c
@@ -141,11 +141,6 @@ func NewCPA(token string) *Client {
 	}
 
 	c.Spaces = &SpacesService{c: c}
-	c.APIKeys = &APIKeyService{c: c}
-	c.Assets = &AssetsService{c: c}
-	c.ContentTypes = &ContentTypesService{c: c}
-	c.Entries = &EntriesService{c: c}
-	c.Locales = &LocalesService{c: c}
 	c.Webhooks = &WebhooksService{c: c}
 
 	return c
@@ -190,7 +185,11 @@ func (c *Client) SetHTTPClient(client *http.Client) {
 }
 
 func (c *Client) newRequest(method, path string, query url.Values, body io.Reader) (*http.Request, error) {
-	u, err := url.Parse(c.BaseURL)
+	return c.newRequestWithBaseUrl(method, c.BaseURL, path, query, body)
+}
+
+func (c *Client) newRequestWithBaseUrl(method, baseUrl string, path string, query url.Values, body io.Reader) (*http.Request, error) {
+	u, err := url.Parse(baseUrl)
 	if err != nil {
 		return nil, err
 	}
@@ -217,7 +216,7 @@ func (c *Client) newRequest(method, path string, query url.Values, body io.Reade
 }
 
 func (c *Client) do(req *http.Request, v interface{}) error {
-	if c.Debug == true {
+	if c.Debug {
 		command, _ := http2curl.GetCurlCommand(req)
 		fmt.Println(command)
 	}
@@ -248,7 +247,7 @@ func (c *Client) do(req *http.Request, v interface{}) error {
 	apiError := c.handleError(req, res)
 
 	// return apiError if it is not rate limit error
-	if _, ok := apiError.(RateLimitExceededError); !ok {
+	if _, ok := apiError.(common.RateLimitExceededError); !ok {
 		return apiError
 	}
 
@@ -271,7 +270,7 @@ func (c *Client) do(req *http.Request, v interface{}) error {
 }
 
 func (c *Client) handleError(req *http.Request, res *http.Response) error {
-	if c.Debug == true {
+	if c.Debug {
 		dump, err := httputil.DumpResponse(res, true)
 		if err != nil {
 			log.Fatal(err)
@@ -280,32 +279,30 @@ func (c *Client) handleError(req *http.Request, res *http.Response) error {
 		fmt.Printf("%q", dump)
 	}
 
-	var e ErrorResponse
+	var e common.ErrorResponse
 	defer res.Body.Close()
 	err := json.NewDecoder(res.Body).Decode(&e)
 	if err != nil {
 		return err
 	}
 
-	apiError := APIError{
-		req: req,
-		res: res,
-		err: &e,
-	}
+	apiError := common.NewApiError(req, res, &e)
 
 	switch errType := e.Sys.ID; errType {
 	case "NotFound":
-		return NotFoundError{apiError}
+		return common.NotFoundError{apiError}
 	case "RateLimitExceeded":
-		return RateLimitExceededError{apiError}
+		return common.RateLimitExceededError{apiError}
 	case "AccessTokenInvalid":
-		return AccessTokenInvalidError{apiError}
+		return common.AccessTokenInvalidError{apiError}
 	case "ValidationFailed":
-		return ValidationFailedError{apiError}
+		return common.ValidationFailedError{apiError}
 	case "VersionMismatch":
-		return VersionMismatchError{apiError}
+		return common.VersionMismatchError{apiError}
 	case "Conflict":
-		return VersionMismatchError{apiError}
+		return common.VersionMismatchError{apiError}
+	case "InvalidEntry":
+		return common.InvalidEntryError{apiError}
 	default:
 		return e
 	}

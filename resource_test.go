@@ -1,12 +1,15 @@
 package contentful
 
 import (
+	"errors"
 	"fmt"
-	"github.com/stretchr/testify/assert"
 	"net/http"
 	"net/http/httptest"
 	"path/filepath"
 	"testing"
+
+	"github.com/labd/contentful-go/pkgs/common"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestResourcesService_Get(t *testing.T) {
@@ -25,7 +28,7 @@ func TestResourcesService_Get(t *testing.T) {
 	server := httptest.NewServer(handler)
 	defer server.Close()
 
-	// cma client
+	// cmaClient client
 	urc = NewResourceClient(CMAToken)
 	urc.BaseURL = server.URL
 
@@ -51,12 +54,14 @@ func TestResourcesService_Get_2(t *testing.T) {
 	server := httptest.NewServer(handler)
 	defer server.Close()
 
-	// cma client
+	// cmaClient client
 	urc = NewResourceClient(CMAToken)
 	urc.BaseURL = server.URL
 
 	_, err = urc.Resources.Get(spaceID, "0xvkNW6WdQ8JkWlWZ8BC4x")
-	assertions.Nil(err)
+	assertions.NotNil(err)
+	var contentfulError common.ErrorResponse
+	assertions.True(errors.As(err, &contentfulError))
 }
 
 func TestResourcesService_Create(t *testing.T) {
@@ -72,7 +77,7 @@ func TestResourcesService_Create(t *testing.T) {
 	server := httptest.NewServer(handler)
 	defer server.Close()
 
-	// cma client
+	// cmaClient client
 	urc = NewResourceClient(CMAToken)
 	urc.BaseURL = server.URL
 
@@ -98,7 +103,7 @@ func TestResourcesService_Delete(t *testing.T) {
 	server := httptest.NewServer(handler)
 	defer server.Close()
 
-	// cma client
+	// cmaClient client
 	urc = NewResourceClient(CMAToken)
 	urc.BaseURL = server.URL
 
@@ -126,7 +131,7 @@ func TestResourcesService_Delete_2(t *testing.T) {
 	server := httptest.NewServer(handler)
 	defer server.Close()
 
-	// cma client
+	// cmaClient client
 	urc = NewResourceClient(CMAToken)
 	urc.BaseURL = server.URL
 

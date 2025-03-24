@@ -69,7 +69,7 @@ func (service *ExtensionsService) Get(spaceID, extensionID string) (*Extension, 
 
 	var extension Extension
 	if ok := service.c.do(req, &extension); ok != nil {
-		return nil, err
+		return nil, ok
 	}
 
 	return &extension, err

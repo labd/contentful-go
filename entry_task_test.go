@@ -2,10 +2,13 @@ package contentful
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"testing"
+
+	"github.com/labd/contentful-go/pkgs/common"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -28,11 +31,11 @@ func TestEntryTasksService_List(t *testing.T) {
 	server := httptest.NewServer(handler)
 	defer server.Close()
 
-	// cma client
-	cma = NewCMA(CMAToken)
-	cma.BaseURL = server.URL
+	// cmaClient client
+	cmaClient = NewCMA(CMAToken)
+	cmaClient.BaseURL = server.URL
 
-	collection, err := cma.EntryTasks.List(spaceID, "5KsDBWseXY6QegucYAoacS").Next()
+	collection, err := cmaClient.EntryTasks.List(spaceID, "5KsDBWseXY6QegucYAoacS").Next()
 	assertions.Nil(err)
 	entryTasks := collection.ToEntryTask()
 	assertions.Equal(1, len(entryTasks))
@@ -57,11 +60,11 @@ func TestEntryTasksService_Get(t *testing.T) {
 	server := httptest.NewServer(handler)
 	defer server.Close()
 
-	// cma client
-	cma = NewCMA(CMAToken)
-	cma.BaseURL = server.URL
+	// cmaClient client
+	cmaClient = NewCMA(CMAToken)
+	cmaClient.BaseURL = server.URL
 
-	entryTask, err := cma.EntryTasks.Get(spaceID, "5KsDBWseXY6QegucYAoacS", "RHfHVRz3QkAgcMq4CGg2m5")
+	entryTask, err := cmaClient.EntryTasks.Get(spaceID, "5KsDBWseXY6QegucYAoacS", "RHfHVRz3QkAgcMq4CGg2m5")
 	assertions.Nil(err)
 	assertions.Equal("RHfHVRz3QkAgcMq4CGg2m5", entryTask.Sys.ID)
 }
@@ -84,12 +87,14 @@ func TestEntryTasksService_Get_2(t *testing.T) {
 	server := httptest.NewServer(handler)
 	defer server.Close()
 
-	// cma client
-	cma = NewCMA(CMAToken)
-	cma.BaseURL = server.URL
+	// cmaClient client
+	cmaClient = NewCMA(CMAToken)
+	cmaClient.BaseURL = server.URL
 
-	_, err = cma.EntryTasks.Get(spaceID, "5KsDBWseXY6QegucYAoacS", "RHfHVRz3QkAgcMq4CGg2m5")
-	assertions.Nil(err)
+	_, err = cmaClient.EntryTasks.Get(spaceID, "5KsDBWseXY6QegucYAoacS", "RHfHVRz3QkAgcMq4CGg2m5")
+	assertions.NotNil(err)
+	var contentfulError common.ErrorResponse
+	assertions.True(errors.As(err, &contentfulError))
 }
 
 func TestEntryTasksService_Delete(t *testing.T) {
@@ -108,14 +113,14 @@ func TestEntryTasksService_Delete(t *testing.T) {
 	server := httptest.NewServer(handler)
 	defer server.Close()
 
-	// cma client
-	cma = NewCMA(CMAToken)
-	cma.BaseURL = server.URL
+	// cmaClient client
+	cmaClient = NewCMA(CMAToken)
+	cmaClient.BaseURL = server.URL
 
 	entryTask, err := spaceFromTestData("entry_task_1.json")
 	assertions.Nil(err)
 
-	err = cma.EntryTasks.Delete(spaceID, "5KsDBWseXY6QegucYAoacS", entryTask.Sys.ID)
+	err = cmaClient.EntryTasks.Delete(spaceID, "5KsDBWseXY6QegucYAoacS", entryTask.Sys.ID)
 	assertions.Nil(err)
 }
 
@@ -141,9 +146,9 @@ func TestEntryTasksService_Upsert_Create(t *testing.T) {
 	server := httptest.NewServer(handler)
 	defer server.Close()
 
-	// cma client
-	cma = NewCMA(CMAToken)
-	cma.BaseURL = server.URL
+	// cmaClient client
+	cmaClient = NewCMA(CMAToken)
+	cmaClient.BaseURL = server.URL
 
 	entryTask := &EntryTask{
 		Body:   "new entry task",
@@ -157,7 +162,7 @@ func TestEntryTasksService_Upsert_Create(t *testing.T) {
 		},
 	}
 
-	err := cma.EntryTasks.Upsert(spaceID, "5KsDBWseXY6QegucYAoacS", entryTask)
+	err := cmaClient.EntryTasks.Upsert(spaceID, "5KsDBWseXY6QegucYAoacS", entryTask)
 	assertions.Nil(err)
 
 	assertions.Equal("new entry task", entryTask.Body)
@@ -187,9 +192,9 @@ func TestEntryTasksService_Upsert_Update(t *testing.T) {
 	server := httptest.NewServer(handler)
 	defer server.Close()
 
-	// cma client
-	cma = NewCMA(CMAToken)
-	cma.BaseURL = server.URL
+	// cmaClient client
+	cmaClient = NewCMA(CMAToken)
+	cmaClient.BaseURL = server.URL
 
 	entryTask, err := entryTaskFromTestFile("entry_task_new.json")
 	assertions.Nil(err)
@@ -197,7 +202,7 @@ func TestEntryTasksService_Upsert_Update(t *testing.T) {
 	entryTask.Body = "Review translation"
 	entryTask.Status = "active"
 
-	err = cma.EntryTasks.Upsert(spaceID, "5KsDBWseXY6QegucYAoacS", entryTask)
+	err = cmaClient.EntryTasks.Upsert(spaceID, "5KsDBWseXY6QegucYAoacS", entryTask)
 	assertions.Nil(err)
 	assertions.Equal("Review translation", entryTask.Body)
 	assertions.Equal("active", entryTask.Status)

@@ -92,7 +92,7 @@ func (service *RolesService) Get(spaceID, roleID string) (*Role, error) {
 
 	var role Role
 	if ok := service.c.do(req, &role); ok != nil {
-		return nil, err
+		return nil, ok
 	}
 
 	return &role, err

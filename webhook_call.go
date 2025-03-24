@@ -79,7 +79,7 @@ func (service *WebhookCallsService) Get(spaceID, webhookID, callID string) (*Web
 
 	var webHook WebhookCall
 	if ok := service.c.do(req, &webHook); ok != nil {
-		return nil, err
+		return nil, ok
 	}
 
 	return &webHook, err
@@ -98,7 +98,7 @@ func (service *WebhookCallsService) Health(spaceID, webhookID string) (*WebhookH
 
 	var health WebhookHealth
 	if ok := service.c.do(req, &health); ok != nil {
-		return nil, err
+		return nil, ok
 	}
 
 	return &health, err

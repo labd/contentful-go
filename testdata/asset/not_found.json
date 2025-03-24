@@ -1,0 +1,14 @@
+{
+  "sys": {
+    "type": "Error",
+    "id": "NotFound"
+  },
+  "message": "The resource could not be found.",
+  "details": {
+    "type": "Asset",
+    "id": "test",
+    "environment": "master",
+    "space": "space_id"
+  },
+  "requestId": "3d289176-f8f0-4487-9a09-ca4169b0deac"
+}

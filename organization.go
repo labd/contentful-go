@@ -1,9 +1,5 @@
 package contentful
 
-import (
-	"fmt"
-)
-
 // OrganizationsService service
 type OrganizationsService service
 
@@ -15,7 +11,7 @@ type Organization struct {
 
 // List returns an organizations collection
 func (service *OrganizationsService) List() *Collection {
-	path := fmt.Sprintf("/organizations")
+	path := "/organizations"
 	method := "GET"
 
 	req, err := service.c.newRequest(method, path, nil, nil)

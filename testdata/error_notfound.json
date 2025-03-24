@@ -4,5 +4,11 @@
   "sys": {
 	"type": "Error",
 	"id": "NotFound"
+  },
+  "details": {
+    "type": "ContentType",
+    "id": "some-id",
+    "environment": "testing",
+    "space": "space-id"
   }
 }
